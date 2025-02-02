@@ -1,7 +1,8 @@
 import React from "react";
 import { useContext } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import ListModel from "@/models/List";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import ListModel, { SharedList } from "@/models/List";
 import ThemeContext from "@/store/theme-context";
 import filterProductsChecked from "@/utils/filterProductsChecked";
 import Text from "@/components/Ui/ThemedText";
@@ -13,6 +14,7 @@ interface Props {
 
 const List = ({ list, onPress }: Props) => {
   const { theme } = useContext(ThemeContext);
+  const isShared = !!(list as SharedList).participants;
 
   const filteredProducts = filterProductsChecked(list.products);
   let productLengthText = `${filteredProducts.unChecked.length} מוצרים`;
@@ -30,6 +32,14 @@ const List = ({ list, onPress }: Props) => {
   return (
     <Pressable onPress={() => onPress(list)}>
       <View style={[styles.container, { backgroundColor: theme.primaryDark }]}>
+        {isShared && (
+          <Ionicons
+            name="globe-outline"
+            size={16}
+            color={theme.text}
+            style={styles.sharedIcon}
+          />
+        )}
         <Text style={styles.name}>{list.name}</Text>
         <Text style={styles.amount}>{productLengthText}</Text>
       </View>
@@ -52,6 +62,11 @@ const styles = StyleSheet.create({
   },
   amount: {
     textAlign: "center",
+  },
+  sharedIcon: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
   },
 });
 
