@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String         @id
+  email     String         @unique
+  name      String
+  photoUrl  String?
+  lists     ListsOnUsers[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model List {
+  id           String               @id @default(uuid())
+  name         String
+  color        Color                @default(GRAY)
+  products     Product[]
+  participants ListsOnUsers[]
+  invitation   ListTokenInvitation?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model ListsOnUsers {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String
+  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  listId    String
+  role      Role     @default(BASIC)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, listId])
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  note      String?
+  isChecked Boolean  @default(false)
+  List      List     @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  listId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ListTokenInvitation {
+  token  String   @id @default(uuid())
+  List   List     @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  listId String   @unique
+  expiry DateTime
+}
+
+enum Color {
+  GRAY
+  BROWN
+  RED
+  GREEN
+  BLUE
+  YELLOW
+  PINK
+}
+
+enum Role {
+  BASIC
+  OWNER
+}

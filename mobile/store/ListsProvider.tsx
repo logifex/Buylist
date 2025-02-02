@@ -1,0 +1,179 @@
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
+import List, { ListInput } from "@/models/List";
+import Product, { ProductInput } from "@/models/Product";
+import ListsContext, { ListsContextType } from "@/store/list-context";
+import AppDataService from "@/services/AppDataService";
+import * as Crypto from "expo-crypto";
+
+type ListsReducerActionType =
+  | { type: "LOAD_LISTS"; payload: { lists: List[] } }
+  | { type: "ADD_LIST"; payload: { list: List } }
+  | {
+      type: "EDIT_LIST";
+      payload: { listId: string; list: ListInput };
+    }
+  | { type: "DELETE_LIST"; payload: { listId: string } }
+  | { type: "ADD_PRODUCT"; payload: { listId: string; product: Product } }
+  | { type: "EDIT_PRODUCT"; payload: { listId: string; product: Product } }
+  | { type: "DELETE_PRODUCT"; payload: { listId: string; productId: string } };
+
+const ListsReducer = (
+  state: List[],
+  action: ListsReducerActionType,
+): List[] => {
+  switch (action.type) {
+    case "LOAD_LISTS": {
+      return action.payload.lists;
+    }
+    case "ADD_LIST": {
+      const newState = state.concat(action.payload.list);
+
+      return newState;
+    }
+    case "EDIT_LIST": {
+      const { name, color } = action.payload.list;
+      const newState = state.slice();
+      const editList = newState.find((l) => l.id === action.payload.listId);
+
+      if (editList) {
+        editList.name = name;
+        editList.color = color ?? editList.color;
+      }
+
+      return newState;
+    }
+    case "DELETE_LIST": {
+      const newState = state.filter((l) => l.id !== action.payload.listId);
+
+      return newState;
+    }
+    case "ADD_PRODUCT": {
+      const newState = state.slice();
+      const newCurList = newState.find((l) => l.id === action.payload.listId);
+      newCurList?.products.push(action.payload.product);
+
+      return newState;
+    }
+    case "EDIT_PRODUCT": {
+      const { id: productId, name, note, isChecked } = action.payload.product;
+      const newState = state.slice();
+      const newCurList = newState.find((l) => l.id === action.payload.listId);
+      const editProduct = newCurList?.products.find((p) => p.id === productId);
+
+      if (editProduct) {
+        editProduct.name = name;
+        editProduct.note = note;
+        editProduct.isChecked = isChecked;
+      }
+
+      return newState;
+    }
+    case "DELETE_PRODUCT": {
+      const newState = state.slice();
+      const newCurList = newState.find((l) => l.id === action.payload.listId);
+
+      if (newCurList) {
+        newCurList.products = newCurList.products.filter(
+          (p) => p.id !== action.payload.productId,
+        );
+      }
+
+      return newState;
+    }
+    default: {
+      throw new Error("Invalid action");
+    }
+  }
+};
+
+const ListsProvider = ({ children }: PropsWithChildren) => {
+  const [listsState, dispatchLists] = useReducer(ListsReducer, []);
+  const [loaded, setLoaded] = useState(false);
+
+  const handleAddList = useCallback((list: ListInput) => {
+    const listId = Crypto.randomUUID();
+    dispatchLists({
+      type: "ADD_LIST",
+      payload: { list: { color: "GRAY", products: [], ...list, id: listId } },
+    });
+  }, []);
+
+  const handleEditList = useCallback((listId: string, list: ListInput) => {
+    dispatchLists({
+      type: "EDIT_LIST",
+      payload: { listId: listId, list: list },
+    });
+  }, []);
+
+  const handleDeleteList = useCallback((listId: string) => {
+    dispatchLists({ type: "DELETE_LIST", payload: { listId } });
+  }, []);
+
+  const handleAddProduct = useCallback(
+    (listId: string, product: ProductInput) => {
+      const productId = Crypto.randomUUID();
+      dispatchLists({
+        type: "ADD_PRODUCT",
+        payload: {
+          listId,
+          product: { isChecked: false, note: null, ...product, id: productId },
+        },
+      });
+    },
+    [],
+  );
+
+  const handleEditProduct = useCallback((listId: string, product: Product) => {
+    dispatchLists({ type: "EDIT_PRODUCT", payload: { listId, product } });
+  }, []);
+
+  const handleDeleteProduct = useCallback(
+    (listId: string, productId: string) => {
+      dispatchLists({ type: "DELETE_PRODUCT", payload: { listId, productId } });
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const loadData = async () => {
+      const listsData = await AppDataService.readLists();
+
+      if (listsData && listsData.length > 0) {
+        dispatchLists({ type: "LOAD_LISTS", payload: { lists: listsData } });
+      }
+      setLoaded(true);
+    };
+
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      AppDataService.writeLists(listsState);
+    }
+  }, [listsState, loaded]);
+
+  const listsContext: ListsContextType = {
+    lists: listsState,
+    addList: handleAddList,
+    editList: handleEditList,
+    deleteList: handleDeleteList,
+    addProduct: handleAddProduct,
+    editProduct: handleEditProduct,
+    deleteProduct: handleDeleteProduct,
+  };
+
+  return (
+    <ListsContext.Provider value={listsContext}>
+      {children}
+    </ListsContext.Provider>
+  );
+};
+
+export default ListsProvider;

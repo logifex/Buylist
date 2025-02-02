@@ -1,0 +1,13 @@
+.vscode/*
+node_modules
+dist
+.env
+prisma/migrations
+error.log
+service-account-file.json
+.github/
+Dockerfile
+.dockerignore
+fly.toml
+well-known
+src/replayHandler.ts
