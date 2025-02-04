@@ -70,7 +70,7 @@ const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
       <Pressable
         style={({ pressed }) => [
           styles.addButton,
-          { backgroundColor: theme.card },
+          { backgroundColor: theme.primary },
           pressed && styles.addButtonPressed,
         ]}
         onPress={handleAddProduct}
@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 24,
+    color: "black",
   },
 });
 

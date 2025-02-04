@@ -15,7 +15,7 @@ const useRemoveParticipant = ({ listId }: { listId: string }) => {
       });
     },
     onError: (err) => {
-      toast("שגיאה בהסרת משתתף");
+      toast.error("שגיאה בהסרת משתתף");
       console.log(err.message);
     },
   });

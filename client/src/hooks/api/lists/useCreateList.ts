@@ -3,6 +3,8 @@ import ListService from "../../../services/ListService";
 import List, { ListInput } from "../../../models/List";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import { toast } from "react-toastify";
+import { ApiError } from "../../../models/Error";
+import ErrorCodes from "../../../constants/ErrorCodes";
 
 const useCreateList = () => {
   const queryClient = useQueryClient();
@@ -18,7 +20,14 @@ const useCreateList = () => {
       );
     },
     onError: (err) => {
-      toast("שגיאה ביצירת רשימה");
+      const apiErr = err as ApiError;
+      if (apiErr.error?.code === ErrorCodes.tooManyLists) {
+        toast.error(
+          "אין אפשרות ליצור עוד רשימות.\nעברת את כמות הרשימות המותרת."
+        );
+        return;
+      }
+      toast.error("שגיאה ביצירת רשימה");
       console.log(err.message);
     },
   });

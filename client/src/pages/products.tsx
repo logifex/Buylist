@@ -70,7 +70,7 @@ const ProductsPage = () => {
       await deleteList.mutateAsync();
       await navigate("/");
     } catch (err) {
-      toast("שגיאה במחיקת רשימה");
+      toast.error("שגיאה במחיקת רשימה");
       console.log((err as Error).message);
     }
   };
@@ -80,7 +80,7 @@ const ProductsPage = () => {
       await leaveList.mutateAsync();
       await navigate("/");
     } catch (err) {
-      toast("שגיאה בעזיבת רשימה");
+      toast.error("שגיאה בעזיבת רשימה");
       console.log((err as Error).message);
     }
   };

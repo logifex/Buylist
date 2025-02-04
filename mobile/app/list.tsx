@@ -31,6 +31,8 @@ import { FlashList } from "@shopify/flash-list";
 import ListHeaderRight from "@/components/Lists/ListHeaderRight";
 import useListSocketHandlers from "@/hooks/useListSocketHandlers";
 import ThemeContext from "@/store/theme-context";
+import ListConstants from "@/constants/ListConstants";
+import Toast from "react-native-toast-message";
 
 const Lists = () => {
   const router = useRouter();
@@ -145,6 +147,15 @@ const Lists = () => {
   };
 
   const handleAddProduct = async (product: ProductInput) => {
+    if (list && list.products.length >= ListConstants.maxProductAmount) {
+      Toast.show({
+        type: "base",
+        text1:
+          "אין אפשרות ליצור עוד מוצרים.\nעברת את כמות המוצרים המותרת ברשימה.",
+      });
+      return;
+    }
+
     if (!isShared) {
       listsCtx.addProduct(id, product);
     } else {

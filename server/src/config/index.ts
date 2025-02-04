@@ -6,6 +6,7 @@ import logger from "./logger";
 import prisma from "./prisma";
 import { pubClient, subClient } from "./redis";
 import configZod from "./zod";
+import resourceLimits from "./resourceLimits";
 
 export {
   env,
@@ -17,4 +18,5 @@ export {
   helmetConfig,
   corsOptions,
   configZod,
+  resourceLimits,
 };

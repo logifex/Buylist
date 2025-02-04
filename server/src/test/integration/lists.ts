@@ -23,6 +23,7 @@ import {
   joinTestList,
 } from "../utils/commonRequests";
 import { ListService } from "../../services";
+import { resourceLimits } from "../../config";
 
 const USER_AMOUNT = 3;
 
@@ -32,6 +33,7 @@ const listsDescribe = () => {
   before(async () => {
     for (let i = 0; i < USER_AMOUNT; i++) {
       jwts.push(await getTestJwt(dummyUserInputs[i].id!));
+      await ListService.deleteAllUserLists(dummyUserInputs[i].id!);
     }
   });
 
@@ -165,6 +167,47 @@ const listsDescribe = () => {
 
       expect(test.body.products[0].id).to.not.equal(newList.products[0].id);
       expect(test.body.products[1].id).to.not.equal(newList.products[1].id);
+    });
+
+    it("should not create a list with too many products", async () => {
+      const newList: CreateListInput = {
+        name: "A product list",
+        color: "BLUE",
+        products: new Array(resourceLimits.PRODUCT_LIMIT + 1).fill({
+          name: "product",
+        }),
+      };
+
+      const test = await request(app)
+        .post("/api/lists")
+        .auth(jwts[0], { type: "bearer" })
+        .send(newList)
+        .expect(403);
+
+      expect(test.body.error.code).to.equal("TOO_MANY_PRODUCTS");
+    });
+
+    it("should not create a list after exceeding the list limit", async () => {
+      await ListService.deleteAllUserLists(dummyUserInputs[0].id!);
+
+      const newList: CreateListInput = {
+        name: "A list",
+        color: "YELLOW",
+      };
+
+      for (let i = 0; i < resourceLimits.LIST_LIMIT; i++) {
+        await createTestList(jwts[0], newList).expect(201);
+      }
+
+      const test = await request(app)
+        .post("/api/lists")
+        .auth(jwts[0], { type: "bearer" })
+        .send(newList)
+        .expect(403);
+
+      expect(test.body.error.code).to.equal("TOO_MANY_LISTS");
+
+      await ListService.deleteAllUserLists(dummyUserInputs[0].id!);
     });
 
     it("should return 415 for invalid json when creating a list", async () => {

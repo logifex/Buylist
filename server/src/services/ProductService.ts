@@ -1,5 +1,5 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { prisma } from "../config";
+import { prisma, resourceLimits } from "../config";
 import {
   CreateProductInput,
   EditProductInput,
@@ -7,7 +7,7 @@ import {
 } from "../types/product";
 import { productDetailsSelect } from "../utils/selects";
 import SocketService from "./SocketService";
-import { ListNotFoundError, ProductNotFoundError } from "../errors";
+import { ListNotFoundError, ProductNotFoundError, TooManyProducts } from "../errors";
 
 const getProduct = async (
   productId: string,
@@ -26,14 +26,26 @@ const createProduct = async (
   const { name, note, isChecked } = productInput;
 
   try {
-    const product = await prisma.product.create({
-      data: {
-        name: name,
-        note: note,
-        isChecked: isChecked,
-        listId: listId,
-      },
-      select: productDetailsSelect,
+    const product = await prisma.$transaction(async (tx) => {
+      const productAmount = await tx.product.count({
+        where: {
+          listId: listId,
+        },
+      });
+
+      if (productAmount >= resourceLimits.PRODUCT_LIMIT) {
+        throw new TooManyProducts();
+      }
+
+      return prisma.product.create({
+        data: {
+          name: name,
+          note: note,
+          isChecked: isChecked,
+          listId: listId,
+        },
+        select: productDetailsSelect,
+      });
     });
     SocketService.emitProductAdd(listId, product);
 

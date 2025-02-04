@@ -15,7 +15,7 @@ const useCreateTokenInvitation = ({ listId }: { listId: string }) => {
       );
     },
     onError: (err) => {
-      toast("שגיאה ביצירת הזמנה");
+      toast.error("שגיאה ביצירת הזמנה");
       console.log(err.message);
     },
   });

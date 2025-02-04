@@ -7,6 +7,8 @@ import {
   NotFoundError,
   NotPermittedError,
   RemoveOwnerError,
+  TooManyLists,
+  TooManyProducts,
   ValidationError,
 } from "../errors";
 import { logger } from "../config";
@@ -71,6 +73,8 @@ const handleCustomError = (
   } else if (error instanceof NotPermittedError) {
     status = 403;
   } else if (error instanceof RemoveOwnerError) {
+    status = 403;
+  } else if (error instanceof TooManyLists || error instanceof TooManyProducts) {
     status = 403;
   } else {
     return next(error);

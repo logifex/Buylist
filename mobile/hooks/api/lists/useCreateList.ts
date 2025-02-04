@@ -3,6 +3,8 @@ import ListService from "@/services/ListService";
 import { ListInput, SharedList } from "@/models/List";
 import Toast from "react-native-toast-message";
 import { ListQueryKeys } from "@/constants/QueryKeys";
+import { ApiError } from "@/models/Error";
+import ErrorCodes from "@/constants/ErrorCodes";
 
 const useCreateList = () => {
   const queryClient = useQueryClient();
@@ -17,6 +19,14 @@ const useCreateList = () => {
       );
     },
     onError: (err) => {
+      const apiErr = err as ApiError;
+      if (apiErr.error?.code === ErrorCodes.tooManyLists) {
+        Toast.show({
+          type: "base",
+          text1: "אין אפשרות ליצור עוד רשימות.\nעברת את כמות הרשימות המותרת.",
+        });
+        return;
+      }
       console.log(err);
       Toast.show({
         type: "base",

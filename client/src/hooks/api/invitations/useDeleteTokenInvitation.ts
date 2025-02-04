@@ -17,7 +17,7 @@ const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
       });
     },
     onError: (err) => {
-      toast("שגיאה במחיקת הזמנה");
+      toast.error("שגיאה במחיקת הזמנה");
       console.log(err.message);
     },
   });

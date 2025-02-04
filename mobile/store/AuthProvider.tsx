@@ -43,17 +43,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const setUserByIdToken = useCallback(async (idToken: string) => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    const authUser = await auth().signInWithCredential(googleCredential);
-    const currentUser: User = {
-      id: authUser.user.uid,
-      email: authUser.user.email,
-      name: authUser.user.displayName,
-      photoUrl: authUser.user.photoURL
-        ? authUser.user.photoURL.replace("s96-c", "s400-c")
-        : null,
-    };
-    setUserInfo(currentUser);
-    await AppDataService.writeUser(currentUser);
+    await auth().signInWithCredential(googleCredential);
   }, []);
 
   const signInSilently = useCallback(async () => {
@@ -76,8 +66,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       } else {
         console.log(error);
       }
-    } finally {
-      setReady(true);
     }
   }, [setUserByIdToken]);
 
@@ -117,15 +105,46 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   }, [setUserByIdToken]);
 
-  const signOut = async () => {
+  const onSignOut = useCallback(async () => {
     try {
-      await AppDataService.removeUser();
-      await auth().signOut();
       await GoogleSignin.signOut();
+      await AppDataService.removeUser();
       await queryClient.cancelQueries();
       queryClient.removeQueries();
       queryClient.getMutationCache().clear();
       setUserInfo(undefined);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [queryClient]);
+
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        await onSignOut();
+      } else {
+        const currentUser = {
+          id: user.uid,
+          email: user.email,
+          name: user.displayName,
+          photoUrl: user.photoURL
+            ? user.photoURL.replace("s96-c", "s400-c")
+            : null,
+        };
+        setUserInfo(currentUser);
+        await AppDataService.writeUser(currentUser);
+      }
+      setReady(true);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [onSignOut]);
+
+  const signOut = async () => {
+    try {
+      await auth().signOut();
     } catch (error) {
       console.error(error);
     }

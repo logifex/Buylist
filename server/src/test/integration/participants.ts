@@ -15,6 +15,7 @@ import { ParticipantDetails } from "../../types/participant";
 import { dummyParticipants, dummyUserInputs } from "../utils/dummyInputs";
 import Sinon, { SinonSandbox } from "sinon";
 import { firebase } from "../../config";
+import { ListService } from "../../services";
 
 const USER_AMOUNT = 3;
 
@@ -24,6 +25,7 @@ const participantsDescribe = () => {
   before(async () => {
     for (let i = 0; i < USER_AMOUNT; i++) {
       jwts.push(await getTestJwt(dummyUserInputs[i].id!));
+      await ListService.deleteAllUserLists(dummyUserInputs[i].id!);
     }
   });
 

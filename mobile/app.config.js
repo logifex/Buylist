@@ -1,7 +1,7 @@
 export default {
   name: "Buylist",
   slug: "buylist",
-  version: "0.13.0",
+  version: "0.13.2",
   orientation: "default",
   icon: "./assets/images/icon.png",
   scheme: "buylist",
@@ -81,8 +81,5 @@ export default {
   },
   extra: {
     supportsRTL: true,
-    eas: {
-      projectId: process.env.EAS_PROJECT_ID,
-    },
   },
 };

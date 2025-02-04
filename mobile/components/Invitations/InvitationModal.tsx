@@ -104,12 +104,13 @@ const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
             <View style={styles.invitationLinkContainer}>
               {!invitationLink && (
                 <Button
+                  type="primary"
                   style={styles.button}
                   containerStyle={styles.buttonContainer}
                   disabled={loading}
                   onPress={handleCreateInvitationToken}
                 >
-                  <MaterialIcon name="link" size={20} color={theme.text} />
+                  <MaterialIcon name="link" size={20} color="black" />
                   <Text style={styles.buttonText}>
                     {loading ? "טוען..." : "צור קישור הזמנה"}
                   </Text>
@@ -199,6 +200,7 @@ const styles = StyleSheet.create({
   buttonText: {
     marginLeft: 8,
     fontSize: 16,
+    color: "black",
   },
   deleteButton: {
     marginTop: 4,

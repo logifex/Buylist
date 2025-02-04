@@ -9,6 +9,8 @@ import Toast from "react-native-toast-message";
 import * as Crypto from "expo-crypto";
 import ProductService from "@/services/ProductService";
 import { ListMutationKeys, ListQueryKeys } from "@/constants/QueryKeys";
+import { ApiError } from "@/models/Error";
+import ErrorCodes from "@/constants/ErrorCodes";
 
 export type CreateProductVariables = { listId: string; product: ProductInput };
 export type CreateProductContext = { tempId: string } | undefined;
@@ -39,6 +41,14 @@ export const createProductDefaultOnError =
     queryClient.setQueryData(ListQueryKeys.all, (prevLists: SharedList[]) =>
       prevLists.map((l) => (l.id === variables.listId ? newList : l)),
     );
+    const apiErr = err as ApiError;
+    if (apiErr.error?.code === ErrorCodes.tooManyProducts) {
+      Toast.show({
+        type: "base",
+        text1: `שגיאה ביצירת המוצר ${variables.product.name}.\nאין אפשרות ליצור עוד מוצרים ברשימה זו.`,
+      });
+      return;
+    }
     Toast.show({
       type: "base",
       text1: `שגיאה ביצירת המוצר '${variables.product.name}'`,

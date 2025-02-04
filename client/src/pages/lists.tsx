@@ -43,7 +43,7 @@ const ListsPage = () => {
   return (
     <div className="max-w-md mx-auto">
       <button
-        className="w-full mb-4 bg-primary-500 hover:bg-primary-600 text-black dark:text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400"
+        className="w-full mb-4 bg-primary-500 hover:bg-primary-600 text-black py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400"
         type="button"
         onClick={handleCreateButtonClick}
       >

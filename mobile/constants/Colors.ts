@@ -4,7 +4,7 @@ export const Colors = {
     secondary: "#00bcd4",
     background: "rgb(242, 242, 242)",
     primaryDark: "#f57b00",
-    card: "#f57c00",
+    card: "#F57C00",
     text: "black",
     border: "rgb(216, 216, 216)",
     notification: "rgb(255, 59, 48)",

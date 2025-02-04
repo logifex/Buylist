@@ -20,6 +20,8 @@ import app from "../../app";
 import { expect } from "chai";
 import { FullList } from "../../types/list";
 import { dummyUserInputs } from "../utils/dummyInputs";
+import { ListService } from "../../services";
+import { resourceLimits } from "../../config";
 
 const USER_AMOUNT = 2;
 
@@ -29,6 +31,7 @@ const productsDescribe = () => {
   before(async () => {
     for (let i = 0; i < USER_AMOUNT; i++) {
       jwts.push(await getTestJwt(dummyUserInputs[i].id!));
+      await ListService.deleteAllUserLists(dummyUserInputs[i].id!);
     }
   });
 
@@ -123,6 +126,27 @@ const productsDescribe = () => {
       expect(test.body).to.deep.equal(expected);
     });
 
+    it("should not create a product after exceeding the product limit", async () => {
+      const { body: list } = await createTestList(jwts[0], {
+        name: "list for products",
+        products: new Array(resourceLimits.PRODUCT_LIMIT).fill({
+          name: "product",
+        }),
+      });
+
+      const test = await request(app)
+        .post(`/api/lists/${list.id}/products`)
+        .auth(jwts[0], { type: "bearer" })
+        .send({ name: "new product" })
+        .expect(403);
+      expect(test.body.error.code).to.equal("TOO_MANY_PRODUCTS");
+
+      const actualProducts: ProductDetails[] = (
+        await getTestList(jwts[0], list.id)
+      ).body.products;
+      expect(actualProducts.length).to.equal(resourceLimits.PRODUCT_LIMIT);
+    });
+
     it("should return 404 for creaing a product in a non-existing list", async () => {
       const fakeId = "e3d0c91e-f1d3-46b2-8aca-dad3ea0be77a";
 
@@ -178,7 +202,8 @@ const productsDescribe = () => {
       let list: FullList;
 
       before(async () => {
-        list = (await createTestList(jwts[0], { name: "list for products" })).body;
+        list = (await createTestList(jwts[0], { name: "list for products" }))
+          .body;
       });
 
       it("should not create a product with invalid data", async () => {
@@ -558,6 +583,10 @@ const productsDescribe = () => {
   });
 
   describe("deleting a product", () => {
+    before(async () => {
+      await ListService.deleteAllUserLists(dummyUserInputs[0].id!);
+    });
+
     it("should delete a product", async () => {
       const { body: list } = await createTestList(jwts[0], {
         name: "list for products",

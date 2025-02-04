@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import User from "../models/User";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../config/firebase";
@@ -12,25 +12,31 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const queryClient = useQueryClient();
 
+  const onSignOut = useCallback(async () => {
+    await queryClient.cancelQueries();
+    queryClient.removeQueries({ queryKey: ListQueryKeys.all });
+    setUserInfo(undefined);
+  }, [queryClient]);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUserInfo(
-        user
-          ? {
-              id: user.uid,
-              email: user.email,
-              name: user.displayName,
-              photoUrl: user.photoURL,
-            }
-          : undefined
-      );
+      if (!user) {
+        void onSignOut();
+      } else {
+        setUserInfo({
+          id: user.uid,
+          email: user.email,
+          name: user.displayName,
+          photoUrl: user.photoURL,
+        });
+      }
       setReady(true);
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [onSignOut]);
 
   const signIn = async () => {
     try {
@@ -43,8 +49,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const signOut = async () => {
     try {
       await auth.signOut();
-      await queryClient.cancelQueries();
-      queryClient.removeQueries({ queryKey: ListQueryKeys.all });
     } catch (err) {
       console.error(err);
     }

@@ -99,6 +99,5 @@ GOOGLE_APPLICATION_CREDENTIALS=service-account-file.json (file required)
 CLIENT_URL=<client_url> (optional, defaults to localhost:5173, used for cors and redirects)
 SERVER_URL=<server_url> (optional, used for logging)
 GOOGLE_API_KEY=<google_api_key> (optional, required for testing)
-FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 (optional, required for testing)
 ```
 > **Note:** To properly run tests in development, a Firebase Auth Emulator is required along with `GOOGLE_API_KEY`.

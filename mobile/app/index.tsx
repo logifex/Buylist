@@ -15,6 +15,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import List, { SharedList } from "@/models/List";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 import ListConstants from "@/constants/ListConstants";
+import Toast from "react-native-toast-message";
 
 const Home = () => {
   const { theme } = useContext(ThemeContext);
@@ -60,6 +61,13 @@ const Home = () => {
   );
 
   const handleAddList = (listName: string) => {
+    if (listsCtx.lists.length >= ListConstants.maxListAmount) {
+      Toast.show({
+        type: "base",
+        text1: "אין אפשרות ליצור עוד רשימות.\nעברת את כמות הרשימות המותרת.",
+      });
+      return;
+    }
     listsCtx.addList({ name: listName, color: "GRAY", products: [] });
   };
 

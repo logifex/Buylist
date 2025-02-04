@@ -22,7 +22,7 @@ const useUpdateList = ({ listId }: { listId: string }) => {
       );
     },
     onError: (err) => {
-      toast("שגיאה בעריכת פרטי הרשימה");
+      toast.error("שגיאה בעריכת פרטי הרשימה");
       console.log(err.message);
     },
   });

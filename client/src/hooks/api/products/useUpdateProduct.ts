@@ -24,7 +24,7 @@ const useUpdateProduct = ({ listId }: { listId: string }) => {
       );
     },
     onError: (err) => {
-      toast("שגיאה בעריכת המוצר");
+      toast.error("שגיאה בעריכת המוצר");
       console.log(err.message);
     },
   });

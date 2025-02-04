@@ -1,5 +1,5 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { prisma } from "../config";
+import { prisma, resourceLimits } from "../config";
 import {
   CreateListInput,
   EditListInput,
@@ -13,7 +13,7 @@ import {
   listPreviewSelect,
 } from "../utils/selects";
 import SocketService from "./SocketService";
-import { ListNotFoundError } from "../errors";
+import { ListNotFoundError, TooManyLists, TooManyProducts } from "../errors";
 import { Prisma } from "@prisma/client";
 
 const getUserLists = (userId: string): Promise<FullList[]> => {
@@ -50,27 +50,48 @@ const createList = (
 ): Promise<FullList> => {
   const { name, color, products } = listInput;
 
+  if (products && products.length > resourceLimits.PRODUCT_LIMIT) {
+    throw new TooManyProducts();
+  }
+
   let orderedProducts = products;
   if (products) {
-    const start = new Date(Date.now() - products?.length);
-    orderedProducts = products?.map((product, index) => ({
+    const start = new Date(Date.now() - products.length);
+    orderedProducts = products.map((product, index) => ({
       ...product,
       createdAt: new Date(start.getTime() + index),
     }));
   }
 
-  return prisma.list.create({
-    data: {
-      name: name,
-      color: color,
-      participants: {
-        create: { userId: userId, role: "OWNER" },
+  return prisma.$transaction(async (tx) => {
+    const listAmount = await tx.list.count({
+      where: {
+        participants: {
+          some: {
+            userId: userId,
+            role: "OWNER",
+          },
+        },
       },
-      products: orderedProducts && {
-        createMany: { data: orderedProducts },
+    });
+
+    if (listAmount >= resourceLimits.LIST_LIMIT) {
+      throw new TooManyLists();
+    }
+
+    return prisma.list.create({
+      data: {
+        name: name,
+        color: color,
+        participants: {
+          create: { userId: userId, role: "OWNER" },
+        },
+        products: orderedProducts && {
+          createMany: { data: orderedProducts },
+        },
       },
-    },
-    select: fullListSelect,
+      select: fullListSelect,
+    });
   });
 };
 

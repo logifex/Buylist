@@ -26,7 +26,7 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
       );
     },
     onError: (err) => {
-      toast("שגיאה במחיקת המוצר");
+      toast.error("שגיאה במחיקת המוצר");
       console.log(err.message);
     },
   });
