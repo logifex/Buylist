@@ -22,7 +22,7 @@ const Dialog = ({
   return (
     <div>
       <div className="text-center pb-6 break-words">
-        <p className="text-black dark:text-white">{text}</p>
+        <p className="text-black dark:text-white whitespace-pre-line">{text}</p>
       </div>
       <DialogButtons
         confirmText={confirmText}

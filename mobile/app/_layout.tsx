@@ -48,14 +48,14 @@ const RootLayout = () => {
 const RootLayoutContent = () => {
   const { theme, currentColorSchemeName } = useContext(ThemeContext);
   const { runtimes } = useContext(AppContext);
-  const { isConnected } = useNetInfo();
+  const { isInternetReachable } = useNetInfo();
   const isLoggedIn = !!useContext(AuthContext).userInfo;
 
   useEffect(() => {
-    if (isConnected && isLoggedIn) {
+    if (isInternetReachable && isLoggedIn) {
       connectSocket();
     }
-  }, [isConnected, isLoggedIn]);
+  }, [isInternetReachable, isLoggedIn]);
 
   useEffect(() => {
     const askReview = async () => {
@@ -68,6 +68,7 @@ const RootLayoutContent = () => {
   }, [runtimes]);
 
   const statusBarStyle = currentColorSchemeName === "dark" ? "light" : "dark";
+  const title = __DEV__ ? "Buylist (Dev)" : "Buylist";
 
   return (
     <>
@@ -90,7 +91,7 @@ const RootLayoutContent = () => {
           <Stack.Screen
             name="index"
             options={({ navigation }) => ({
-              title: "Buylist",
+              title: title,
               headerRight: () => HomeHeaderRight({ navigation: navigation }),
             })}
           />

@@ -5,6 +5,7 @@ import { auth, provider } from "../config/firebase";
 import AuthContext, { AuthContextType } from "./auth-context";
 import { useQueryClient } from "@tanstack/react-query";
 import ListQueryKeys from "../constants/QueryKeys";
+import { toast } from "react-toastify";
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userInfo, setUserInfo] = useState<User>();
@@ -42,6 +43,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
+      toast.error("שגיאה בהתחברות למשתמש");
       console.error(error);
     }
   };
@@ -50,6 +52,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     try {
       await auth.signOut();
     } catch (err) {
+      toast.error("שגיאה בהתנתקות מהמשתמש");
       console.error(err);
     }
   };

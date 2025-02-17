@@ -4,7 +4,7 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import auth from "@react-native-firebase/auth";
+import firebaseAuth from "@react-native-firebase/auth";
 import {
   GoogleSignin,
   statusCodes,
@@ -12,9 +12,13 @@ import {
 } from "@react-native-google-signin/google-signin";
 import User from "@/models/User";
 import AuthContext, { AuthContextType } from "./auth-context";
-import { useNetInfo } from "@react-native-community/netinfo";
-import AppDataService from "@/services/AppDataService";
 import { useQueryClient } from "@tanstack/react-query";
+import { auth } from "@/config/firebase";
+import Toast from "react-native-toast-message";
+
+if (__DEV__ && process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_URL) {
+  auth.useEmulator(process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_URL);
+}
 
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -22,58 +26,14 @@ GoogleSignin.configure({
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userInfo, setUserInfo] = useState<User>();
-  const [ready, setReady] = useState(false);
 
-  const { isConnected } = useNetInfo();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const setSavedUser = async () => {
-      const savedUser = await AppDataService.readUser();
-
-      if (!savedUser) {
-        return;
-      }
-
-      setUserInfo(savedUser);
-    };
-
-    setSavedUser();
+  const signInWithIdToken = useCallback(async (idToken: string) => {
+    const googleCredential =
+      firebaseAuth.GoogleAuthProvider.credential(idToken);
+    await auth.signInWithCredential(googleCredential);
   }, []);
-
-  const setUserByIdToken = useCallback(async (idToken: string) => {
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    await auth().signInWithCredential(googleCredential);
-  }, []);
-
-  const signInSilently = useCallback(async () => {
-    try {
-      const newUser = await GoogleSignin.signInSilently();
-
-      if (!newUser.data?.idToken) {
-        return;
-      }
-
-      await setUserByIdToken(newUser.data.idToken);
-    } catch (error) {
-      const nativeModuleError = error as NativeModuleError;
-      if (!nativeModuleError.code) {
-        throw error;
-      }
-
-      if (nativeModuleError.code === statusCodes.SIGN_IN_REQUIRED) {
-        console.log("User has not signed in yet");
-      } else {
-        console.log(error);
-      }
-    }
-  }, [setUserByIdToken]);
-
-  useEffect(() => {
-    if (isConnected && !ready) {
-      signInSilently();
-    }
-  }, [isConnected, ready, signInSilently]);
 
   const signIn = useCallback(async () => {
     try {
@@ -84,7 +44,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         return;
       }
 
-      await setUserByIdToken(newUser.data.idToken);
+      await signInWithIdToken(newUser.data.idToken);
     } catch (error) {
       const nativeModuleError = error as NativeModuleError;
       if (!nativeModuleError.code) {
@@ -100,15 +60,41 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       ) {
         console.log("Play Services not available or outdated");
       } else {
+        Toast.show({
+          type: "base",
+          text1: "שגיאה בהתחברות למשתמש",
+        });
         console.log(error);
       }
     }
-  }, [setUserByIdToken]);
+  }, [signInWithIdToken]);
+
+  const signInSilently = useCallback(async () => {
+    try {
+      const newUser = await GoogleSignin.signInSilently();
+
+      if (!newUser.data?.idToken) {
+        return;
+      }
+
+      await signInWithIdToken(newUser.data.idToken);
+    } catch (error) {
+      const nativeModuleError = error as NativeModuleError;
+      if (!nativeModuleError.code) {
+        throw error;
+      }
+
+      if (nativeModuleError.code === statusCodes.SIGN_IN_REQUIRED) {
+        console.log("User has not signed in yet");
+      } else {
+        console.log(error);
+      }
+    }
+  }, [signInWithIdToken]);
 
   const onSignOut = useCallback(async () => {
     try {
       await GoogleSignin.signOut();
-      await AppDataService.removeUser();
       await queryClient.cancelQueries();
       queryClient.removeQueries();
       queryClient.getMutationCache().clear();
@@ -118,8 +104,26 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   }, [queryClient]);
 
+  const signOut = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      Toast.show({
+        type: "base",
+        text1: "שגיאה בהתנתקות מהמשתמש",
+      });
+      console.error(error);
+    }
+  };
+
+  const authContext: AuthContextType = {
+    userInfo: userInfo,
+    signIn: signIn,
+    signOut: signOut,
+  };
+
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         await onSignOut();
       } else {
@@ -132,9 +136,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
             : null,
         };
         setUserInfo(currentUser);
-        await AppDataService.writeUser(currentUser);
       }
-      setReady(true);
     });
 
     return () => {
@@ -142,19 +144,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     };
   }, [onSignOut]);
 
-  const signOut = async () => {
-    try {
-      await auth().signOut();
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (!auth.currentUser) {
+      signInSilently();
     }
-  };
-
-  const authContext: AuthContextType = {
-    userInfo: userInfo,
-    signIn: signIn,
-    signOut: signOut,
-  };
+  }, [signInSilently]);
 
   return (
     <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>

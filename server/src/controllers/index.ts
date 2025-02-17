@@ -4,6 +4,7 @@ import ListController from "./ListController";
 import ParticipantController from "./ParticipantController";
 import ProductController from "./ProductController";
 import InfoController from "./InfoController";
+import AuthController from "./AuthController";
 
 export {
   ErrorController,
@@ -11,5 +12,6 @@ export {
   ProductController,
   ParticipantController,
   InvitationController,
+  AuthController,
   InfoController,
 };

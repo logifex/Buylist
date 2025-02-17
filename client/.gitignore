@@ -11,10 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
+.env*
 .firebase
 .firebaserc
 firebase.json
+privacy-policy.html
+google4427b91a2c058720.html
 
 # Editor directories and files
 .vscode/*

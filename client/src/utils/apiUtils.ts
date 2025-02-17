@@ -36,7 +36,7 @@ export const transformResponseError = async (
 export const fetchWithAuth = async (
   url: string,
   options: RequestInit = {},
-  timeout = 5 * 1000
+  timeout = 7.5 * 1000
 ) => {
   const { signal, abort } = createTimeoutSignal(timeout);
   const authHeader = await getAuthHeader();

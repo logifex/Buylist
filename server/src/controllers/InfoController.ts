@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { env } from "../config";
 
-export const getInstanceId = (
+const getInstanceId = (
   req: Request,
   res: Response<{ instanceId: string | undefined }>,
   next: NextFunction

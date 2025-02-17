@@ -17,12 +17,12 @@ import shouldDehydrateMutation from "@/utils/shouldDehydrateMutation";
 import queryClient, { persister } from "@/config/queryClient";
 
 const Providers = ({ children }: PropsWithChildren) => {
-  const { isConnected } = useNetInfo();
+  const { isInternetReachable } = useNetInfo();
 
   useEffect(() => {
-    const status = !!isConnected;
+    const status = !!isInternetReachable;
     onlineManager.setOnline(status);
-  }, [isConnected]);
+  }, [isInternetReachable]);
 
   function onAppStateChange(status: AppStateStatus) {
     focusManager.setFocused(status === "active");

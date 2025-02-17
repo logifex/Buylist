@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import List from "../models/List";
-import User from "../models/User";
 import { ThemeStateType } from "../store/theme-context";
 import { ColorSchemeName } from "react-native";
 
@@ -32,21 +31,6 @@ const AppDataService = {
   },
   removeTheme: async () => {
     await AsyncStorage.removeItem("theme");
-  },
-  readUser: async (): Promise<User | undefined> => {
-    const userJson = await AsyncStorage.getItem("user");
-    if (userJson) {
-      const user = JSON.parse(userJson) as User;
-
-      return user;
-    }
-  },
-  writeUser: async (user: User) => {
-    const userJson = JSON.stringify(user);
-    await AsyncStorage.setItem("user", userJson);
-  },
-  removeUser: async () => {
-    await AsyncStorage.removeItem("user");
   },
   readRuntimes: async (): Promise<number | undefined> => {
     const runtimes = await AsyncStorage.getItem("runtimes");

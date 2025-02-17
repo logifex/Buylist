@@ -1,8 +1,8 @@
+import { auth } from "@/config/firebase";
 import { ApiError, BackendError } from "@/models/Error";
-import auth from "@react-native-firebase/auth";
 
 export const getAuthHeader = async () => {
-  const token = await auth().currentUser?.getIdToken();
+  const token = await auth.currentUser?.getIdToken();
 
   if (!token) {
     throw new ApiError("Not authenticated", 401);
@@ -37,7 +37,7 @@ export const transformResponseError = async (
 export const fetchWithAuth = async (
   url: string,
   options: RequestInit = {},
-  timeout = 5 * 1000,
+  timeout = 7.5 * 1000,
 ) => {
   const { signal, abort } = createTimeoutSignal(timeout);
   const authHeader = await getAuthHeader();
