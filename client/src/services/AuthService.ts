@@ -1,4 +1,3 @@
-import { auth } from "../config/firebase";
 import { fetchWithAuth } from "../utils/apiUtils";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -8,7 +7,6 @@ const AuthService = {
     await fetchWithAuth(`${serverUrl}/api/auth`, {
       method: "DELETE",
     });
-    await auth.currentUser?.delete();
   },
 };
 

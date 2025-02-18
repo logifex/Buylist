@@ -8,7 +8,7 @@ const ErrorFallback = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>משהו השתבש</Text>
-      <Text style={styles.text}>הפעילו מחדש את האפליקציה ונסו שוב</Text>
+      <Text style={styles.text}>כדאי להפעיל מחדש את האפליקציה ולנסות שוב</Text>
       <Button
         onPress={async () => {
           await Updates.reloadAsync();

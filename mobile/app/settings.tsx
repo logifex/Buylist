@@ -12,12 +12,34 @@ import useDeleteAccount from "@/hooks/api/auth/deleteAccount";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import BottomModal from "@/components/Ui/BottomModal";
 import DialogPrompt from "@/components/Ui/Prompts/DialogPrompt";
+import { useQueryClient } from "@tanstack/react-query";
+import Toast from "react-native-toast-message";
 
 const Settings = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, signOut } = useContext(AuthContext);
   const deleteAccount = useDeleteAccount();
+  const queryClient = useQueryClient();
 
   const deleteAccountSheetModal = useBottomSheetRef();
+
+  const handleDeleteAccount = async () => {
+    try {
+      await queryClient.cancelQueries();
+      await deleteAccount.mutateAsync();
+      await signOut();
+      Toast.show({
+        type: "base",
+        text1: "המשתמש נמחק בהצלחה",
+      });
+    } catch (err) {
+      console.log(err);
+      Toast.show({
+        type: "base",
+        text1:
+          "שגיאה במחיקת המשתמש. כדאי לבדוק את החיבור לרשת או לנסות שוב מאוחר יותר.",
+      });
+    }
+  };
 
   return (
     <>
@@ -73,7 +95,7 @@ const Settings = () => {
         snapPoints={[200]}
       >
         <DialogPrompt
-          onConfirm={() => deleteAccount.mutate()}
+          onConfirm={handleDeleteAccount}
           onClose={deleteAccountSheetModal.dismiss}
         >
           <Text style={styles.dialogText}>

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services";
 import { AuthenticationError } from "../errors";
-import { firebase } from "../config";
+import { firebase, pubClient } from "../config";
 
 const authenticate = async (
   req: Request,
@@ -23,6 +23,11 @@ const authenticate = async (
     }
 
     req.user = { id: id };
+
+    const deleted = await pubClient.get(`deletedUser:${id}`);
+    if (deleted) {
+      return next(new AuthenticationError());
+    }
 
     await UserService.upsertUser({
       id: id,

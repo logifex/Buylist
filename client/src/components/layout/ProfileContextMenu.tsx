@@ -4,6 +4,8 @@ import { MdDelete } from "react-icons/md";
 import ModalContext from "../../store/modal-context";
 import Dialog from "../ui/Dialog";
 import useDeleteAccount from "../../hooks/api/auth/deleteAccount";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 interface Props {
   menuRef: RefObject<HTMLDivElement>;
@@ -14,6 +16,7 @@ interface Props {
 const ProfileContextMenu = ({ menuRef, contextMenuOpen, closeMenu }: Props) => {
   const { signOut, userInfo } = useContext(AuthContext);
   const { showModal, hideModal } = useContext(ModalContext);
+  const queryClient = useQueryClient();
 
   const deleteAccount = useDeleteAccount();
 
@@ -22,17 +25,26 @@ const ProfileContextMenu = ({ menuRef, contextMenuOpen, closeMenu }: Props) => {
     closeMenu();
   };
 
+  const handleDeleteAccount = async () => {
+    hideModal();
+    try {
+      await queryClient.cancelQueries();
+      await deleteAccount.mutateAsync();
+      await signOut();
+      toast.success("המשתמש נמחק בהצלחה");
+    } catch (err) {
+      console.log(err);
+      toast.error("שגיאה במחיקת המשתמש. כדאי לנסות שוב מאוחר יותר.");
+    }
+  };
+
   const handleDeleteAccountClick = () => {
     showModal({
       content: (
         <Dialog
-          text={`מחיקת החשבון גם תמחק את כל הרשימות שבבעלותך ותוציא אותך מכל
-            הרשימות שהיית חלק מהן.
+          text={`מחיקת החשבון גם תמחק את כל הרשימות שבבעלותך ותוציא אותך מכל הרשימות שהיית חלק מהן.
             האם למחוק את החשבון?`}
-          onConfirm={() => {
-            deleteAccount.mutate();
-            hideModal();
-          }}
+          onConfirm={() => void handleDeleteAccount()}
           onCancel={hideModal}
         />
       ),

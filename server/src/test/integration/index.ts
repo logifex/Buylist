@@ -31,7 +31,6 @@ describe("Integration", () => {
   after(async () => {
     for (const user of dummyUserInputs) {
       await deleteTestUser(user.id!);
-      await firebase.auth().deleteUser(user.id!);
     }
   });
 

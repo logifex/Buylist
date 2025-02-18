@@ -39,7 +39,7 @@ const queryClient = new QueryClient({
       console.log(err);
       Toast.show({
         type: "base",
-        text1: "שגיאה בהתחברות לשרת, נסו שוב מאוחר יותר",
+        text1: "שגיאה בהתחברות לשרת, כדאי לנסות שוב מאוחר יותר",
         visibilityTime: 1000 * 6,
       });
     },

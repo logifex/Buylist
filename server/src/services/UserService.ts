@@ -1,5 +1,5 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { prisma } from "../config";
+import { firebase, prisma, pubClient } from "../config";
 import { UserDetails, UserInput } from "../types/user";
 import { userDetailsSelect } from "../utils/selects";
 import { NotFoundError } from "../errors";
@@ -30,6 +30,7 @@ const deleteUser = async (userId: string): Promise<void> => {
       participants: { some: { userId: userId, role: "OWNER" } },
     } satisfies Prisma.ListWhereInput;
 
+    await pubClient.setex(`deletedUser:${userId}`, 60 * 60, "1");
     const [lists] = await prisma.$transaction(
       [
         prisma.list.findMany({
@@ -43,6 +44,7 @@ const deleteUser = async (userId: string): Promise<void> => {
       ],
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
     );
+    await firebase.auth().deleteUser(userId);
 
     for (const list of lists) {
       SocketService.emitListDelete(list.id);
@@ -52,7 +54,9 @@ const deleteUser = async (userId: string): Promise<void> => {
       if (err.code === "P2025") {
         throw new NotFoundError();
       }
+      await pubClient.del(`deletedUser:${userId}`);
     }
+
     throw err;
   }
 };
