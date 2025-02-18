@@ -102,6 +102,8 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
       type: "ADD_LIST",
       payload: { list: { color: "GRAY", products: [], ...list, id: listId } },
     });
+
+    return listId;
   }, []);
 
   const handleEditList = useCallback((listId: string, list: ListInput) => {

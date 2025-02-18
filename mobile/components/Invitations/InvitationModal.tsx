@@ -5,16 +5,13 @@ import Button from "../Ui/Button";
 import Text from "../Ui/ThemedText";
 import ThemeContext from "@/store/theme-context";
 import Toast from "react-native-toast-message";
-import AuthContext from "@/store/auth-context";
-import AuthButton from "../Ui/AuthButton";
 import List, { SharedList } from "@/models/List";
-import { useNetInfo } from "@react-native-community/netinfo";
 import useGetTokenInvitation from "@/hooks/api/invitations/useGetTokenInvitation";
 import useCreateTokenInvitation from "@/hooks/api/invitations/useCreateTokenInvitation";
 import useDeleteTokenInvitation from "@/hooks/api/invitations/useDeleteTokenInvitation";
-import BottomModal from "../Ui/BottomModal";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import * as Clipboard from "expo-clipboard";
+import AuthRequiredBottomModal from "../Ui/AuthRequiredBottomModal";
 
 type Props = {
   onRequestClose: () => void;
@@ -24,7 +21,6 @@ type Props = {
 
 const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
   function InvitationModal({ onRequestClose, onShareList, list }, ref) {
-    const { isConnected } = useNetInfo();
     const [loading, setLoading] = useState(false);
 
     const isShared = !!(list as SharedList).participants;
@@ -51,6 +47,7 @@ const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
           sharedListId: curList.id,
         });
       } catch (err) {
+        Toast.show({ type: "base", text1: "שגיאה ביצירת קישור הזמנה" });
         console.log(err);
       } finally {
         setLoading(false);
@@ -70,23 +67,14 @@ const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
       deleteTokenInvitation.mutate();
     };
 
-    const userCtx = useContext(AuthContext);
     const { theme } = useContext(ThemeContext);
-
-    let message: string | undefined;
-
-    if (!isConnected) {
-      message = "אין חיבור לאינטרנט. נסו שוב מאוחר יותר.";
-    } else if (!userCtx.userInfo) {
-      message = "יש צורך בהתחברות כדי להזמין לרשימה.";
-    }
 
     const isExpired =
       getTokenInvitation.data?.expiry &&
       getTokenInvitation.data.expiry < new Date();
 
     return (
-      <BottomModal
+      <AuthRequiredBottomModal
         ref={ref}
         title="הזמנה לרשימה"
         snapPoints={[300]}
@@ -94,67 +82,64 @@ const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
         closeKeyboard
         onRequestClose={onRequestClose}
       >
-        {message ? (
-          <View>
-            <Text style={styles.messageText}>{message}</Text>
-            {isConnected && <AuthButton />}
-          </View>
-        ) : (
-          userCtx.userInfo && (
-            <View style={styles.invitationLinkContainer}>
-              {!invitationLink && (
-                <Button
-                  type="primary"
-                  style={styles.button}
-                  containerStyle={styles.buttonContainer}
-                  disabled={loading}
-                  onPress={handleCreateInvitationToken}
-                >
-                  <MaterialIcon name="link" size={20} color="black" />
-                  <Text style={styles.buttonText}>
-                    {loading ? "טוען..." : "צור קישור הזמנה"}
-                  </Text>
-                </Button>
+        <View style={styles.invitationLinkContainer}>
+          {!invitationLink && (
+            <>
+              {!isShared && (
+                <Text style={styles.text}>
+                  יצירת קישור ההזמנה תהפוך את הרשימה הזו לרשימה מקוונת.{"\n"}
+                  הרשימה תישמר בשרת ותסונכרן בין המכשירים שלך.
+                </Text>
               )}
-              {invitationLink && (
-                <View
+              <Button
+                type="primary"
+                style={styles.button}
+                containerStyle={styles.buttonContainer}
+                disabled={loading}
+                onPress={handleCreateInvitationToken}
+              >
+                <MaterialIcon name="link" size={20} color="black" />
+                <Text style={styles.buttonText}>
+                  {loading ? "טוען..." : "יצירת קישור הזמנה"}
+                </Text>
+              </Button>
+            </>
+          )}
+          {invitationLink && (
+            <View
+              style={[
+                styles.linkContainer,
+                { backgroundColor: theme.background },
+              ]}
+            >
+              <Pressable style={styles.link} onPress={handleCopyLink}>
+                <MaterialIcon
                   style={[
-                    styles.linkContainer,
-                    { backgroundColor: theme.background },
+                    styles.linkIcon,
+                    { backgroundColor: theme.secondary },
                   ]}
-                >
-                  <Pressable style={styles.link} onPress={handleCopyLink}>
-                    <MaterialIcon
-                      style={[
-                        styles.linkIcon,
-                        { backgroundColor: theme.secondary },
-                      ]}
-                      name="link"
-                      size={20}
-                      color={theme.text}
-                    />
-                    <Text style={styles.linkText}>{invitationLink}</Text>
-                  </Pressable>
-                </View>
-              )}
-              {isExpired && (
-                <Text style={styles.deleteText}>פג תוקף הקישור</Text>
-              )}
-              {getTokenInvitation.data && !loading && (
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.deleteButton,
-                    pressed && styles.deletePressed,
-                  ]}
-                  onPress={handleDeleteLink}
-                >
-                  <Text style={styles.deleteText}>מחיקת קישור</Text>
-                </Pressable>
-              )}
+                  name="link"
+                  size={20}
+                  color={theme.text}
+                />
+                <Text style={styles.linkText}>{invitationLink}</Text>
+              </Pressable>
             </View>
-          )
-        )}
-      </BottomModal>
+          )}
+          {isExpired && <Text style={styles.deleteText}>פג תוקף הקישור</Text>}
+          {getTokenInvitation.data && !loading && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.deleteButton,
+                pressed && styles.deletePressed,
+              ]}
+              onPress={handleDeleteLink}
+            >
+              <Text style={styles.deleteText}>מחיקת קישור</Text>
+            </Pressable>
+          )}
+        </View>
+      </AuthRequiredBottomModal>
     );
   },
 );
@@ -162,10 +147,6 @@ const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
 export default InvitationModal;
 
 const styles = StyleSheet.create({
-  messageText: {
-    marginBottom: 8,
-    textAlign: "center",
-  },
   invitationLinkContainer: {
     alignItems: "center",
     paddingTop: 12,
@@ -210,5 +191,9 @@ const styles = StyleSheet.create({
   },
   deletePressed: {
     opacity: 0.5,
+  },
+  text: {
+    marginBottom: 8,
+    textAlign: "center",
   },
 });

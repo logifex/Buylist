@@ -199,24 +199,32 @@ const Lists = () => {
     [isShared, deleteLocalProduct, mutateDeleteProduct, id],
   );
 
-  const { mutateAsync: mutateAsyncCreateList } = createList;
-  const { deleteList: deleteLocalList } = listsCtx;
-  const handleShareList = useCallback(
-    async (list: List) => {
-      const sharedList = await mutateAsyncCreateList({ list: list });
-      if (navigation.isFocused()) {
-        router.setParams({ listId: sharedList.id, isShared: "true" });
-      }
-      deleteLocalList(id);
-
-      return sharedList;
-    },
-    [mutateAsyncCreateList, id, deleteLocalList, navigation, router],
-  );
-
   if (!list) {
     return <View style={styles.container}></View>;
   }
+
+  const handleShareList = async () => {
+    const sharedList = await createList.mutateAsync({ list: list });
+    if (navigation.isFocused()) {
+      router.setParams({ listId: sharedList.id, isShared: "true" });
+    }
+    listsCtx.deleteList(id);
+
+    return sharedList;
+  };
+
+  const handleChangeToLocalList = async () => {
+    await deleteList.mutateAsync();
+    const newListId = listsCtx.addList({
+      name: list.name,
+      color: list.color,
+      products: list.products,
+    });
+
+    if (navigation.isFocused()) {
+      router.setParams({ listId: newListId, isShared: "false" });
+    }
+  };
 
   const filteredProducts = filterProductsChecked(list.products);
 
@@ -242,6 +250,8 @@ const Lists = () => {
         onEditList={handleEditList}
         onDeleteList={handleDeleteList}
         onLeaveList={handleLeaveList}
+        onShareList={handleShareList}
+        onChangeToLocalList={handleChangeToLocalList}
       />
       <ColorMenu
         ref={colorPickModal.ref}
@@ -251,7 +261,7 @@ const Lists = () => {
       <InvitationModal
         ref={invitationModal.ref}
         onRequestClose={invitationModal.dismiss}
-        onShareList={() => handleShareList(list)}
+        onShareList={handleShareList}
         list={list}
       />
     </View>

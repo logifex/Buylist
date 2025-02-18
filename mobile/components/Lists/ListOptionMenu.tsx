@@ -14,6 +14,8 @@ import Text from "../Ui/ThemedText";
 import Participants from "@/components/Participants/Participants";
 import InputPrompt from "../Ui/Prompts/InputPrompt";
 import ListConstants from "@/constants/ListConstants";
+import { Ionicons } from "@expo/vector-icons";
+import ChangeListTypeModal from "./ChangeListTypeModal";
 
 type Props = {
   onRequestClose: () => void;
@@ -21,19 +23,30 @@ type Props = {
   onEditList: (list: ListInfo) => void;
   onDeleteList: (listId: string) => void;
   onLeaveList: (listId: string) => void;
+  onShareList: () => Promise<SharedList>;
+  onChangeToLocalList: () => Promise<void>;
 };
 
 const iconSize = 20;
 
 const ListOptionMenu = React.forwardRef<BottomSheetModal, Props>(
   function ListOptionMenu(
-    { onRequestClose, list, onEditList, onDeleteList, onLeaveList },
+    {
+      onRequestClose,
+      list,
+      onEditList,
+      onDeleteList,
+      onLeaveList,
+      onShareList,
+      onChangeToLocalList,
+    },
     ref,
   ) {
     const participantsModal = useBottomSheetRef();
     const editModal = useBottomSheetRef();
     const deleteModal = useBottomSheetRef();
     const leaveModal = useBottomSheetRef();
+    const changeListTypeModal = useBottomSheetRef();
 
     const { userInfo } = useContext(AuthContext);
     const { theme } = useContext(ThemeContext);
@@ -66,6 +79,22 @@ const ListOptionMenu = React.forwardRef<BottomSheetModal, Props>(
                 onPress={() => {
                   onRequestClose();
                   participantsModal.present();
+                }}
+              />
+            )}
+            {(!isShared || isOwner) && (
+              <MenuItem
+                text={isShared ? "שינוי לרשימה מקומית" : "שינוי לרשימה מקוונת"}
+                startComponent={
+                  <Ionicons
+                    name={isShared ? "cloud-offline" : "globe-outline"}
+                    size={iconSize}
+                    color={theme.text}
+                  />
+                }
+                onPress={() => {
+                  onRequestClose();
+                  changeListTypeModal.present();
                 }}
               />
             )}
@@ -167,6 +196,13 @@ const ListOptionMenu = React.forwardRef<BottomSheetModal, Props>(
         >
           <Participants list={list as SharedList} />
         </BottomModal>
+        <ChangeListTypeModal
+          ref={changeListTypeModal.ref}
+          list={list}
+          onRequestClose={changeListTypeModal.dismiss}
+          onShareList={onShareList}
+          onChangeToLocalList={onChangeToLocalList}
+        />
       </>
     );
   },

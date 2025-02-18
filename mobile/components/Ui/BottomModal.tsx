@@ -24,7 +24,7 @@ import {
 import Text from "./ThemedText";
 import ThemeContext from "@/store/theme-context";
 
-type Props = PropsWithChildren<{
+export type BottomModalProps = PropsWithChildren<{
   title?: string;
   snapPoints: (string | number)[];
   backdropBehavior?: BackdropPressBehavior;
@@ -44,7 +44,7 @@ const BackdropComponent = ({
   />
 );
 
-const BottomModal = React.forwardRef<BottomSheetModal, Props>(
+const BottomModal = React.forwardRef<BottomSheetModal, BottomModalProps>(
   function BottomModal(
     {
       title,
