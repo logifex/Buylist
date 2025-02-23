@@ -19,6 +19,7 @@ const HeaderButton = ({ onPress, first = false, children }: Props) => {
         pressed && { backgroundColor: theme.pressedColor },
       ]}
       onPressOut={onPress}
+      hitSlop={4}
     >
       {children}
     </Pressable>

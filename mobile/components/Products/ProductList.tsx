@@ -30,7 +30,7 @@ const ProductList = React.forwardRef<FlashList<ProductModel | string>, Props>(
     );
 
     const renderItem: ListRenderItem<ProductModel | string> = useCallback(
-      ({ item }) => {
+      ({ item, index }) => {
         if (typeof item === "string") {
           return <Text style={styles.headerText}>{item}</Text>;
         } else {
@@ -39,6 +39,7 @@ const ProductList = React.forwardRef<FlashList<ProductModel | string>, Props>(
               {...item}
               color={listColor}
               isShared={isShared}
+              accessibilityId={`${item.isChecked ? "checked " : ""}${index + 1}`}
               onEditProduct={onEditProduct}
               onDeleteProduct={onDeleteProduct}
             />
@@ -60,6 +61,9 @@ const ProductList = React.forwardRef<FlashList<ProductModel | string>, Props>(
           keyExtractor={(item) => (typeof item === "string" ? item : item.id)}
           keyboardShouldPersistTaps="handled"
           estimatedItemSize={65}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>אין מוצרים ברשימה.</Text>
+          }
         />
       </View>
     );
@@ -75,6 +79,10 @@ const styles = StyleSheet.create({
   headerText: {
     marginTop: 12,
     marginHorizontal: 16,
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 16,
   },
 });
 

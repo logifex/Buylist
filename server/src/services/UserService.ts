@@ -30,7 +30,7 @@ const deleteUser = async (userId: string): Promise<void> => {
       participants: { some: { userId: userId, role: "OWNER" } },
     } satisfies Prisma.ListWhereInput;
 
-    await pubClient.setex(`deletedUser:${userId}`, 60 * 60, "1");
+    await pubClient.set(`deletedUser:${userId}`, "1", "EX", 60 * 60);
     const [lists] = await prisma.$transaction(
       [
         prisma.list.findMany({

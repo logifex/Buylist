@@ -38,7 +38,7 @@ const AuthRequiredBottomModal = React.forwardRef<
 
 const styles = StyleSheet.create({
   messageText: {
-    marginBottom: 8,
+    marginVertical: 8,
     textAlign: "center",
   },
 });

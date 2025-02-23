@@ -24,9 +24,10 @@ const ProductAddRow = ({ onSubmit }: Props) => {
 
   return (
     <div className="flex justify-center p-4">
-      <form className="flex gap-2" onSubmit={handleSubmit}>
+      <form className="flex gap-2 w-full" onSubmit={handleSubmit}>
         <input
-          className="bg-transparent border-b-2 text-center px-10 border-gray-600 placeholder-gray-600 dark:border-gray-400 dark:placeholder-gray-400 text-black dark:text-white"
+          id="product-name-input"
+          className="bg-transparent border-b-2 text-center flex-1 border-gray-600 placeholder-gray-600 dark:border-gray-400 dark:placeholder-gray-400 text-black dark:text-white"
           type="text"
           placeholder="הוספת מוצר"
           autoComplete="off"

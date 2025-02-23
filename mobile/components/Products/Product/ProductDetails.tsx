@@ -9,6 +9,7 @@ import Checkbox from "expo-checkbox";
 interface Props extends Product {
   isSynced?: boolean;
   isShared: boolean;
+  accessibilityId: string;
   onEditProduct: (product: Product) => void;
   onDeleteProduct: (productId: string) => void;
 }
@@ -20,6 +21,7 @@ const ProductDetails = ({
   isChecked,
   isSynced,
   isShared,
+  accessibilityId,
   onEditProduct,
   onDeleteProduct,
 }: Props) => {
@@ -43,23 +45,31 @@ const ProductDetails = ({
   return (
     <>
       {isShared && !isSynced && (
-        <MaterialIcon name="clock-outline" style={styles.iconContainer} />
+        <MaterialIcon
+          name="clock-outline"
+          style={styles.iconContainer}
+          accessibilityLabel={`מוצר ${accessibilityId} בהמתנה`}
+        />
       )}
       <Checkbox
         style={styles.checkbox}
         color="black"
         value={product.isChecked}
         onValueChange={productToggleCheckHandler}
+        hitSlop={16}
+        accessibilityLabel={`סימון מוצר ${accessibilityId}`}
       />
       {edit ? (
         <ProductEditForm
           product={product}
+          accessibilityId={accessibilityId}
           onEditProduct={onEditProduct}
           setEdit={setEdit}
         />
       ) : (
         <ProductContent
           product={product}
+          accessibilityId={accessibilityId}
           onDeleteProduct={onDeleteProduct}
           setEdit={setEdit}
         />

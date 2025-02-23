@@ -9,6 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 interface Props extends ProductModel {
   isShared: boolean;
   color: List["color"];
+  accessibilityId: string;
   onEditProduct: (product: ProductModel) => void;
   onDeleteProduct: (productId: string) => void;
 }
@@ -16,6 +17,7 @@ interface Props extends ProductModel {
 const Product = ({
   isShared,
   color,
+  accessibilityId,
   onEditProduct,
   onDeleteProduct,
   ...product
@@ -30,6 +32,7 @@ const Product = ({
       >
         <ProductDetails
           {...product}
+          accessibilityId={accessibilityId}
           isShared={isShared}
           onEditProduct={onEditProduct}
           onDeleteProduct={onDeleteProduct}
@@ -48,6 +51,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 500,
     maxWidth: "95%",
+    elevation: 2,
   },
   container: {
     flexDirection: "row",

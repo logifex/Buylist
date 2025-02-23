@@ -6,11 +6,17 @@ import ProductButtons from "./ProductButtons";
 
 type Props = {
   product: Product;
+  accessibilityId: string;
   onDeleteProduct: (productId: string) => void;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ProductContent = ({ product, onDeleteProduct, setEdit }: Props) => {
+const ProductContent = ({
+  product,
+  accessibilityId,
+  onDeleteProduct,
+  setEdit,
+}: Props) => {
   const { id, name, note, isChecked } = product;
 
   const handleEditMode = useCallback(() => {
@@ -47,6 +53,8 @@ const ProductContent = ({ product, onDeleteProduct, setEdit }: Props) => {
       <ProductButtons
         startIconName="edit"
         endIconName="delete"
+        startIconLabel={`עריכת מוצר ${accessibilityId}`}
+        endIconLabel={`מחיקת מוצר ${accessibilityId}`}
         onStartPress={handleEditMode}
         onEndPress={handleDeleteProduct}
       />
@@ -57,7 +65,7 @@ const ProductContent = ({ product, onDeleteProduct, setEdit }: Props) => {
 const styles = StyleSheet.create({
   contentContainer: {
     marginHorizontal: 12,
-    flex: 5,
+    flex: 1,
   },
   text: {
     color: "black",

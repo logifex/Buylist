@@ -18,13 +18,28 @@ const ListHeaderRight = ({
 }: Props) => (
   <View style={styles.container}>
     <HeaderButton onPress={invitationPresent}>
-      <MaterialIcon name="person-add-alt-1" size={24} color={theme.text} />
+      <MaterialIcon
+        name="person-add-alt-1"
+        size={24}
+        color={theme.text}
+        accessibilityLabel="הזמנה לרשימה"
+      />
     </HeaderButton>
     <HeaderButton onPress={colorPickPresent}>
-      <MaterialIcon name="color-lens" size={24} color={theme.text} />
+      <MaterialIcon
+        name="color-lens"
+        size={24}
+        color={theme.text}
+        accessibilityLabel="שינוי צבע הרשימה"
+      />
     </HeaderButton>
     <HeaderButton onPress={menuPresent} first>
-      <MaterialIcon name="menu" size={24} color={theme.text} />
+      <MaterialIcon
+        name="menu"
+        size={24}
+        color={theme.text}
+        accessibilityLabel="תפריט"
+      />
     </HeaderButton>
   </View>
 );

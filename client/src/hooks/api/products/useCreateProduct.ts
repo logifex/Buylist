@@ -39,7 +39,7 @@ const useCreateProduct = ({ listId }: { listId: string }) => {
         );
         return;
       }
-      toast.error(`שגיאה ביצירת המוצר ${product.name}`);
+      toast.error(`שגיאה ביצירת המוצר '${product.name}'`);
       console.log(err.message);
     },
   });

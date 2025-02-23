@@ -32,6 +32,7 @@ const CreateListModalContent = ({ hideModal, onAddList }: Props) => {
     <form onSubmit={handleSubmit}>
       <FormErrorMessage errorMessage={errorMessage} />
       <FormTextInput
+        id="list-name-input"
         type="text"
         placeholder="שם הרשימה"
         autoComplete="off"

@@ -45,7 +45,7 @@ export const createProductDefaultOnError =
     if (apiErr.error?.code === ErrorCodes.tooManyProducts) {
       Toast.show({
         type: "base",
-        text1: `שגיאה ביצירת המוצר ${variables.product.name}.\nאין אפשרות ליצור עוד מוצרים ברשימה זו.`,
+        text1: `שגיאה ביצירת המוצר '${variables.product.name}'.\nאין אפשרות ליצור עוד מוצרים ברשימה זו.`,
       });
       return;
     }

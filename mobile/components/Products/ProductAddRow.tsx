@@ -74,6 +74,7 @@ const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
           pressed && styles.addButtonPressed,
         ]}
         onPress={handleAddProduct}
+        hitSlop={4}
       >
         <Text style={styles.buttonText}>+</Text>
       </Pressable>
@@ -96,10 +97,9 @@ const styles = StyleSheet.create({
   },
   addInput: {
     flex: 1,
-    height: 40,
     margin: 12,
     borderBottomWidth: 1,
-    padding: 8,
+    padding: 12,
     textAlign: "center",
   },
   addButton: {

@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: 200,
-    padding: 12,
+    height: 48,
+    justifyContent: "center",
   },
 });
 

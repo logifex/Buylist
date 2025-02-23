@@ -42,11 +42,7 @@ const Button = ({
   }
 
   return (
-    <Pressable
-      style={[styles.button, style]}
-      onPress={onPress}
-      disabled={disabled}
-    >
+    <Pressable style={style} onPress={onPress} disabled={disabled}>
       {({ pressed }) => (
         <View
           style={[
@@ -64,12 +60,10 @@ const Button = ({
 };
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "black",
-  },
   container: {
     alignItems: "center",
     borderWidth: 1,
+    borderRadius: 4,
   },
   pressed: {
     opacity: 0.75,

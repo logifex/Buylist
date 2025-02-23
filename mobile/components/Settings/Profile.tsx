@@ -14,8 +14,8 @@ const Profile = ({ name, email, photoUrl }: Props) => {
       {photoUrl && (
         <Image source={{ uri: photoUrl }} style={styles.profilePic} />
       )}
-      <Text>{email}</Text>
-      <Text>{name}</Text>
+      <Text style={styles.center}>{email}</Text>
+      <Text style={styles.center}>{name}</Text>
     </View>
   );
 };
@@ -29,6 +29,10 @@ const styles = StyleSheet.create({
     width: 128,
     height: 128,
     borderRadius: 100,
+    marginBottom: 4,
+  },
+  center: {
+    textAlign: "center",
   },
 });
 

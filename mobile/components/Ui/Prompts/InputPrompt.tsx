@@ -63,7 +63,7 @@ const InputPrompt = ({
       closeOnButton={false}
     >
       {!validation.isValid && (
-        <Text style={styles.invalidText}>{validation.message}</Text>
+        <Text style={{ color: theme.danger }}>{validation.message}</Text>
       )}
       <BottomSheetTextInput
         placeholder={name}
@@ -74,7 +74,7 @@ const InputPrompt = ({
         style={[
           styles.input,
           { color: theme.text, borderColor: theme.placeholder },
-          !validation.isValid && styles.invalidInput,
+          !validation.isValid && { borderColor: theme.danger },
         ]}
       />
     </DialogPrompt>
@@ -87,13 +87,7 @@ const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 1,
     width: 200,
-    padding: 0,
+    padding: 8,
     textAlign: "center",
-  },
-  invalidInput: {
-    borderColor: "red",
-  },
-  invalidText: {
-    color: "red",
   },
 });

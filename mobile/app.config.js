@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
   name: IS_DEV ? "Buylist (Dev)" : "Buylist",
   slug: "buylist",
-  version: "0.14.0",
+  version: "1.0.0",
   orientation: "default",
   icon: "./assets/images/icon.png",
   scheme: "buylist",

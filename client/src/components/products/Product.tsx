@@ -37,6 +37,7 @@ const Product = ({
       <div className="flex min-w-0">
         <div className="p-2 content-center">
           <input
+            id={`product-${product.id}-checkbox`}
             type="checkbox"
             title="סימון"
             checked={product.isChecked}

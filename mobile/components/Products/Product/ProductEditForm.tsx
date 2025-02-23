@@ -7,11 +7,17 @@ import ListConstants from "@/constants/ListConstants";
 
 type Props = {
   product: Product;
+  accessibilityId: string;
   onEditProduct: (product: Product) => void;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ProductEditForm = ({ product, onEditProduct, setEdit }: Props) => {
+const ProductEditForm = ({
+  product,
+  accessibilityId,
+  onEditProduct,
+  setEdit,
+}: Props) => {
   const [editName, setEditName] = useState(product.name);
   const [editNote, setEditNote] = useState(product.note ?? "");
 
@@ -52,6 +58,7 @@ const ProductEditForm = ({ product, onEditProduct, setEdit }: Props) => {
           maxLength={ListConstants.maxProductNameLength}
           placeholder="שם"
           placeholderTextColor="rgb(70, 70, 70)"
+          accessibilityLabel={`שם המוצר ${accessibilityId}`}
         />
         <TextInput
           style={[styles.input, styles.noteInput]}
@@ -60,11 +67,14 @@ const ProductEditForm = ({ product, onEditProduct, setEdit }: Props) => {
           maxLength={ListConstants.maxProductNoteLength}
           placeholder="הערה"
           placeholderTextColor="rgb(70, 70, 70)"
+          accessibilityLabel={`הערה למוצר ${accessibilityId}`}
         />
       </View>
       <ProductButtons
         startIconName="check"
         endIconName="close"
+        startIconLabel={`שמירת מוצר ${accessibilityId}`}
+        endIconLabel={`ביטול שינויים במוצר ${accessibilityId}`}
         onStartPress={submitHandler}
         onEndPress={stopEditing}
       />
@@ -75,7 +85,7 @@ const ProductEditForm = ({ product, onEditProduct, setEdit }: Props) => {
 const styles = StyleSheet.create({
   contentView: {
     marginHorizontal: 12,
-    flex: 5,
+    flex: 1,
   },
   input: {
     padding: 0,

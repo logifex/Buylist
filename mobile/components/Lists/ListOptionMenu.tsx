@@ -14,7 +14,7 @@ import Text from "../Ui/ThemedText";
 import Participants from "@/components/Participants/Participants";
 import InputPrompt from "../Ui/Prompts/InputPrompt";
 import ListConstants from "@/constants/ListConstants";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import ChangeListTypeModal from "./ChangeListTypeModal";
 
 type Props = {

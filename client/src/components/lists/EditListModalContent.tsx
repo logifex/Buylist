@@ -38,7 +38,10 @@ const EditListModalContent = ({ list, hideModal, onEditList }: Props) => {
       return;
     }
 
-    if (enteredListInfo.name !== list.name) {
+    if (
+      enteredListInfo.name !== list.name ||
+      enteredListInfo.color !== list.color
+    ) {
       onEditList(enteredListInfo);
     }
     hideModal();
@@ -49,6 +52,7 @@ const EditListModalContent = ({ list, hideModal, onEditList }: Props) => {
       <div>
         <FormErrorMessage errorMessage={errorMessage} />
         <FormTextInput
+          id="list-name-input"
           type="text"
           placeholder="שם הרשימה"
           autoComplete="off"
@@ -59,6 +63,7 @@ const EditListModalContent = ({ list, hideModal, onEditList }: Props) => {
         <label>
           <p className="mb-1 text-black dark:text-white">צבע הרשימה</p>
           <select
+            id="list-color-input"
             className="w-full p-1 rounded-md bg-gray-300 text-gray-700 dark:text-gray-100 dark:bg-dark-main-700 border border-dark-main-600 focus:outline-none focus:ring-2 focus:ring-primary-500 mb-4"
             value={enteredListInfo.color}
             onChange={handleChange("color")}

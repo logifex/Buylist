@@ -14,6 +14,7 @@ export const Colors = {
     placeholder: "rgb(70, 70, 70)",
     hr: "#e8e8e8",
     navigationBar: "white",
+    danger: "#dc2626",
   },
   dark: {
     primary: "#F57C00",
@@ -30,5 +31,6 @@ export const Colors = {
     placeholder: "rgb(132, 132, 132)",
     hr: "#323232",
     navigationBar: "black",
+    danger: "#dc2626",
   },
 };

@@ -22,7 +22,7 @@ const FormTextInput = ({ label, ...props }: Props) => {
       {input}
       <label
         htmlFor={props.id}
-        className="absolute top-1 start-2 text-gray-600 dark:text-gray-300"
+        className="absolute top-1 start-2 text-gray-600 dark:text-gray-300 font-bold"
       >
         {label}
       </label>

@@ -4,6 +4,8 @@ import Toast from "react-native-toast-message";
 import Product, { SharedProduct } from "@/models/Product";
 import ProductService from "@/services/ProductService";
 import { ListMutationKeys, ListQueryKeys } from "@/constants/QueryKeys";
+import { ApiError } from "@/models/Error";
+import ErrorCodes from "@/constants/ErrorCodes";
 
 export type DeleteProductVariables = { listId: string; productId: string };
 export type DeleteProductContext =
@@ -22,6 +24,10 @@ export const deleteProductDefaultOnError = (
   variables: DeleteProductVariables,
   context: DeleteProductContext,
 ) => {
+  if ((err as ApiError).error?.code === ErrorCodes.productNotFound) {
+    return;
+  }
+
   console.log(err.message);
   Toast.show({
     type: "base",
@@ -60,7 +66,10 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
     onError: (err, variables, context) => {
       deleteProductDefaultOnError(err, variables, context);
 
-      if (!context) {
+      if (
+        !context ||
+        (err as ApiError).error?.code === ErrorCodes.productNotFound
+      ) {
         return;
       }
 

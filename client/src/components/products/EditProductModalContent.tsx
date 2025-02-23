@@ -37,7 +37,7 @@ const EditProductModalContent = ({
       <div className="mb-4">
         <FormErrorMessage errorMessage={errorMessage} />
         <FormTextInput
-          id="product_name_input"
+          id="product-name-input"
           type="text"
           placeholder="שם המוצר"
           autoComplete="off"
@@ -47,7 +47,7 @@ const EditProductModalContent = ({
           label="שם"
         />
         <FormTextInput
-          id="product_note_input"
+          id="product-note-input"
           type="text"
           placeholder="הערה"
           autoComplete="off"
@@ -58,6 +58,7 @@ const EditProductModalContent = ({
         />
         <label className="flex text-black dark:text-white items-center">
           <input
+            id="product-checkbox"
             className="me-2"
             type="checkbox"
             checked={enteredProduct.isChecked}

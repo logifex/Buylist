@@ -13,7 +13,7 @@ const toastConfig = {
 
   linkToast: () => (
     <View style={styles.baseToast}>
-      <MaterialIcon name="link" size={24} color="#0077b6" />
+      <MaterialIcon name="link" size={24} color="#0088d1" />
       <Text style={[styles.text, styles.iconText]}>הקישור הועתק</Text>
     </View>
   ),

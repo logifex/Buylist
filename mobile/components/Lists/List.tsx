@@ -37,6 +37,7 @@ const List = ({ list, onPress }: Props) => {
             name="globe-outline"
             size={16}
             color={theme.text}
+            accessibilityLabel="רשימה מקוונת"
             style={styles.sharedIcon}
           />
         )}
@@ -53,8 +54,9 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     borderWidth: 1,
     width: 300,
-    elevation: 1,
+    elevation: 2,
     alignSelf: "center",
+    borderRadius: 8,
   },
   name: {
     textAlign: "center",

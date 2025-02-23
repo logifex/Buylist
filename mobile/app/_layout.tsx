@@ -32,7 +32,12 @@ const HomeHeaderRight = ({ navigation }: { navigation: any }) => {
       }}
       first
     >
-      <MaterialIcon name="settings" size={24} color={theme.text} />
+      <MaterialIcon
+        name="settings"
+        size={24}
+        color={theme.text}
+        accessibilityLabel="הגדרות"
+      />
     </HeaderButton>
   );
 };

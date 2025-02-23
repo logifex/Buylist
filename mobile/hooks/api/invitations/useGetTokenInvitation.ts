@@ -12,6 +12,7 @@ const useGetTokenInvitation = ({
   return useQuery({
     queryKey: ListQueryKeys.detailTokenInvitation(listId),
     enabled: enabled,
+    refetchOnMount: "always",
     queryFn: () => InvitationService.getTokenInvitation(listId),
     retry: 0,
   });

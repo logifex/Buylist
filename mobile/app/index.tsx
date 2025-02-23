@@ -91,7 +91,12 @@ const Home = () => {
         onPress={addListBottomSheet.present}
         color={theme.secondary}
       >
-        <MaterialIcon name="add" size={20} color="black" />
+        <MaterialIcon
+          name="add"
+          size={20}
+          color="black"
+          accessibilityLabel="יצירת רשימה"
+        />
       </FloatingActionButton>
       <BottomModal
         ref={addListBottomSheet.ref}

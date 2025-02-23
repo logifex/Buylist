@@ -14,9 +14,11 @@ import BottomModal from "@/components/Ui/BottomModal";
 import DialogPrompt from "@/components/Ui/Prompts/DialogPrompt";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
+import ThemeContext from "@/store/theme-context";
 
 const Settings = () => {
   const { userInfo, signOut } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const deleteAccount = useDeleteAccount();
   const queryClient = useQueryClient();
 
@@ -69,11 +71,13 @@ const Settings = () => {
               <Pressable
                 onPress={deleteAccountSheetModal.present}
                 disabled={deleteAccount.isPending}
+                style={styles.deleteAccountButton}
               >
                 {({ pressed }) => (
                   <Text
                     style={[
-                      styles.deleteAccountButton,
+                      styles.deleteAccountText,
+                      { color: theme.danger },
                       pressed && styles.deleteAccountPressed,
                     ]}
                   >
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profile: {
-    width: 200,
+    width: "100%",
     alignSelf: "center",
   },
   appTitle: {
@@ -123,11 +127,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   deleteAccountButton: {
-    color: "red",
-    fontSize: 16,
+    alignSelf: "flex-start",
   },
   deleteAccountPressed: {
-    opacity: 0.75,
+    opacity: 0.5,
+  },
+  deleteAccountText: {
+    fontSize: 16,
   },
   dialogText: {
     textAlign: "center",
