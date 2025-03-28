@@ -94,6 +94,7 @@ const ListsReducer = (
 
 const ListsProvider = ({ children }: PropsWithChildren) => {
   const [listsState, dispatchLists] = useReducer(ListsReducer, []);
+  const [starredLists, setStarredLists] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const handleAddList = useCallback((list: ListInput) => {
@@ -142,13 +143,33 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
     [],
   );
 
+  const handleStarList = useCallback((listId: string, star: boolean) => {
+    if (!star) {
+      setStarredLists((prevLists) => prevLists.filter((id) => id !== listId));
+    } else {
+      setStarredLists((prevLists) => [...prevLists, listId]);
+    }
+  }, []);
+
+  const updateListStar = useCallback((oldListId: string, newListId: string) => {
+    setStarredLists((prevLists) =>
+      prevLists.map((id) => (id === oldListId ? newListId : id)),
+    );
+  }, []);
+
   useEffect(() => {
     const loadData = async () => {
       const listsData = await AppDataService.readLists();
+      const starredListsData = await AppDataService.readStarredLists();
 
-      if (listsData && listsData.length > 0) {
+      if (listsData.length > 0) {
         dispatchLists({ type: "LOAD_LISTS", payload: { lists: listsData } });
       }
+
+      if (starredListsData.length > 0) {
+        setStarredLists(starredListsData);
+      }
+
       setLoaded(true);
     };
 
@@ -161,14 +182,23 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
     }
   }, [listsState, loaded]);
 
+  useEffect(() => {
+    if (loaded) {
+      AppDataService.writeStarredLists(starredLists);
+    }
+  }, [starredLists, loaded]);
+
   const listsContext: ListsContextType = {
     lists: listsState,
+    starredLists: starredLists,
     addList: handleAddList,
     editList: handleEditList,
     deleteList: handleDeleteList,
     addProduct: handleAddProduct,
     editProduct: handleEditProduct,
     deleteProduct: handleDeleteProduct,
+    starList: handleStarList,
+    updateListStar: updateListStar,
   };
 
   return (

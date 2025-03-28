@@ -84,9 +84,21 @@ const Home = () => {
     [router],
   );
 
+  const { starList } = listsCtx;
+  const handleStarList = useCallback(
+    (listId: string, star: boolean) => {
+      starList(listId, star);
+    },
+    [starList],
+  );
+
   return (
     <View style={styles.container}>
-      <ListList lists={combinedLists} onListPress={handlePressList} />
+      <ListList
+        lists={combinedLists}
+        onListPress={handlePressList}
+        onStar={handleStarList}
+      />
       <FloatingActionButton
         onPress={addListBottomSheet.present}
         color={theme.secondary}

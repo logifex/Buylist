@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 
 const acceptOnlyJson = (req: Request, res: Response, next: NextFunction) => {
   if (!req.is("json")) {
-    next(new HttpError(415, "Only JSON request is supported"));
+    return next(new HttpError(415, "Only JSON request is supported"));
   }
 
   next();

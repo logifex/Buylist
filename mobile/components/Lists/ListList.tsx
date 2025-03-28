@@ -1,26 +1,49 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import Text from "@/components/Ui/ThemedText";
 import ListModel from "@/models/List";
 import List from "@/components/Lists/List";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
+import ListsContext from "@/store/list-context";
 
 type Props = {
   lists: ListModel[];
   onListPress: (list: ListModel) => void;
+  onStar: (listId: string, star: boolean) => void;
 };
 
-const ListList = ({ lists, onListPress }: Props) => {
+const ListList = ({ lists, onListPress, onStar }: Props) => {
+  const { starredLists } = useContext(ListsContext);
+
+  const sortedLists = lists.slice().sort((a, b) => {
+    const indexA = starredLists.indexOf(a.id);
+    const indexB = starredLists.indexOf(b.id);
+
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB;
+    } else {
+      return indexB - indexA;
+    }
+  });
+
   const renderItem: ListRenderItem<ListModel> = useCallback(
-    ({ item }) => <List list={item} onPress={onListPress} />,
-    [onListPress],
+    ({ item, index }) => (
+      <List
+        list={item}
+        isStarred={starredLists.includes(item.id)}
+        accessibilityId={(index + 1).toString()}
+        onPress={onListPress}
+        onStar={onStar}
+      />
+    ),
+    [onListPress, onStar, starredLists],
   );
 
   return (
     <View style={styles.list}>
       <FlashList
-        data={lists}
-        extraData={lists}
+        data={sortedLists}
+        extraData={sortedLists}
         estimatedItemSize={76}
         contentContainerStyle={styles.container}
         keyExtractor={(item) => item.id}

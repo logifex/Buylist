@@ -14,6 +14,16 @@ const AppDataService = {
     const listsJson = JSON.stringify(lists);
     await AsyncStorage.setItem("listsdata", listsJson);
   },
+  readStarredLists: async (): Promise<string[]> => {
+    const starredListsJson = await AsyncStorage.getItem("starredlists");
+    const starredLists = starredListsJson ? JSON.parse(starredListsJson) : [];
+
+    return starredLists;
+  },
+  writeStarredLists: async (starredLists: string[]) => {
+    const starredListsJson = JSON.stringify(starredLists);
+    await AsyncStorage.setItem("starredlists", starredListsJson);
+  },
   readTheme: async (): Promise<ColorSchemeName | undefined> => {
     const theme = await AsyncStorage.getItem("theme");
 

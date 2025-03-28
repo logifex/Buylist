@@ -6,13 +6,17 @@ import ListModel, { SharedList } from "@/models/List";
 import ThemeContext from "@/store/theme-context";
 import filterProductsChecked from "@/utils/filterProductsChecked";
 import Text from "@/components/Ui/ThemedText";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface Props {
   list: ListModel;
+  isStarred: boolean;
+  accessibilityId: string;
   onPress: (list: ListModel) => void;
+  onStar: (listId: string, star: boolean) => void;
 }
 
-const List = ({ list, onPress }: Props) => {
+const List = ({ list, isStarred, accessibilityId, onPress, onStar }: Props) => {
   const { theme } = useContext(ThemeContext);
   const isShared = !!(list as SharedList).participants;
 
@@ -30,21 +34,40 @@ const List = ({ list, onPress }: Props) => {
   }
 
   return (
-    <Pressable onPress={() => onPress(list)}>
-      <View style={[styles.container, { backgroundColor: theme.primaryDark }]}>
-        {isShared && (
-          <Ionicons
-            name="globe-outline"
-            size={16}
+    <View style={[styles.container, { backgroundColor: theme.primaryDark }]}>
+      <View style={styles.sideIcons}>
+        <Pressable onPress={() => onStar(list.id, !isStarred)} hitSlop={16}>
+          <MaterialIcons
+            name={isStarred ? "star" : "star-border"}
+            size={20}
             color={theme.text}
-            accessibilityLabel="רשימה מקוונת"
-            style={styles.sharedIcon}
+            accessibilityLabel={
+              isStarred
+                ? `רשימה ${accessibilityId} מסומנת בכוכב`
+                : `רשימה ${accessibilityId} לא מסומנת בכוכב`
+            }
           />
-        )}
-        <Text style={styles.name}>{list.name}</Text>
-        <Text style={styles.amount}>{productLengthText}</Text>
+        </Pressable>
       </View>
-    </Pressable>
+      <View style={styles.listInfo}>
+        <Pressable onPress={() => onPress(list)}>
+          <View>
+            <Text style={styles.name}>{list.name}</Text>
+            <Text style={styles.amount}>{productLengthText}</Text>
+          </View>
+        </Pressable>
+      </View>
+      <View style={styles.sideIcons}></View>
+      {isShared && (
+        <Ionicons
+          name="globe-outline"
+          size={16}
+          color={theme.text}
+          accessibilityLabel={`רשימה ${accessibilityId} מקוונת`}
+          style={styles.sharedIcon}
+        />
+      )}
+    </View>
   );
 };
 
@@ -57,6 +80,11 @@ const styles = StyleSheet.create({
     elevation: 2,
     alignSelf: "center",
     borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  listInfo: {
+    flex: 1,
   },
   name: {
     textAlign: "center",
@@ -64,6 +92,9 @@ const styles = StyleSheet.create({
   },
   amount: {
     textAlign: "center",
+  },
+  sideIcons: {
+    width: 20,
   },
   sharedIcon: {
     position: "absolute",

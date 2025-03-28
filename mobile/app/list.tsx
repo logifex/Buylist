@@ -140,10 +140,12 @@ const Lists = () => {
     } else {
       deleteList.mutate();
     }
+    listsCtx.starList(listId, false);
   };
 
   const handleLeaveList = () => {
     leaveList.mutate();
+    listsCtx.starList(id, false);
   };
 
   const handleAddProduct = async (product: ProductInput) => {
@@ -203,12 +205,17 @@ const Lists = () => {
     return <View style={styles.container}></View>;
   }
 
+  const handleIdChanged = (oldId: string, newId: string) => {
+    listsCtx.updateListStar(oldId, newId);
+  };
+
   const handleShareList = async () => {
     const sharedList = await createList.mutateAsync({ list: list });
     if (navigation.isFocused()) {
       router.setParams({ listId: sharedList.id, isShared: "true" });
     }
     listsCtx.deleteList(id);
+    handleIdChanged(id, sharedList.id);
 
     return sharedList;
   };
@@ -221,6 +228,7 @@ const Lists = () => {
       products: list.products,
     });
 
+    handleIdChanged(id, newListId);
     if (navigation.isFocused()) {
       router.setParams({ listId: newListId, isShared: "false" });
     }

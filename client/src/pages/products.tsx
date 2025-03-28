@@ -19,6 +19,7 @@ import { ApiError } from "../models/Error";
 import ErrorCodes from "../constants/ErrorCodes";
 import useListSocketHandlers from "../hooks/useListSocketHandlers";
 import { toast } from "react-toastify";
+import ListContext from "../store/list-context";
 
 const ProductsPage = () => {
   const { listId } = useParams() as { listId: string };
@@ -32,6 +33,7 @@ const ProductsPage = () => {
   const deleteProduct = useDeleteProduct({ listId: listId });
 
   const { showModal, hideModal } = useContext(ModalContext);
+  const { starList } = useContext(ListContext);
 
   const navigate = useNavigate();
 
@@ -68,6 +70,7 @@ const ProductsPage = () => {
   const handleDeleteList = async () => {
     try {
       await deleteList.mutateAsync();
+      starList(listId, false);
       await navigate("/");
     } catch (err) {
       toast.error("שגיאה במחיקת רשימה");
@@ -78,6 +81,7 @@ const ProductsPage = () => {
   const handleLeaveList = async () => {
     try {
       await leaveList.mutateAsync();
+      starList(listId, false);
       await navigate("/");
     } catch (err) {
       toast.error("שגיאה בעזיבת רשימה");
