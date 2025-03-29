@@ -39,7 +39,7 @@ const List = ({ list, isStarred, onStar }: Props) => {
           )}
         </button>
       </div>
-      <Link className="block flex-1" to={`/lists/${list.id}`}>
+      <Link className="block flex-1 min-w-0" to={`/lists/${list.id}`}>
         <div>
           <h2 className="text-black dark:text-white text-lg font-semibold text-center">
             {list.name}
