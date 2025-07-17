@@ -43,15 +43,15 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
     meta: { persist: true },
     mutationFn: deleteProductDefaultMutationFn,
     onMutate: async ({ productId }) => {
-      const previousList: SharedList | undefined = queryClient.getQueryData(
+      const previousList = queryClient.getQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
       );
       const prevProduct = previousList?.products.find(
         (p) => p.id === productId,
       );
-      const newList: SharedList | undefined = queryClient.setQueryData(
+      const newList = queryClient.setQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList: SharedList | undefined) =>
+        (prevList) =>
           prevList && {
             ...prevList,
             products: prevList.products.filter((p) => p.id !== productId),
@@ -74,9 +74,9 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
       }
 
       if ((context.prevProduct as SharedProduct).isSynced) {
-        const newList: SharedList | undefined = queryClient.setQueryData(
+        const newList = queryClient.setQueryData<SharedList | undefined>(
           ListQueryKeys.detail(listId),
-          (prevList: SharedList | undefined) =>
+          (prevList) =>
             prevList &&
             context.prevProduct && {
               ...prevList,

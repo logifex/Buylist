@@ -5,6 +5,7 @@ import ListModel from "@/models/List";
 import List from "@/components/Lists/List";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import ListsContext from "@/store/list-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   lists: ListModel[];
@@ -14,6 +15,8 @@ type Props = {
 
 const ListList = ({ lists, onListPress, onStar }: Props) => {
   const { starredLists } = useContext(ListsContext);
+
+  const insets = useSafeAreaInsets();
 
   const sortedLists = lists.slice().sort((a, b) => {
     const indexA = starredLists.indexOf(a.id);
@@ -45,7 +48,7 @@ const ListList = ({ lists, onListPress, onStar }: Props) => {
         data={sortedLists}
         extraData={sortedLists}
         estimatedItemSize={76}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={{ paddingBottom: insets.bottom}}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListHeaderComponent={
@@ -69,9 +72,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get("screen").width,
     justifyContent: "center",
-  },
-  container: {
-    paddingBottom: 4,
   },
   header: {
     flex: 1,

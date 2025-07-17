@@ -7,10 +7,11 @@ import AuthButton from "./AuthButton";
 import { StyleSheet, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
-const AuthRequiredBottomModal = React.forwardRef<
-  BottomSheetModal,
-  BottomModalProps
->(function AuthRequiredBottomModal({ children, ...props }, ref) {
+const AuthRequiredBottomModal = ({
+  children,
+  ref,
+  ...props
+}: BottomModalProps) => {
   const { isConnected } = useNetInfo();
   const { userInfo } = useContext(AuthContext);
 
@@ -34,7 +35,7 @@ const AuthRequiredBottomModal = React.forwardRef<
       )}
     </BottomModal>
   );
-});
+};
 
 const styles = StyleSheet.create({
   messageText: {

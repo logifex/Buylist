@@ -8,23 +8,22 @@ type Props = {
   onRequestClose: () => void;
   onShareList: () => Promise<SharedList>;
   list: List;
+  ref: React.RefObject<BottomSheetModal | null>;
 };
 
-const InvitationModal = React.forwardRef<BottomSheetModal, Props>(
-  function InvitationModal({ onRequestClose, onShareList, list }, ref) {
-    return (
-      <AuthRequiredBottomModal
-        ref={ref}
-        title="הזמנה לרשימה"
-        snapPoints={[300]}
-        showHandle
-        closeKeyboard
-        onRequestClose={onRequestClose}
-      >
-        <Invitation onShareList={onShareList} list={list} />
-      </AuthRequiredBottomModal>
-    );
-  },
-);
+const InvitationModal = ({ onRequestClose, onShareList, list, ref }: Props) => {
+  return (
+    <AuthRequiredBottomModal
+      ref={ref}
+      title="הזמנה לרשימה"
+      snapPoints={[300]}
+      showHandle
+      closeKeyboard
+      onRequestClose={onRequestClose}
+    >
+      <Invitation onShareList={onShareList} list={list} />
+    </AuthRequiredBottomModal>
+  );
+};
 
 export default InvitationModal;

@@ -52,9 +52,7 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
     <NavigationThemeProvider
       value={{ dark: isDark, colors: theme, fonts: DefaultTheme.fonts }}
     >
-      <ThemeContext.Provider value={themeContext}>
-        {children}
-      </ThemeContext.Provider>
+      <ThemeContext value={themeContext}>{children}</ThemeContext>
     </NavigationThemeProvider>
   );
 };

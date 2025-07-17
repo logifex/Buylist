@@ -14,7 +14,7 @@ const useGetList = ({ listId }: { listId: string }) => {
     retry: false,
     queryFn: () => ListService.fetchList(listId),
     initialData: () => {
-      const lists: List[] | undefined = queryClient.getQueryData(
+      const lists = queryClient.getQueryData<List[] | undefined>(
         ListQueryKeys.all
       );
       return lists?.find((l) => l.id === listId);

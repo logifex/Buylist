@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import User from "../models/User";
-import { signInWithPopup } from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup, signOut as authSignOut } from "firebase/auth";
 import { auth, provider } from "../config/firebase";
 import AuthContext, { AuthContextType } from "./auth-context";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   }, [queryClient]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         void onSignOut();
       } else {
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signOut = async () => {
     try {
-      await auth.signOut();
+      await authSignOut(auth);
     } catch (err) {
       toast.error("שגיאה בהתנתקות מהמשתמש");
       console.error(err);
@@ -64,9 +64,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     signOut: signOut,
   };
 
-  return (
-    <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext value={authContext}>{children}</AuthContext>;
 };
 
 export default AuthProvider;

@@ -1,4 +1,4 @@
-import { firebase } from "../../config";
+import { firebase, pubClient } from "../../config";
 import { createTestUser, deleteTestUser } from "../utils/commonRequests";
 import { dummyUserInputs } from "../utils/dummyInputs";
 import listsDescribe from "./lists";
@@ -31,6 +31,7 @@ describe("Integration", () => {
   after(async () => {
     for (const user of dummyUserInputs) {
       await deleteTestUser(user.id!);
+      await pubClient.del(`deletedUser:${user.id!}`);
     }
   });
 

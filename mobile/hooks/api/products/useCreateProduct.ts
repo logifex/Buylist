@@ -30,9 +30,9 @@ export const createProductDefaultOnError =
     context: CreateProductContext,
   ) => {
     console.log(err.message);
-    const newList: SharedList | undefined = queryClient.setQueryData(
+    const newList = queryClient.setQueryData<SharedList | undefined>(
       ListQueryKeys.detail(variables.listId),
-      (prevList: SharedList | undefined) =>
+      (prevList) =>
         prevList && {
           ...prevList,
           products: prevList.products.filter((p) => p.id !== context?.tempId),
@@ -65,9 +65,9 @@ const useCreateProduct = ({ listId }: { listId: string }) => {
     mutationFn: createProductDefaultMutationFn,
     onMutate: async ({ product }) => {
       const tempId = Crypto.randomUUID();
-      const newList: SharedList | undefined = queryClient.setQueryData(
+      const newList = queryClient.setQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList: SharedList | undefined) => {
+        (prevList) => {
           return (
             prevList && {
               ...prevList,

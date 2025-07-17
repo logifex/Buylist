@@ -15,6 +15,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import shouldDehydrateMutation from "@/utils/shouldDehydrateMutation";
 import queryClient, { persister } from "@/config/queryClient";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Providers = ({ children }: PropsWithChildren) => {
   const { isInternetReachable } = useNetInfo();
@@ -58,9 +59,11 @@ const Providers = ({ children }: PropsWithChildren) => {
             <ThemeProvider>
               <GestureHandlerRootView style={styles.fullSpace}>
                 <BottomSheetModalProvider>
-                  <ErrorBoundary FallbackComponent={ErrorFallback}>
-                    {children}
-                  </ErrorBoundary>
+                  <SafeAreaProvider>
+                    <ErrorBoundary FallbackComponent={ErrorFallback}>
+                      {children}
+                    </ErrorBoundary>
+                  </SafeAreaProvider>
                 </BottomSheetModalProvider>
                 <Toast config={toastConfig} />
               </GestureHandlerRootView>

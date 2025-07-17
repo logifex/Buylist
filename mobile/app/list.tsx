@@ -27,7 +27,6 @@ import useCreateList from "@/hooks/api/lists/useCreateList";
 import useLeaveList from "@/hooks/api/lists/useLeaveList";
 import { useLocalSearchParams, useRouter, useNavigation } from "expo-router";
 import { RootStackParamList } from "./_layout";
-import { FlashList } from "@shopify/flash-list";
 import ListHeaderRight from "@/components/Lists/ListHeaderRight";
 import useListSocketHandlers from "@/hooks/useListSocketHandlers";
 import ThemeContext from "@/store/theme-context";
@@ -58,8 +57,6 @@ const Lists = () => {
   const menuModal = useBottomSheetRef();
   const colorPickModal = useBottomSheetRef();
   const invitationModal = useBottomSheetRef();
-
-  const listRef = useRef<FlashList<Product | string> | null>(null);
 
   const list = isShared
     ? getList.data
@@ -244,7 +241,6 @@ const Lists = () => {
         onEditProduct={handleEditProduct}
       />
       <ProductList
-        ref={listRef}
         filteredProducts={filteredProducts}
         listColor={list.color}
         isShared={isShared}

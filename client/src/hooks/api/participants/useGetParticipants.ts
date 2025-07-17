@@ -11,7 +11,7 @@ const useGetParticipants = ({ listId }: { listId: string }) => {
     refetchOnMount: "always",
     queryFn: () => ListService.fetchParticipants(listId),
     initialData: () => {
-      const list: List | undefined = queryClient.getQueryData(
+      const list = queryClient.getQueryData<List | undefined>(
         ListQueryKeys.detail(listId)
       );
       return list?.participants;

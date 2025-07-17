@@ -32,7 +32,7 @@ const queryClient = new QueryClient({
   },
   mutationCache: new MutationCache(),
   queryCache: new QueryCache({
-    onError: (err) => {
+    onError: async (err) => {
       if ((err as ApiError).status === 404) {
         return;
       }

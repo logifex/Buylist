@@ -1,10 +1,10 @@
 import { ColorValue, StyleSheet, View } from "react-native";
 import React from "react";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import List from "@/models/List";
 import BottomModal from "@/components/Ui/BottomModal";
-import { ScrollView } from "react-native-gesture-handler";
 import MenuItem from "@/components/Ui/MenuItem";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ColorDetails = {
   listColor: List["color"];
@@ -15,6 +15,7 @@ type ColorDetails = {
 type Props = {
   onRequestClose: () => void;
   onPick: (color: List["color"]) => void;
+  ref: React.RefObject<BottomSheetModal | null>;
 };
 
 const colors: ColorDetails[] = [
@@ -27,10 +28,9 @@ const colors: ColorDetails[] = [
   { listColor: "PINK", text: "ורוד", color: "#F06292" },
 ];
 
-const ColorMenu = React.forwardRef<BottomSheetModal, Props>(function ColorMenu(
-  { onRequestClose, onPick },
-  ref,
-) {
+const ColorMenu = ({ onRequestClose, onPick, ref }: Props) => {
+  const insets = useSafeAreaInsets();
+
   const handleColorPick = (color: List["color"]) => {
     onRequestClose();
     onPick(color);
@@ -45,7 +45,9 @@ const ColorMenu = React.forwardRef<BottomSheetModal, Props>(function ColorMenu(
       closeKeyboard
       onRequestClose={onRequestClose}
     >
-      <ScrollView>
+      <BottomSheetScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom }}
+      >
         {colors.map((color) => (
           <MenuItem
             key={color.listColor}
@@ -61,10 +63,10 @@ const ColorMenu = React.forwardRef<BottomSheetModal, Props>(function ColorMenu(
             onPress={() => handleColorPick(color.listColor)}
           />
         ))}
-      </ScrollView>
+      </BottomSheetScrollView>
     </BottomModal>
   );
-});
+};
 
 const styles = StyleSheet.create({
   colorRectangle: {

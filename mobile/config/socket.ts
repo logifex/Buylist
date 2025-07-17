@@ -1,19 +1,20 @@
 import { io } from "socket.io-client";
 import AppService from "@/services/AppService";
 import { auth } from "./firebase";
+import { onIdTokenChanged, getIdToken } from "@react-native-firebase/auth";
 
 const socket = io(process.env.EXPO_PUBLIC_SERVER_URL, {
   autoConnect: false,
   withCredentials: true,
 });
 
-auth.onIdTokenChanged(async (user) => {
-  const token = await user?.getIdToken();
-
-  if (!token) {
+onIdTokenChanged(auth, async (user) => {
+  if (!user) {
     socket.disconnect();
     return;
   }
+
+  const token = await getIdToken(user);
 
   socket.io.opts.extraHeaders = {
     ...socket.io.opts.extraHeaders,

@@ -51,11 +51,7 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
     setPreferredTheme: setPreferredTheme,
   };
 
-  return (
-    <ThemeContext.Provider value={themeContext}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext value={themeContext}>{children}</ThemeContext>;
 };
 
 export default ThemeProvider;

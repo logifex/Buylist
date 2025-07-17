@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const useContextMenu = (): [
-  React.RefObject<HTMLDivElement>,
+  React.RefObject<HTMLDivElement | null>,
   boolean,
   React.Dispatch<React.SetStateAction<boolean>>,
-  React.RefObject<HTMLButtonElement>
+  React.RefObject<HTMLButtonElement | null>
 ] => {
   const menuRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);

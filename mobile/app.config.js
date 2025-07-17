@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
   name: IS_DEV ? "Buylist (Dev)" : "Buylist",
   slug: "buylist",
-  version: "1.1.1",
+  version: "1.1.2",
   orientation: "default",
   icon: "./assets/images/icon.png",
   scheme: "buylist",
@@ -67,6 +67,14 @@ export default {
           imageWidth: 150,
           resizeMode: "contain",
           backgroundColor: "#000000",
+        },
+      },
+    ],
+    [
+      "react-native-edge-to-edge",
+      {
+        android: {
+          parentTheme: "Default",
         },
       },
     ],

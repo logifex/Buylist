@@ -37,7 +37,7 @@ const useUpdateProduct = ({ listId }: { listId: string }) => {
     meta: { persist: true },
     mutationFn: updateProductDefaultMutationFn,
     onMutate: async ({ product }) => {
-      const previousList: SharedList | undefined = queryClient.getQueryData(
+      const previousList = queryClient.getQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
       );
       const prevProduct = previousList?.products.find(

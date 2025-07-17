@@ -5,6 +5,7 @@ import List from "@/models/List";
 import Product from "./Product/Product";
 import Text from "@/components/Ui/ThemedText";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   filteredProducts: FilteredProducts;
@@ -14,61 +15,65 @@ type Props = {
   onDeleteProduct: (productId: string) => void;
 };
 
-const ProductList = React.forwardRef<FlashList<ProductModel | string>, Props>(
-  function ProductList(
-    { filteredProducts, listColor, isShared, onEditProduct, onDeleteProduct },
-    ref,
-  ) {
-    const sectionData: (ProductModel | string)[] = useMemo(
-      () => [
-        ...filteredProducts.unChecked,
-        ...(filteredProducts.checked.length > 0
-          ? ["מסומנים", ...filteredProducts.checked]
-          : []),
-      ],
-      [filteredProducts],
-    );
+const ProductList = ({
+  filteredProducts,
+  listColor,
+  isShared,
+  onEditProduct,
+  onDeleteProduct,
+}: Props) => {
+  const insets = useSafeAreaInsets();
 
-    const renderItem: ListRenderItem<ProductModel | string> = useCallback(
-      ({ item, index }) => {
-        if (typeof item === "string") {
-          return <Text style={styles.headerText}>{item}</Text>;
-        } else {
-          return (
-            <Product
-              {...item}
-              color={listColor}
-              isShared={isShared}
-              accessibilityId={`${item.isChecked ? "checked " : ""}${index + 1}`}
-              onEditProduct={onEditProduct}
-              onDeleteProduct={onDeleteProduct}
-            />
-          );
+  const sectionData: (ProductModel | string)[] = useMemo(
+    () => [
+      ...filteredProducts.unChecked,
+      ...(filteredProducts.checked.length > 0
+        ? ["מסומנים", ...filteredProducts.checked]
+        : []),
+    ],
+    [filteredProducts],
+  );
+
+  const renderItem: ListRenderItem<ProductModel | string> = useCallback(
+    ({ item, index }) => {
+      if (typeof item === "string") {
+        return <Text style={styles.headerText}>{item}</Text>;
+      } else {
+        return (
+          <Product
+            {...item}
+            color={listColor}
+            isShared={isShared}
+            accessibilityId={`${item.isChecked ? "checked " : ""}${index + 1}`}
+            onEditProduct={onEditProduct}
+            onDeleteProduct={onDeleteProduct}
+          />
+        );
+      }
+    },
+    [listColor, isShared, onEditProduct, onDeleteProduct],
+  );
+
+  return (
+    <View style={styles.list}>
+      <FlashList
+        data={sectionData}
+        extraData={filteredProducts}
+        renderItem={renderItem}
+        getItemType={(item) =>
+          typeof item === "string" ? "sectionHeader" : "row"
         }
-      },
-      [listColor, isShared, onEditProduct, onDeleteProduct],
-    );
-
-    return (
-      <View style={styles.list}>
-        <FlashList
-          data={sectionData}
-          extraData={filteredProducts}
-          renderItem={renderItem}
-          getItemType={(item) =>
-            typeof item === "string" ? "sectionHeader" : "row"
-          }
-          keyExtractor={(item) => (typeof item === "string" ? item : item.id)}
-          keyboardShouldPersistTaps="handled"
-          estimatedItemSize={65}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>אין מוצרים ברשימה.</Text>
-          }
-        />
-      </View>
-    );
-  },
-);
+        keyExtractor={(item) => (typeof item === "string" ? item : item.id)}
+        keyboardShouldPersistTaps="handled"
+        estimatedItemSize={65}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>אין מוצרים ברשימה.</Text>
+        }
+        contentContainerStyle={{ paddingBottom: insets.bottom }}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   list: {

@@ -19,12 +19,12 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <ModalContext.Provider value={modalContext}>
+    <ModalContext value={modalContext}>
       {children}
       {modalProps && (
         <Modal {...modalProps} onClose={modalProps.onClose ?? hideModal} />
       )}
-    </ModalContext.Provider>
+    </ModalContext>
   );
 };
 

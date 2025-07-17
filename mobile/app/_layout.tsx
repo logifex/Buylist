@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+import { SystemBars } from "react-native-edge-to-edge";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { Stack } from "expo-router";
 import HeaderButton from "../components/Ui/HeaderButton";
@@ -7,7 +8,7 @@ import Providers from "./providers";
 import JoinList from "@/components/Invitations/JoinList";
 import AppContext from "@/store/app-context";
 import * as StoreReview from "expo-store-review";
-import { StatusBar, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { connectSocket } from "@/config/socket";
 import AuthContext from "@/store/auth-context";
@@ -77,22 +78,9 @@ const RootLayoutContent = () => {
 
   return (
     <>
-      <StatusBar
-        backgroundColor="transparent"
-        translucent
-        barStyle={
-          currentColorSchemeName === "dark" ? "light-content" : "dark-content"
-        }
-      />
+      <SystemBars style={statusBarStyle} />
       <View style={[styles.fullSpace, { backgroundColor: theme.background }]}>
-        <Stack
-          screenOptions={{
-            navigationBarColor: theme.navigationBar,
-            statusBarStyle: statusBarStyle,
-            statusBarBackgroundColor: "transparent",
-            statusBarTranslucent: true,
-          }}
-        >
+        <Stack>
           <Stack.Screen
             name="index"
             options={({ navigation }) => ({

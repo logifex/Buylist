@@ -14,9 +14,9 @@ const useCreateProduct = ({ listId }: { listId: string }) => {
     mutationFn: async ({ product }: { product: ProductInput }) =>
       await ProductService.createProduct(listId, product),
     onSuccess: (data) => {
-      const newList: List | undefined = queryClient.setQueryData(
+      const newList = queryClient.setQueryData<List | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList: List | undefined) =>
+        (prevList) =>
           prevList && {
             ...prevList,
             products: [

@@ -11,7 +11,7 @@ const useUpdateList = ({ listId }: { listId: string }) => {
     mutationFn: ({ list }: { list: ListInput }) =>
       ListService.updateList(listId, { name: list.name, color: list.color }),
     onSuccess: (data) => {
-      const newList: List | undefined = queryClient.setQueryData(
+      const newList = queryClient.setQueryData<List | undefined>(
         ListQueryKeys.detail(listId),
         (prevList) => prevList && { ...prevList, ...data }
       );

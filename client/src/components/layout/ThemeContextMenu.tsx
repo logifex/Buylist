@@ -2,7 +2,7 @@ import { RefObject, useContext } from "react";
 import ThemeContext, { ThemeStateType } from "../../store/theme-context";
 
 interface Props {
-  menuRef: RefObject<HTMLDivElement>;
+  menuRef: RefObject<HTMLDivElement | null>;
   contextMenuOpen: boolean;
   closeMenu: () => void;
 }

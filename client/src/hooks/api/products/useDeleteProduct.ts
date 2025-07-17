@@ -11,9 +11,9 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
     mutationFn: ({ productId }: { productId: string }) =>
       ProductService.deleteProduct(listId, productId),
     onSuccess: (_data, { productId }) => {
-      const newList: List | undefined = queryClient.setQueryData(
+      const newList = queryClient.setQueryData<List | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList: List | undefined) =>
+        (prevList) =>
           prevList && {
             ...prevList,
             products: prevList.products.filter((p) => p.id !== productId),

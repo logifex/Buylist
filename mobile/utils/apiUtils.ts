@@ -1,12 +1,14 @@
 import { auth } from "@/config/firebase";
 import { ApiError, BackendError } from "@/models/Error";
+import { getIdToken } from "@react-native-firebase/auth";
 
 export const getAuthHeader = async () => {
-  const token = await auth.currentUser?.getIdToken();
-
-  if (!token) {
+  const user = auth.currentUser;
+  if (!user) {
     throw new ApiError("Not authenticated", 401);
   }
+
+  const token = await getIdToken(user);
 
   return { Authorization: `Bearer ${token}` };
 };
@@ -39,9 +41,9 @@ export const fetchWithAuth = async (
   options: RequestInit = {},
   timeout = 7.5 * 1000,
 ) => {
-  const { signal, abort } = createTimeoutSignal(timeout);
   const authHeader = await getAuthHeader();
   const headers = { ...authHeader, ...options.headers };
+  const { signal, abort } = createTimeoutSignal(timeout);
 
   const response = await fetch(url, {
     ...options,

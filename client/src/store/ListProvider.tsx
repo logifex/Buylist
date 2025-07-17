@@ -34,9 +34,7 @@ const ListProvider = ({ children }: PropsWithChildren) => {
     starList: handleStarList,
   };
 
-  return (
-    <ListContext.Provider value={listsContext}>{children}</ListContext.Provider>
-  );
+  return <ListContext value={listsContext}>{children}</ListContext>;
 };
 
 export default ListProvider;

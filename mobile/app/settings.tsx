@@ -15,6 +15,7 @@ import DialogPrompt from "@/components/Ui/Prompts/DialogPrompt";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import ThemeContext from "@/store/theme-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Settings = () => {
   const { userInfo, signOut } = useContext(AuthContext);
@@ -23,6 +24,8 @@ const Settings = () => {
   const queryClient = useQueryClient();
 
   const deleteAccountSheetModal = useBottomSheetRef();
+
+  const insets = useSafeAreaInsets();
 
   const handleDeleteAccount = async () => {
     try {
@@ -46,7 +49,7 @@ const Settings = () => {
   return (
     <>
       <View style={styles.fullSpace}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom }}>
           <Category title="פרופיל">
             <View style={styles.profile}>
               {userInfo && (

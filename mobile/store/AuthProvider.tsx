@@ -4,7 +4,6 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import firebaseAuth from "@react-native-firebase/auth";
 import {
   GoogleSignin,
   statusCodes,
@@ -13,11 +12,18 @@ import {
 import User from "@/models/User";
 import AuthContext, { AuthContextType } from "./auth-context";
 import { useQueryClient } from "@tanstack/react-query";
-import { auth } from "@/config/firebase";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+  signOut as authSignOut,
+  connectAuthEmulator,
+} from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
+import { auth } from "@/config/firebase";
 
 if (__DEV__ && process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_URL) {
-  auth.useEmulator(process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_URL);
+  connectAuthEmulator(auth, process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_URL);
 }
 
 GoogleSignin.configure({
@@ -30,9 +36,8 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const queryClient = useQueryClient();
 
   const signInWithIdToken = useCallback(async (idToken: string) => {
-    const googleCredential =
-      firebaseAuth.GoogleAuthProvider.credential(idToken);
-    await auth.signInWithCredential(googleCredential);
+    const googleCredential = GoogleAuthProvider.credential(idToken);
+    await signInWithCredential(auth, googleCredential);
   }, []);
 
   const signIn = useCallback(async () => {
@@ -106,7 +111,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signOut = async () => {
     try {
-      await auth.signOut();
+      await authSignOut(auth);
     } catch (error) {
       Toast.show({
         type: "base",
@@ -123,7 +128,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         await onSignOut();
       } else {
@@ -150,9 +155,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   }, [signInSilently]);
 
-  return (
-    <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext value={authContext}>{children}</AuthContext>;
 };
 
 export default AuthProvider;

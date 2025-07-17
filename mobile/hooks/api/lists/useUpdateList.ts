@@ -37,12 +37,12 @@ const useUpdateList = ({ listId }: { listId: string }) => {
     mutationKey: ListMutationKeys.update(),
     meta: { persist: true },
     onMutate: async ({ list }) => {
-      const previousList: SharedList | undefined = queryClient.getQueryData(
+      const previousList = queryClient.getQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
       );
-      const newList: SharedList | undefined = queryClient.setQueryData(
+      const newList = queryClient.setQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList: SharedList | undefined) => {
+        (prevList) => {
           return (
             prevList && {
               ...prevList,
@@ -70,9 +70,9 @@ const useUpdateList = ({ listId }: { listId: string }) => {
         color: previousList.color,
       };
 
-      const newOldList: SharedList | undefined = queryClient.setQueryData(
+      const newOldList = queryClient.setQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList: SharedList | undefined) =>
+        (prevList) =>
           prevList && {
             ...prevList,
             ...previousDetails,

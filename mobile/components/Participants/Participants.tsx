@@ -13,6 +13,7 @@ import useGetParticipants from "@/hooks/api/participants/useGetParticipants";
 import useRemoveParticipant from "@/hooks/api/participants/useRemoveParticipant";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   list: SharedList;
@@ -30,6 +31,8 @@ const Participants = ({ list }: Props) => {
   const { userInfo: currentUser } = useContext(AuthContext);
 
   const removeConfirmSheetModal = useBottomSheetRef();
+
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (getParticipants.data) {
@@ -89,6 +92,7 @@ const Participants = ({ list }: Props) => {
               onRemove={handleOpenRemoveDialog}
             />
           )}
+          contentContainerStyle={{ paddingBottom: insets.bottom }}
         />
       )}
       <BottomModal

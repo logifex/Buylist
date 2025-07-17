@@ -23,6 +23,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import Text from "./ThemedText";
 import ThemeContext from "@/store/theme-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type BottomModalProps = PropsWithChildren<{
   title?: string;
@@ -31,6 +32,7 @@ export type BottomModalProps = PropsWithChildren<{
   showHandle?: boolean;
   closeKeyboard?: boolean;
   onRequestClose: () => void;
+  ref: React.RefObject<BottomSheetModal | null>;
 }>;
 
 const BackdropComponent = ({
@@ -44,90 +46,90 @@ const BackdropComponent = ({
   />
 );
 
-const BottomModal = React.forwardRef<BottomSheetModal, BottomModalProps>(
-  function BottomModal(
-    {
-      title,
-      snapPoints,
-      backdropBehavior = "close",
-      showHandle = true,
-      closeKeyboard = false,
-      onRequestClose,
-      children,
-    },
-    ref,
-  ) {
-    const { theme } = useContext(ThemeContext);
+const BottomModal = ({
+  title,
+  snapPoints,
+  backdropBehavior = "close",
+  showHandle = true,
+  closeKeyboard = false,
+  onRequestClose,
+  children,
+  ref,
+}: BottomModalProps) => {
+  const { theme } = useContext(ThemeContext);
 
-    const [isShowing, setIsShowing] = useState(false);
+  const [isShowing, setIsShowing] = useState(false);
 
-    useEffect(() => {
-      let backHandler: NativeEventSubscription | undefined;
+  const insets = useSafeAreaInsets();
 
-      if (isShowing) {
-        if (closeKeyboard) {
-          Keyboard.dismiss();
-        }
+  useEffect(() => {
+    let backHandler: NativeEventSubscription | undefined;
 
-        const backAction = () => {
-          onRequestClose();
-          return true;
-        };
-
-        backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction,
-        );
+    if (isShowing) {
+      if (closeKeyboard) {
+        Keyboard.dismiss();
       }
 
-      return () => {
-        backHandler?.remove();
+      const backAction = () => {
+        onRequestClose();
+        return true;
       };
-    }, [isShowing, closeKeyboard, onRequestClose]);
 
-    const handleSheetChanges = useCallback((index: number) => {
-      setIsShowing(index < 0 ? false : true);
-    }, []);
+      backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction,
+      );
+    }
 
-    return (
-      <View>
-        <BottomSheetModal
-          ref={ref}
-          snapPoints={snapPoints}
-          enableDynamicSizing={false}
-          onChange={handleSheetChanges}
-          keyboardBlurBehavior="restore"
-          keyboardBehavior="interactive"
-          android_keyboardInputMode="adjustPan"
-          handleIndicatorStyle={[
-            styles.handleIndicator,
-            {
-              display: showHandle ? "flex" : "none",
-              backgroundColor: theme.text,
-            },
-          ]}
-          backgroundStyle={[
-            styles.background,
-            { backgroundColor: theme.modalBackground },
-          ]}
-          enablePanDownToClose
-          backdropComponent={(props) =>
-            BackdropComponent({ ...props, backdropBehavior: backdropBehavior })
-          }
-        >
-          <BottomSheetView style={styles.fullSpace}>
-            {title && (
-              <View style={[styles.header, { borderBottomColor: theme.hr }]}>
-                <Text style={styles.text}>{title}</Text>
-              </View>
-            )}
-            <View style={styles.fullSpace}>{children}</View>
-          </BottomSheetView>
-        </BottomSheetModal>
-      </View>
-    );
-  },
-);
+    return () => {
+      backHandler?.remove();
+    };
+  }, [isShowing, closeKeyboard, onRequestClose]);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    setIsShowing(index < 0 ? false : true);
+  }, []);
+
+  return (
+    <View>
+      <BottomSheetModal
+        ref={ref}
+        snapPoints={snapPoints.map((s) =>
+          typeof s === "string" ? s : s + insets.bottom,
+        )}
+        enableDynamicSizing={false}
+        onChange={handleSheetChanges}
+        keyboardBlurBehavior="restore"
+        keyboardBehavior="interactive"
+        android_keyboardInputMode="adjustPan"
+        handleIndicatorStyle={[
+          styles.handleIndicator,
+          {
+            display: showHandle ? "flex" : "none",
+            backgroundColor: theme.text,
+          },
+        ]}
+        backgroundStyle={[
+          styles.background,
+          { backgroundColor: theme.modalBackground },
+        ]}
+        enablePanDownToClose
+        backdropComponent={(props) =>
+          BackdropComponent({ ...props, backdropBehavior: backdropBehavior })
+        }
+      >
+        <View style={styles.fullSpace}>
+          {title && (
+            <View style={[styles.header, { borderBottomColor: theme.hr }]}>
+              <Text style={styles.text}>{title}</Text>
+            </View>
+          )}
+          <View style={styles.fullSpace}>{children}</View>
+        </View>
+      </BottomSheetModal>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   header: {

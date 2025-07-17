@@ -21,9 +21,7 @@ const AppContextProvider = ({ children }: PropsWithChildren) => {
     runtimes: runtimes,
   };
 
-  return (
-    <AppContext.Provider value={appContext}>{children}</AppContext.Provider>
-  );
+  return <AppContext value={appContext}>{children}</AppContext>;
 };
 
 export default AppContextProvider;

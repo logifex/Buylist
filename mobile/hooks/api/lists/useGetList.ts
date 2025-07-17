@@ -21,7 +21,7 @@ const useGetList = ({
     refetchOnMount: "always",
     meta: { persist: true },
     initialData: () => {
-      const lists: SharedList[] | undefined = queryClient.getQueryData(
+      const lists = queryClient.getQueryData<SharedList[] | undefined>(
         ListQueryKeys.all,
       );
       return lists?.find((l) => l.id === listId);

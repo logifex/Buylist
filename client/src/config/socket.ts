@@ -1,13 +1,14 @@
 import { io } from "socket.io-client";
 import { auth } from "./firebase";
 import AppService from "../services/AppService";
+import { onIdTokenChanged } from "firebase/auth";
 
 const socket = io(import.meta.env.VITE_SERVER_URL, {
   autoConnect: false,
   withCredentials: true,
 });
 
-auth.onIdTokenChanged((user) => {
+onIdTokenChanged(auth, (user) => {
   const connect = async () => {
     const token = await user?.getIdToken();
 

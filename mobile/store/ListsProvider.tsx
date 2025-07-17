@@ -201,11 +201,7 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
     updateListStar: updateListStar,
   };
 
-  return (
-    <ListsContext.Provider value={listsContext}>
-      {children}
-    </ListsContext.Provider>
-  );
+  return <ListsContext value={listsContext}>{children}</ListsContext>;
 };
 
 export default ListsProvider;
