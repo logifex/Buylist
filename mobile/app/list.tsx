@@ -63,12 +63,6 @@ const Lists = () => {
     : listsCtx.lists.find((l) => l.id === id);
 
   useEffect(() => {
-    if (!list) {
-      router.back();
-    }
-  }, [list, router]);
-
-  useEffect(() => {
     if (getList?.error) {
       const apiError = getList.error as ApiError;
       if (apiError.status === 404) {

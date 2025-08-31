@@ -7,7 +7,7 @@ import React, {
 import {
   GoogleSignin,
   statusCodes,
-  NativeModuleError,
+  isErrorWithCode,
 } from "@react-native-google-signin/google-signin";
 import User from "@/models/User";
 import AuthContext, { AuthContextType } from "./auth-context";
@@ -51,25 +51,27 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
       await signInWithIdToken(newUser.data.idToken);
     } catch (error) {
-      const nativeModuleError = error as NativeModuleError;
-      if (!nativeModuleError.code) {
+      if (!isErrorWithCode(error)) {
         throw error;
       }
 
-      if (nativeModuleError.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log("Sign in cancelled");
-      } else if (nativeModuleError.code === statusCodes.IN_PROGRESS) {
-        console.log("Sign in already in progress");
-      } else if (
-        nativeModuleError.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE
-      ) {
-        console.log("Play Services not available or outdated");
-      } else {
-        Toast.show({
-          type: "base",
-          text1: "שגיאה בהתחברות למשתמש",
-        });
-        console.log(error);
+      switch (error.code) {
+        case statusCodes.SIGN_IN_CANCELLED:
+          console.log("Sign in cancelled");
+          break;
+        case statusCodes.IN_PROGRESS:
+          console.log("Sign in already in progress");
+          break;
+        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          console.log("Play Services not available or outdated");
+          break;
+        default:
+          Toast.show({
+            type: "base",
+            text1: "שגיאה בהתחברות למשתמש",
+          });
+          console.log(error);
+          break;
       }
     }
   }, [signInWithIdToken]);
@@ -84,12 +86,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
       await signInWithIdToken(newUser.data.idToken);
     } catch (error) {
-      const nativeModuleError = error as NativeModuleError;
-      if (!nativeModuleError.code) {
+      if (!isErrorWithCode(error)) {
         throw error;
       }
 
-      if (nativeModuleError.code === statusCodes.SIGN_IN_REQUIRED) {
+      if (error.code === statusCodes.SIGN_IN_REQUIRED) {
         console.log("User has not signed in yet");
       } else {
         console.log(error);
@@ -121,12 +122,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const authContext: AuthContextType = {
-    userInfo: userInfo,
-    signIn: signIn,
-    signOut: signOut,
-  };
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -150,10 +145,25 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   }, [onSignOut]);
 
   useEffect(() => {
-    if (!auth.currentUser) {
-      signInSilently();
+    if (auth.currentUser || !GoogleSignin.hasPreviousSignIn()) {
+      return;
     }
-  }, [signInSilently]);
+
+    const newUser = GoogleSignin.getCurrentUser();
+
+    if (!newUser?.idToken) {
+      signInSilently();
+      return;
+    }
+
+    signInWithIdToken(newUser.idToken);
+  }, [signInSilently, signInWithIdToken]);
+
+  const authContext: AuthContextType = {
+    userInfo: userInfo,
+    signIn: signIn,
+    signOut: signOut,
+  };
 
   return <AuthContext value={authContext}>{children}</AuthContext>;
 };

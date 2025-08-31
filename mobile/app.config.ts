@@ -1,3 +1,5 @@
+import "tsx/cjs";
+
 const IS_DEV = process.env.APP_VARIANT === "development";
 
 export default {
@@ -93,7 +95,7 @@ export default {
         },
       },
     ],
-    "./app.plugin.js",
+    "./plugins/withShortcuts.ts",
   ],
   experiments: {
     typedRoutes: true,

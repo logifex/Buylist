@@ -17,6 +17,10 @@ if (__DEV__) {
   require("@/ReactotronConfig");
 }
 
+export const unstable_settings = {
+  initialRouteName: 'index',
+}
+
 export type RootStackParamList = {
   list: { listId: string; isShared: string };
 };
