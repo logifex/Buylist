@@ -95,7 +95,6 @@ export default {
         },
       },
     ],
-    "./plugins/withShortcuts.ts",
   ],
   experiments: {
     typedRoutes: true,
