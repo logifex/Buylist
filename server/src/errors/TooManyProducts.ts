@@ -1,9 +1,9 @@
-import CustomError from "./CustomError";
+import CustomError from "./CustomError.js";
 
 class TooManyProducts extends CustomError {
   message: string;
 
-  constructor(message: string = "User has exceeded the allowed number of products") {
+  constructor(message = "User has exceeded the allowed number of products") {
     super(message);
     this.name = "TooManyProducts";
     this.code = "TOO_MANY_PRODUCTS";

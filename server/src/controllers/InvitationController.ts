@@ -1,16 +1,19 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import type { ListIdParam } from "../types/list.js";
+import type {
+  InviteTokenParam,
+  TokenInvitationDetails,
+} from "../types/invitation.js";
 import { isbot } from "isbot";
-import { ListIdParam } from "../types/list";
-import { InviteTokenParam, TokenInvitationDetails } from "../types/invitation";
-import { InvitationService } from "../services";
-import { encodeUuidToBase64Url } from "../utils";
-import { InvitationNotFoundError } from "../errors";
-import { env } from "../config";
+import { InvitationService } from "../services/index.js";
+import { encodeUuidToBase64Url } from "../utils/index.js";
+import { InvitationNotFoundError } from "../errors/index.js";
+import { env } from "../config/index.js";
 
 const getInviteToken = async (
-  req: Request<ListIdParam, {}, {}>,
+  req: Request<ListIdParam, object, object>,
   res: Response<TokenInvitationDetails>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { listId } = req.params;
 
@@ -25,9 +28,8 @@ const getInviteToken = async (
 };
 
 const postInviteToken = async (
-  req: Request<ListIdParam, {}, {}>,
+  req: Request<ListIdParam, object, object>,
   res: Response<TokenInvitationDetails>,
-  next: NextFunction
 ) => {
   const { listId } = req.params;
 
@@ -38,9 +40,8 @@ const postInviteToken = async (
 };
 
 const deleteInviteToken = async (
-  req: Request<ListIdParam, {}, {}>,
-  res: Response<{}>,
-  next: NextFunction
+  req: Request<ListIdParam, object, object>,
+  res: Response<void>,
 ) => {
   const { listId } = req.params;
 
@@ -50,9 +51,8 @@ const deleteInviteToken = async (
 };
 
 const getInvitePage = async (
-  req: Request<InviteTokenParam, {}, {}>,
-  res: Response<{}>,
-  next: NextFunction
+  req: Request<InviteTokenParam, object, object>,
+  res: Response<string>,
 ) => {
   const { inviteToken: token } = req.params;
   const userAgent = req.headers["user-agent"];
@@ -69,7 +69,7 @@ const getInvitePage = async (
             <meta property="og:description" content="${description}" />
             <title>${title}</title>
           </head>
-        </html>`
+        </html>`,
       );
     }
   }

@@ -1,31 +1,28 @@
-import { Prisma } from "@prisma/client";
+import type { ListGetPayload } from "../generated/prisma/models/List.js";
 import { z } from "zod";
 import {
   fullListSelect,
   listDetailsSelect,
   listPreviewSelect,
-} from "../utils/selects";
+} from "../utils/selects.js";
 import {
   createListInputSchema,
   editListInputSchema,
   listIdParamSchema,
-} from "../schemas/listSchema";
+} from "../schemas/listSchema.js";
 
-const listDetails = Prisma.validator<Prisma.ListDefaultArgs>()({
-  select: listDetailsSelect,
-});
+export type ListDetails = ListGetPayload<{
+  select: typeof listDetailsSelect;
+}>;
 
-const fullList = Prisma.validator<Prisma.ListDefaultArgs>()({
-  select: fullListSelect,
-});
+export type FullList = ListGetPayload<{
+  select: typeof fullListSelect;
+}>;
 
-const listPreview = Prisma.validator<Prisma.ListDefaultArgs>()({
-  select: listPreviewSelect,
-});
+export type ListPreview = ListGetPayload<{
+  select: typeof listPreviewSelect;
+}>;
 
-export type ListDetails = Prisma.ListGetPayload<typeof listDetails>;
-export type FullList = Prisma.ListGetPayload<typeof fullList>;
-export type ListPreview = Prisma.ListGetPayload<typeof listPreview>;
 export type CreateListInput = z.infer<typeof createListInputSchema>;
 export type EditListInput = z.infer<typeof editListInputSchema>;
 

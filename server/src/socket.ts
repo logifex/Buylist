@@ -1,11 +1,16 @@
+import type { AppSocket, AppSocketServer } from "./types/socketTypes.js";
 import { Server as SocketServer } from "socket.io";
 import { Server } from "http";
-import { listSocketHandler } from "./socketHandlers";
-import { AppSocket, AppSocketServer } from "./types/socketTypes";
 import helmet from "helmet";
-import { corsOptions, helmetConfig, pubClient, subClient } from "./config";
-import { authenticateSocket } from "./socketHandlers/middlewares";
 import { createAdapter } from "@socket.io/redis-adapter";
+import { listSocketHandler } from "./socketHandlers/index.js";
+import {
+  corsOptions,
+  helmetConfig,
+  pubClient,
+  subClient,
+} from "./config/index.js";
+import { authenticateSocket } from "./socketHandlers/middlewares/index.js";
 
 export let io: AppSocketServer | undefined;
 

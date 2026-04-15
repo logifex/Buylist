@@ -1,25 +1,27 @@
-import { NextFunction, Request, Response } from "express";
-import { AnyZodObject, ZodEffects, ZodError } from "zod";
-import { ValidationError } from "../errors";
+import type { NextFunction, Request, Response } from "express";
+import type { ParamsDictionary } from "express-serve-static-core";
+import type { ParsedQs } from "qs";
+import { ZodError, ZodType } from "zod";
+import { ValidationError } from "../errors/index.js";
 
-type RequestValidator = {
-  params?: AnyZodObject | ZodEffects<AnyZodObject>;
-  body?: AnyZodObject | ZodEffects<AnyZodObject>;
-  query?: AnyZodObject | ZodEffects<AnyZodObject>;
-};
+interface RequestValidator {
+  params?: ZodType<ParamsDictionary>;
+  body?: ZodType;
+  query?: ZodType<ParsedQs>;
+}
 
 const validateRequest =
   (validators: RequestValidator) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  (req: Request, res: Response, next: NextFunction) => {
     try {
       if (validators.params) {
-        req.params = await validators.params.parseAsync(req.params);
+        req.params = validators.params.parse(req.params);
       }
       if (validators.body) {
-        req.body = await validators.body.parseAsync(req.body);
+        req.body = validators.body.parse(req.body);
       }
       if (validators.query) {
-        req.query = await validators.query.parseAsync(req.query);
+        req.query = validators.query.parse(req.query);
       }
 
       next();

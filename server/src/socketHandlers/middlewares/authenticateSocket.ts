@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response } from "express";
-import { authenticate } from "../../middlewares";
+import type { NextFunction, Request, Response } from "express";
+import { authenticate } from "../../middlewares/index.js";
 
-export const authenticateSocket = (
+export const authenticateSocket = async (
   req: Request & { _query: Record<string, string> },
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const isHandshake = !req._query.sid;
   if (isHandshake) {
-    authenticate(req, res, next);
+    await authenticate(req, res, next);
   } else {
     next();
   }

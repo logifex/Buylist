@@ -1,17 +1,15 @@
+import type { ProductGetPayload } from "../generated/prisma/models/Product.js";
 import { z } from "zod";
 import {
   createProductInputSchema,
   editProductInputSchema,
   productIdParamSchema,
-} from "../schemas/productSchema";
-import { Prisma } from "@prisma/client";
-import { productDetailsSelect } from "../utils/selects";
+} from "../schemas/productSchema.js";
+import { productDetailsSelect } from "../utils/selects.js";
 
-const productDetails = Prisma.validator<Prisma.ProductDefaultArgs>()({
-  select: productDetailsSelect,
-});
-
-export type ProductDetails = Prisma.ProductGetPayload<typeof productDetails>;
+export type ProductDetails = ProductGetPayload<{
+  select: typeof productDetailsSelect;
+}>;
 export type CreateProductInput = z.infer<typeof createProductInputSchema>;
 export type EditProductInput = z.infer<typeof editProductInputSchema>;
 

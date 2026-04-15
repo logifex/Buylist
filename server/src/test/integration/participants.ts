@@ -1,4 +1,9 @@
+import type { SinonSandbox } from "sinon";
+import type { FullList, ListPreview } from "../../types/list.js";
+import type { ParticipantDetails } from "../../types/participant.js";
 import request from "supertest";
+import Sinon from "sinon";
+import { expect } from "chai";
 import {
   createTestList,
   createTestInviteToken,
@@ -7,15 +12,11 @@ import {
   getTestList,
   getTestParticipants,
   joinTestList,
-} from "../utils/commonRequests";
-import app from "../../app";
-import { expect } from "chai";
-import { FullList, ListPreview } from "../../types/list";
-import { ParticipantDetails } from "../../types/participant";
-import { dummyParticipants, dummyUserInputs } from "../utils/dummyInputs";
-import Sinon, { SinonSandbox } from "sinon";
-import { firebase } from "../../config";
-import { ListService } from "../../services";
+} from "../utils/commonRequests.js";
+import app from "../../app.js";
+import { dummyParticipants, dummyUserInputs } from "../utils/dummyInputs.js";
+import { firebase } from "../../config/index.js";
+import { ListService } from "../../services/index.js";
 
 const USER_AMOUNT = 3;
 
@@ -109,7 +110,7 @@ const participantsDescribe = () => {
       });
       const { body: invitation } = await createTestInviteToken(
         jwts[0],
-        list.id
+        list.id,
       );
 
       const test = await request(app)
@@ -126,7 +127,7 @@ const participantsDescribe = () => {
       });
       const { body: invitation } = await createTestInviteToken(
         jwts[1],
-        list.id
+        list.id,
       );
       await joinTestList(jwts[0], invitation.token);
 
@@ -310,8 +311,8 @@ const participantsDescribe = () => {
 
     it("should return 400 for using an invalid invitation token for getting an invitation list", async () => {
       const invalidTokens = [
-        "eKtl9uuSThiv4AAArv0pu", // too short
-        "eKtl9uuSThiv4AAArv0puQ0", // too long
+        "eKtl9uuSThiv4AAArv0p", // too short
+        "eKtl9uuSThiv4AAArv0puQ0e", // too long
         "eKtl9uuSThiv$AAArv@puQ", // invalid characters
       ];
 
@@ -418,8 +419,8 @@ const participantsDescribe = () => {
 
     it("should return 400 for using an invalid invitation token for joining a list", async () => {
       const invalidTokens = [
-        "eKtl9uuSThiv4AAArv0pu", // too short
-        "eKtl9uuSThiv4AAArv0puQ0", // too long
+        "eKtl9uuSThiv4AAArv0p", // too short
+        "eKtl9uuSThiv4AAArv0puQ0e", // too long
         "eKtl9uuSThiv$AAArv@puQ", // invalid characters
       ];
 
@@ -527,7 +528,7 @@ const participantsDescribe = () => {
       ).body;
       expect(actualParticipants.length).to.equal(2);
       expect(
-        actualParticipants.every((p) => p.user.id !== dummyUserInputs[1].id)
+        actualParticipants.every((p) => p.user.id !== dummyUserInputs[1].id),
       ).to.be.true;
       expect(actualParticipants[0].role).to.equal("OWNER");
 
@@ -548,7 +549,7 @@ const participantsDescribe = () => {
 
       const { body: actualParticipants } = await getTestParticipants(
         jwts[0],
-        list.id
+        list.id,
       );
       expect(actualParticipants).to.deep.equal(list.participants);
     });
@@ -570,7 +571,7 @@ const participantsDescribe = () => {
         await getTestParticipants(jwts[1], list.id)
       ).body;
       expect(
-        actualParticipants.every((p) => p.user.id !== dummyUserInputs[0].id)
+        actualParticipants.every((p) => p.user.id !== dummyUserInputs[0].id),
       ).to.be.true;
 
       await getTestList(jwts[0], list.id).expect(404);
@@ -593,7 +594,7 @@ const participantsDescribe = () => {
 
       const { body: actualParticipants } = await getTestParticipants(
         jwts[1],
-        list.id
+        list.id,
       );
       expect(actualParticipants.length).to.equal(3);
     });
@@ -674,7 +675,7 @@ const participantsDescribe = () => {
 
       const { body: actualParticipants } = await getTestParticipants(
         jwts[1],
-        list.id
+        list.id,
       );
       expect(actualParticipants.length).to.equal(2);
     });

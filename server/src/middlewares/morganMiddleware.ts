@@ -1,5 +1,5 @@
 import morgan from "morgan";
-import { env, logger } from "../config";
+import { env, logger } from "../config/index.js";
 
 const format = env.nodeEnv === "development" ? "dev" : "short";
 

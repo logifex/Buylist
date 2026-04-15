@@ -1,5 +1,5 @@
-import { CorsOptions } from "cors";
-import env from "./env";
+import type { CorsOptions } from "cors";
+import env from "./env.js";
 
 const origins: string[] = [
   env.clientUrl,

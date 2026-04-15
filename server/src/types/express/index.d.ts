@@ -1,6 +1,6 @@
 import "express";
-import { RequestUser } from "../user";
-import { Role } from "@prisma/client";
+import type { RequestUser } from "../user.ts";
+import type { Role } from "../../generated/prisma/enums.ts";
 
 declare global {
   namespace Express {

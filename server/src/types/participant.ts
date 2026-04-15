@@ -1,10 +1,6 @@
-import { Prisma } from "@prisma/client";
-import { participantDetailsSelect } from "../utils/selects";
+import type { ListsOnUsersGetPayload } from "../generated/prisma/models/ListsOnUsers.js";
+import { participantDetailsSelect } from "../utils/selects.js";
 
-const participantDetails = Prisma.validator<Prisma.ListsOnUsersDefaultArgs>()({
-  select: participantDetailsSelect,
-});
-
-export type ParticipantDetails = Prisma.ListsOnUsersGetPayload<
-  typeof participantDetails
->;
+export type ParticipantDetails = ListsOnUsersGetPayload<{
+  select: typeof participantDetailsSelect;
+}>;

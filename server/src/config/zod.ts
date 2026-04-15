@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { zodErrorMap } from "../utils";
+import { zodErrorMap } from "../utils/index.js";
 
 const configZod = () => {
-  z.setErrorMap(zodErrorMap);
+  z.config({ customError: zodErrorMap });
 };
 
 export default configZod;

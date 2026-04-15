@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import { UserService } from "../services";
-import { assertUser } from "../utils";
+import type { Request, Response } from "express";
+import { UserService } from "../services/index.js";
+import { assertUser } from "../utils/index.js";
 
-const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+const deleteUser = async (req: Request, res: Response) => {
   const user = assertUser(req.user);
   await UserService.deleteUser(user.id);
 

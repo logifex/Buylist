@@ -1,62 +1,67 @@
-import { ZodErrorMap } from "zod";
+import z, { ZodEnum } from "zod";
 
-const zodErrorMap: ZodErrorMap = (issue, ctx) => {
-  let message = ctx.defaultError;
-
+const zodErrorMap: z.core.$ZodErrorMap = (issue) => {
   switch (issue.code) {
     case "invalid_type":
-      if (issue.received === "undefined") {
-        message = "Value is required";
-      } else {
-        message = "Value must be of type " + issue.expected;
+      if (issue.input === undefined) {
+        return "Value is required";
       }
-
-      break;
-    case "too_small": {
+      return "Value must be of type " + issue.expected;
+    case "too_small":
       if (issue.inclusive) {
-        if (issue.type === "string") {
+        if (issue.origin === "string") {
           if (issue.minimum === 1) {
-            message = "String cannot be empty";
+            return "String cannot be empty";
           } else {
-            message =
-              "String must have at least " + issue.minimum + " characters";
+            return (
+              "String must have at least " +
+              issue.minimum.toString() +
+              " characters"
+            );
           }
-        } else if (issue.type === "number" || issue.type === "bigint") {
-          message = "Number must be at least " + issue.minimum;
-        } else if (issue.type === "array") {
-          message = "Array must have at least " + issue.minimum + " elements";
+        } else if (issue.origin === "number" || issue.origin === "bigint") {
+          return "Number must be at least " + issue.minimum.toString();
+        } else if (issue.origin === "array") {
+          return (
+            "Array must have at least " + issue.minimum.toString() + " elements"
+          );
         }
       }
 
       break;
-    }
-    case "too_big": {
+    case "too_big":
       if (issue.inclusive) {
-        if (issue.type === "string") {
-          message = "String must have at most " + issue.maximum + " characters";
-        } else if (issue.type === "number" || issue.type === "bigint") {
-          message = "Number must be " + issue.maximum + " or less";
-        } else if (issue.type === "array") {
-          message = "Array must have at most " + issue.maximum + " elements";
+        if (issue.origin === "string") {
+          return (
+            "String must have at most " +
+            issue.maximum.toString() +
+            " characters"
+          );
+        } else if (issue.origin === "number" || issue.origin === "bigint") {
+          return "Number must be " + issue.maximum.toString() + " or less";
+        } else if (issue.origin === "array") {
+          return (
+            "Array must have at most " + issue.maximum.toString() + " elements"
+          );
         }
       }
 
       break;
-    }
-    case "invalid_enum_value":
-      const options = issue.options.map((o) =>
-        typeof o === "string" ? `'${o}'` : o
-      );
-      message =
-        "Invalid value. Value must be one of the following: " +
-        options.join(", ");
+    case "invalid_value":
+      if (issue.inst instanceof ZodEnum) {
+        const options = issue.values.map((o) =>
+          typeof o === "string" ? `'${o}'` : o,
+        );
+        return (
+          "Invalid value. Value must be one of the following: " +
+          options.join(", ")
+        );
+      }
 
       break;
     default:
-      break;
+      return undefined;
   }
-
-  return { message };
 };
 
 export default zodErrorMap;

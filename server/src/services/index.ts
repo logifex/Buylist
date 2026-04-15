@@ -1,9 +1,9 @@
-import InvitationService from "./InvitationService";
-import ListService from "./ListService";
-import ParticipantService from "./ParticipantService";
-import ProductService from "./ProductService";
-import SocketService from "./SocketService";
-import UserService from "./UserService";
+import InvitationService from "./InvitationService.js";
+import ListService from "./ListService.js";
+import ParticipantService from "./ParticipantService.js";
+import ProductService from "./ProductService.js";
+import SocketService from "./SocketService.js";
+import UserService from "./UserService.js";
 
 export {
   SocketService,

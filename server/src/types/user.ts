@@ -1,17 +1,13 @@
-import { Prisma } from "@prisma/client";
-import { userIdParamSchema } from "../schemas/userSchema";
+import type {
+  UserCreateWithoutListsInput,
+  UserGetPayload,
+} from "../generated/prisma/models/User.js";
 import { z } from "zod";
-import { userDetailsSelect } from "../utils/selects";
+import { userIdParamSchema } from "../schemas/userSchema.js";
+import { userDetailsSelect, userIdSelect } from "../utils/selects.js";
 
-const userDetails = Prisma.validator<Prisma.UserDefaultArgs>()({
-  select: userDetailsSelect,
-});
-const requestUser = Prisma.validator<Prisma.UserDefaultArgs>()({
-  select: { id: true },
-});
-
-export type UserDetails = Prisma.UserGetPayload<typeof userDetails>;
-export type RequestUser = Prisma.UserGetPayload<typeof requestUser>;
-export type UserInput = Prisma.UserCreateWithoutListsInput;
+export type UserDetails = UserGetPayload<{ select: typeof userDetailsSelect }>;
+export type RequestUser = UserGetPayload<{ select: typeof userIdSelect }>;
+export type UserInput = UserCreateWithoutListsInput;
 
 export type UserIdParam = z.infer<typeof userIdParamSchema>;

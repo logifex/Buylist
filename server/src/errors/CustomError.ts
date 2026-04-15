@@ -2,7 +2,7 @@ abstract class CustomError extends Error {
   message: string;
   code?: string;
 
-  constructor(message: string = "") {
+  constructor(message = "") {
     super(message);
     this.message = message;
   }

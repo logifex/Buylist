@@ -1,20 +1,20 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { prisma } from "../config";
+import type { TokenInvitationDetails } from "../types/invitation.js";
+import type { ListPreview } from "../types/list.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { prisma } from "../config/index.js";
 import {
   InvitationAlreadyExistsError,
   InvitationNotFoundError,
   ListNotFoundError,
-} from "../errors";
-import { TokenInvitationDetails } from "../types/invitation";
-import { ListPreview } from "../types/list";
-import { tokenInvitationDetailsSelect } from "../utils/selects";
-import ListService from "./ListService";
-import ParticipantService from "./ParticipantService";
+} from "../errors/index.js";
+import { tokenInvitationDetailsSelect } from "../utils/selects.js";
+import ListService from "./ListService.js";
+import ParticipantService from "./ParticipantService.js";
 
 const TOKEN_EXPIRY = 1000 * 60 * 60 * 24 * 3;
 
 const getTokenInvitationByList = (
-  listId: string
+  listId: string,
 ): Promise<TokenInvitationDetails | null> => {
   return prisma.listTokenInvitation.findUnique({
     where: {
@@ -25,7 +25,7 @@ const getTokenInvitationByList = (
 };
 
 const createTokenInvitation = async (
-  listId: string
+  listId: string,
 ): Promise<TokenInvitationDetails> => {
   try {
     const expiryTimestamp = new Date(Date.now() + TOKEN_EXPIRY);
@@ -62,7 +62,7 @@ const deleteTokenInvitationByList = async (listId: string): Promise<void> => {
 };
 
 const getListIdFromInviteToken = async (
-  token: string
+  token: string,
 ): Promise<string | null> => {
   const invitation = await prisma.listTokenInvitation.findUnique({
     where: { token: token, expiry: { gt: new Date() } },
@@ -73,7 +73,7 @@ const getListIdFromInviteToken = async (
 };
 
 const getListInfoFromInviteToken = async (
-  token: string
+  token: string,
 ): Promise<ListPreview | null> => {
   const listId = await getListIdFromInviteToken(token);
 
@@ -88,7 +88,7 @@ const getListInfoFromInviteToken = async (
 
 const joinListFromInviteToken = async (
   token: string,
-  userId: string
+  userId: string,
 ): Promise<string> => {
   const listId = await getListIdFromInviteToken(token);
 

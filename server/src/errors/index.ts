@@ -1,14 +1,14 @@
-import AuthenticationError from "./AuthenticationError";
-import ConflictError from "./ConflictError";
-import HttpError from "./HttpError";
-import NotPermittedError from "./NotPermittedError";
-import RemoveOwnerError from "./RemoveOwnerError";
-import ValidationError from "./ValidationError";
-import TooManyLists from "./TooManyLists";
-import TooManyProducts from "./TooManyProducts";
+import AuthenticationError from "./AuthenticationError.js";
+import ConflictError from "./ConflictError.js";
+import HttpError from "./HttpError.js";
+import NotPermittedError from "./NotPermittedError.js";
+import RemoveOwnerError from "./RemoveOwnerError.js";
+import ValidationError from "./ValidationError.js";
+import TooManyLists from "./TooManyLists.js";
+import TooManyProducts from "./TooManyProducts.js";
 
-export * from "./NotFound";
-export * from "./AlreadyExists";
+export * from "./NotFound/index.js";
+export * from "./AlreadyExists/index.js";
 
 export {
   HttpError,

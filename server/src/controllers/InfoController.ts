@@ -1,10 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { env } from "../config";
+import type { Request, Response } from "express";
+import { env } from "../config/index.js";
 
 const getInstanceId = (
   req: Request,
   res: Response<{ instanceId: string | undefined }>,
-  next: NextFunction
 ) => {
   res.status(200).json({ instanceId: env.flyMachineId });
 };

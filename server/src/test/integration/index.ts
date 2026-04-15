@@ -1,9 +1,9 @@
-import { firebase, pubClient } from "../../config";
-import { createTestUser, deleteTestUser } from "../utils/commonRequests";
-import { dummyUserInputs } from "../utils/dummyInputs";
-import listsDescribe from "./lists";
-import participantsDescribe from "./participants";
-import productsDescribe from "./products";
+import { firebase, pubClient } from "../../config/index.js";
+import { createTestUser, deleteTestUser } from "../utils/commonRequests.js";
+import { dummyUserInputs } from "../utils/dummyInputs.js";
+import listsDescribe from "./lists.js";
+import participantsDescribe from "./participants.js";
+import productsDescribe from "./products.js";
 
 describe("Integration", () => {
   before(async () => {
@@ -15,8 +15,10 @@ describe("Integration", () => {
           displayName: user.name,
           photoURL: user.photoUrl ?? undefined,
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (
+          typeof err !== "object" ||
+          err === null ||
           !("code" in err) ||
           typeof err.code !== "string" ||
           err.code !== "auth/uid-already-exists"
@@ -30,8 +32,8 @@ describe("Integration", () => {
 
   after(async () => {
     for (const user of dummyUserInputs) {
-      await deleteTestUser(user.id!);
-      await pubClient.del(`deletedUser:${user.id!}`);
+      await deleteTestUser(user.id);
+      await pubClient.del(`deletedUser:${user.id}`);
     }
   });
 

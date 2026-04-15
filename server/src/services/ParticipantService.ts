@@ -1,18 +1,18 @@
-import { Role } from "@prisma/client";
-import { prisma } from "../config";
-import SocketService from "./SocketService";
+import type { ParticipantDetails } from "../types/participant.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { Role } from "../generated/prisma/enums.js";
+import { prisma } from "../config/index.js";
+import SocketService from "./SocketService.js";
 import {
   ListNotFoundError,
   ParticipantAlreadyExistsError,
   ParticipantNotFoundError,
   RemoveOwnerError,
-} from "../errors";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { ParticipantDetails } from "../types/participant";
-import { participantDetailsSelect } from "../utils/selects";
+} from "../errors/index.js";
+import { participantDetailsSelect } from "../utils/selects.js";
 
 const getParticipants = async (
-  listId: string
+  listId: string,
 ): Promise<ParticipantDetails[]> => {
   return prisma.listsOnUsers.findMany({
     orderBy: { createdAt: "asc" },
@@ -23,19 +23,19 @@ const getParticipants = async (
 
 const getParticipantRole = async (
   listId: string,
-  userId: string
+  userId: string,
 ): Promise<Role | null> => {
   const participant = await prisma.listsOnUsers.findUnique({
     where: { userId_listId: { listId: listId, userId: userId } },
     select: { role: true },
   });
 
-  return participant?.role || null;
+  return participant?.role ?? null;
 };
 
 const addParticipant = async (
   listId: string,
-  userId: string
+  userId: string,
 ): Promise<void> => {
   try {
     await prisma.listsOnUsers.create({
@@ -56,7 +56,7 @@ const addParticipant = async (
 
 const removeParticipant = async (
   listId: string,
-  userId: string
+  userId: string,
 ): Promise<void> => {
   // If in the future it is possible to change owner it needs to be a transaction
   const role = await getParticipantRole(listId, userId);
@@ -83,4 +83,9 @@ const removeParticipant = async (
   }
 };
 
-export default { getParticipants, getParticipantRole, addParticipant, removeParticipant };
+export default {
+  getParticipants,
+  getParticipantRole,
+  addParticipant,
+  removeParticipant,
+};

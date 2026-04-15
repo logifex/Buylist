@@ -1,12 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import { UserService } from "../services";
-import { AuthenticationError } from "../errors";
-import { firebase, pubClient } from "../config";
+import type { NextFunction, Request, Response } from "express";
+import type { DecodedIdToken } from "firebase-admin/auth";
+import { UserService } from "../services/index.js";
+import { AuthenticationError } from "../errors/index.js";
+import { firebase, pubClient } from "../config/index.js";
 
 const authenticate = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (!req.headers.authorization?.startsWith("Bearer ")) {
     return next(new AuthenticationError());
@@ -16,7 +17,12 @@ const authenticate = async (
 
   try {
     const decodedToken = await firebase.auth().verifyIdToken(idToken);
-    const { uid: id, email, name, picture: photoUrl } = decodedToken;
+    const {
+      uid: id,
+      email,
+      name,
+      picture: photoUrl,
+    } = decodedToken as DecodedIdToken & { name?: string };
 
     if (!email || !name) {
       return next(new AuthenticationError());
@@ -37,8 +43,10 @@ const authenticate = async (
     });
 
     next();
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (
+      typeof err === "object" &&
+      err !== null &&
       "code" in err &&
       typeof err.code === "string" &&
       err.code.startsWith("auth")

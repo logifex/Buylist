@@ -1,6 +1,6 @@
-import { io } from "../socket";
-import { ListDetails } from "../types/list";
-import { ProductDetails } from "../types/product";
+import type { ListDetails } from "../types/list.js";
+import type { ProductDetails } from "../types/product.js";
+import { io } from "../socket.js";
 
 const emitListUpdate = (listId: string, updatedList: ListDetails) => {
   io?.to(`listRoom-${listId}`).emit("listUpdate", updatedList);
@@ -30,7 +30,7 @@ const disconnectParticipantSocket = async (listId: string, userId: string) => {
   }
 
   const socket = participantSockets.find(
-    (socket) => socket.data.user.id === userId
+    (socket) => socket.data.user.id === userId,
   );
   socket?.leave(`listRoom-${listId}`);
   socket?.emit("listKick", listId);

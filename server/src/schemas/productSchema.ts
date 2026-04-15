@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const baseProductSchema = z.object({
-  id: z.string().uuid({ message: "Value has to be a valid ID" }),
+  id: z.uuid({ error: "Value has to be a valid ID" }),
   name: z.string().trim().min(1).max(50),
   note: z
     .string()
@@ -14,7 +14,7 @@ const baseProductSchema = z.object({
 
 export const createProductInputSchema = z.object({
   name: baseProductSchema.shape.name,
-  note: baseProductSchema.shape.note,
+  note: baseProductSchema.shape.note.optional(),
   isChecked: baseProductSchema.shape.isChecked.optional(),
 });
 
@@ -25,9 +25,12 @@ export const editProductInputSchema = baseProductSchema
     isChecked: true,
   })
   .partial()
-  .refine((fields) => Object.values(fields).some((f) => f !== undefined), {
-    message: "No edit fields provided",
-  });
+  .refine(
+    (fields) => Object.values(fields).some((f: unknown) => f !== undefined),
+    {
+      error: "No edit fields provided",
+    },
+  );
 
 export const productIdParamSchema = z.object({
   productId: baseProductSchema.shape.id,

@@ -1,12 +1,12 @@
-import CustomError from "./CustomError";
+import CustomError from "./CustomError.js";
 
 class RemoveOwnerError extends CustomError {
   message: string;
 
-  constructor(message: string = "Owner cannot be removed") {
+  constructor(message = "Owner cannot be removed") {
     super(message);
     this.name = "RemoveOwnerError";
-    this.code = "REMOVE_OWNER_ERROR"
+    this.code = "REMOVE_OWNER_ERROR";
     this.message = message;
   }
 }

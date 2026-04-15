@@ -1,4 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import type { ErrorResponse } from "../types/responseTypes.js";
+import type { BodyParserError } from "../types/error.js";
 import {
   AlreadyExistsError,
   AuthenticationError,
@@ -10,28 +12,32 @@ import {
   TooManyLists,
   TooManyProducts,
   ValidationError,
-} from "../errors";
-import { logger } from "../config";
-import { ErrorResponse } from "../types/responseTypes";
+} from "../errors/index.js";
+import { logger } from "../config/index.js";
 
 const handleNotFound = (req: Request, res: Response) => {
   res.status(404).send();
 };
 
 const handleKnownErrors = (
-  error: any,
+  error: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (error instanceof URIError) {
     return next(new HttpError(400, "Invalid URI"));
   }
 
-  if (!("type" in error) || typeof error.type !== "string") {
+  if (
+    typeof error !== "object" ||
+    error === null ||
+    !("type" in error) ||
+    typeof error.type !== "string"
+  ) {
     return next(error);
   }
-  const type = error.type as string;
+  const type = (error as BodyParserError).type;
 
   if (type === "entity.parse.failed" || type === "request.aborted") {
     return next(new HttpError(400, "Request contains invalid JSON"));
@@ -47,16 +53,16 @@ const handleKnownErrors = (
 };
 
 const handleCustomError = (
-  error: any,
+  error: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (error instanceof HttpError) {
     return next(error);
   }
 
-  let status = 500;
+  let status;
   let data;
 
   if (error instanceof NotFoundError) {
@@ -74,7 +80,10 @@ const handleCustomError = (
     status = 403;
   } else if (error instanceof RemoveOwnerError) {
     status = 403;
-  } else if (error instanceof TooManyLists || error instanceof TooManyProducts) {
+  } else if (
+    error instanceof TooManyLists ||
+    error instanceof TooManyProducts
+  ) {
     status = 403;
   } else {
     return next(error);
@@ -87,10 +96,10 @@ const handleCustomError = (
 };
 
 const handleHttpError = (
-  error: any,
+  error: unknown,
   req: Request,
   res: Response<ErrorResponse>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const isHttpError = error instanceof HttpError;
   const status = isHttpError ? error.status : 500;

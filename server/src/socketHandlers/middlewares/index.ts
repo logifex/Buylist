@@ -1,3 +1,3 @@
-import { authenticateSocket } from "./authenticateSocket";
+import { authenticateSocket } from "./authenticateSocket.js";
 
 export { authenticateSocket };

@@ -1,14 +1,9 @@
-import { Prisma } from "@prisma/client";
-import { inviteTokenParamSchema } from "../schemas/invitationSchema";
+import type { ListTokenInvitationGetPayload } from "../generated/prisma/models/ListTokenInvitation.js";
 import { z } from "zod";
-import { tokenInvitationDetailsSelect } from "../utils/selects";
+import { inviteTokenParamSchema } from "../schemas/invitationSchema.js";
+import { tokenInvitationDetailsSelect } from "../utils/selects.js";
 
-const tokenInvitationDetails =
-  Prisma.validator<Prisma.ListTokenInvitationDefaultArgs>()({
-    select: tokenInvitationDetailsSelect,
-  });
-
-export type TokenInvitationDetails = Prisma.ListTokenInvitationGetPayload<
-  typeof tokenInvitationDetails
->;
+export type TokenInvitationDetails = ListTokenInvitationGetPayload<{
+  select: typeof tokenInvitationDetailsSelect;
+}>;
 export type InviteTokenParam = z.infer<typeof inviteTokenParamSchema>;

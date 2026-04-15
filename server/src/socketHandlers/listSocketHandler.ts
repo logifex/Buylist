@@ -1,16 +1,15 @@
-import { Request } from "express";
-import { ParticipantService } from "../services";
-import { logger } from "../config";
-import { assertUser } from "../utils";
-import { AppSocket } from "../types/socketTypes";
-import { ListNotFoundError, ValidationError } from "../errors";
-import CustomError from "../errors/CustomError";
+import type { Request } from "express";
+import type { AppSocket } from "../types/socketTypes.js";
+import { ParticipantService } from "../services/index.js";
+import { logger } from "../config/index.js";
+import { assertUser } from "../utils/index.js";
+import { ListNotFoundError, ValidationError } from "../errors/index.js";
+import CustomError from "../errors/CustomError.js";
 
 const joinListRoom = async function (this: AppSocket, listId: unknown) {
-  const socket = this;
-  const req = socket.request as Request;
+  const req = this.request as Request;
   const user = assertUser(req.user);
-  socket.data.user = user;
+  this.data.user = user;
 
   try {
     if (typeof listId !== "string") {
@@ -18,7 +17,7 @@ const joinListRoom = async function (this: AppSocket, listId: unknown) {
     }
 
     const roomName = `listRoom-${listId}`;
-    if (socket.rooms.has(roomName)) {
+    if (this.rooms.has(roomName)) {
       return;
     }
 
@@ -28,30 +27,28 @@ const joinListRoom = async function (this: AppSocket, listId: unknown) {
       throw new ListNotFoundError();
     }
 
-    socket.join(roomName);
+    await this.join(roomName);
   } catch (err) {
     if (err instanceof CustomError) {
-      return socket.emit("error", err.message);
+      return this.emit("error", err.message);
     }
 
     logger.error(err);
-    socket.emit("error", "Server error for joining list");
+    this.emit("error", "Server error for joining list");
   }
 };
 
 const leaveListRoom = async function (this: AppSocket, listId: unknown) {
-  const socket = this;
-
   try {
     if (typeof listId !== "string") {
       throw new ValidationError("Invalid list id");
     }
 
     const roomName = `listRoom-${listId}`;
-    socket.leave(roomName);
+    await this.leave(roomName);
   } catch (err) {
     if (err instanceof CustomError) {
-      return socket.emit("error", err.message);
+      return this.emit("error", err.message);
     }
 
     logger.error(err);

@@ -1,7 +1,7 @@
+import type { ListDetails } from "./list.js";
+import type { ProductDetails } from "./product.js";
+import type { RequestUser } from "./user.js";
 import { Server, Socket } from "socket.io";
-import { ListDetails } from "./list";
-import { ProductDetails } from "./product";
-import { RequestUser } from "./user";
 
 interface ServerToClientEvents {
   error: (message: string) => void;
@@ -18,8 +18,6 @@ interface ClientToServerEvents {
   listLeave: (listId: string) => void;
 }
 
-interface InterServerEvents {}
-
 interface SocketData {
   user: RequestUser;
 }
@@ -27,13 +25,13 @@ interface SocketData {
 export type AppSocketServer = Server<
   ClientToServerEvents,
   ServerToClientEvents,
-  InterServerEvents,
+  object,
   SocketData
 >;
 
 export type AppSocket = Socket<
   ClientToServerEvents,
   ServerToClientEvents,
-  InterServerEvents,
+  object,
   SocketData
 >;

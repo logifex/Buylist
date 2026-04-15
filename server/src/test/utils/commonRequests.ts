@@ -1,9 +1,9 @@
+import type { UserInput } from "../../types/user.js";
+import type { CreateListInput } from "../../types/list.js";
 import request from "supertest";
-import { UserInput } from "../../types/user";
-import { UserService } from "../../services";
-import app from "../../app";
-import { CreateListInput } from "../../types/list";
-import { firebase } from "../../config";
+import { UserService } from "../../services/index.js";
+import app from "../../app.js";
+import { firebase } from "../../config/index.js";
 
 export const createTestUser = async (user: UserInput) => {
   await UserService.upsertUser(user);
@@ -21,20 +21,17 @@ export const getTestJwt = async (userId: string) => {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify({ token: customToken, returnSecureToken: true }),
-    }
+    },
   );
 
-  const {
-    idToken,
-    error,
-  }: {
+  const { idToken, error } = (await response.json()) as {
     idToken?: string;
     error?: {
       code: number;
       message: string;
       errors?: [{ message: string; reason: string; domain: string }];
     };
-  } = await response.json();
+  };
 
   if (response.ok && idToken) {
     return idToken;

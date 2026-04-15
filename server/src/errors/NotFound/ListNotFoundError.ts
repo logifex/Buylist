@@ -1,9 +1,9 @@
-import NotFoundError from "./NotFoundError";
+import NotFoundError from "./NotFoundError.js";
 
 class ListNotFoundError extends NotFoundError {
   message: string;
 
-  constructor(message: string = "List not found") {
+  constructor(message = "List not found") {
     super(message);
     this.name = "ListNotFoundError";
     this.code = "LIST_NOT_FOUND";

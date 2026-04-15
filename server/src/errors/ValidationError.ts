@@ -1,10 +1,10 @@
-import CustomError from "./CustomError";
+import CustomError from "./CustomError.js";
 
 class ValidationError extends CustomError {
   message: string;
-  data: any;
+  data: unknown;
 
-  constructor(message: string = "Validation Error") {
+  constructor(message = "Validation Error") {
     super(message);
     this.name = "ValidationError";
     this.code = "VALIDATION_ERROR";

@@ -1,6 +1,6 @@
-import AlreadyExistsError from "./AlreadyExistsError";
-import InvitationAlreadyExistsError from "./InvitationAlreadyExistsError";
-import ParticipantAlreadyExistsError from "./ParticipantAlreadyExistsError";
+import AlreadyExistsError from "./AlreadyExistsError.js";
+import InvitationAlreadyExistsError from "./InvitationAlreadyExistsError.js";
+import ParticipantAlreadyExistsError from "./ParticipantAlreadyExistsError.js";
 
 export {
   AlreadyExistsError,

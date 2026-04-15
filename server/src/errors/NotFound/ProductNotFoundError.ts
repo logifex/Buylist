@@ -1,9 +1,9 @@
-import NotFoundError from "./NotFoundError";
+import NotFoundError from "./NotFoundError.js";
 
 class ProductNotFoundError extends NotFoundError {
   message: string;
 
-  constructor(message: string = "Product not found") {
+  constructor(message = "Product not found") {
     super(message);
     this.name = "ProductNotFoundError";
     this.code = "PRODUCT_NOT_FOUND";

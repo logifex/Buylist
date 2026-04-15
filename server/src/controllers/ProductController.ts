@@ -1,18 +1,18 @@
-import { NextFunction, Request, Response } from "express";
-import {
+import type { NextFunction, Request, Response } from "express";
+import type {
   CreateProductInput,
   EditProductInput,
   ProductDetails,
   ProductIdParam,
-} from "../types/product";
-import { ListIdParam } from "../types/list";
-import { ProductService } from "../services";
-import { ProductNotFoundError } from "../errors";
+} from "../types/product.js";
+import type { ListIdParam } from "../types/list.js";
+import { ProductService } from "../services/index.js";
+import { ProductNotFoundError } from "../errors/index.js";
 
 const checkProductExists = async (
-  req: Request<ListIdParam & ProductIdParam, {}, {}>,
+  req: Request<ListIdParam & ProductIdParam, object, object>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { listId, productId } = req.params;
 
@@ -26,9 +26,8 @@ const checkProductExists = async (
 };
 
 const postProduct = async (
-  req: Request<ListIdParam, {}, CreateProductInput>,
+  req: Request<ListIdParam, object, CreateProductInput>,
   res: Response<ProductDetails>,
-  next: NextFunction
 ) => {
   const { listId } = req.params;
   const productInput = req.body;
@@ -39,9 +38,8 @@ const postProduct = async (
 };
 
 const patchProduct = async (
-  req: Request<ListIdParam & ProductIdParam, {}, EditProductInput>,
+  req: Request<ListIdParam & ProductIdParam, object, EditProductInput>,
   res: Response<ProductDetails>,
-  next: NextFunction
 ) => {
   const { listId, productId } = req.params;
   const productInput = req.body;
@@ -49,16 +47,15 @@ const patchProduct = async (
   const updatedProduct = await ProductService.editProduct(
     productId,
     productInput,
-    listId
+    listId,
   );
 
   res.status(200).json(updatedProduct);
 };
 
 const deleteProduct = async (
-  req: Request<ListIdParam & ProductIdParam, {}, {}>,
-  res: Response<{}>,
-  next: NextFunction
+  req: Request<ListIdParam & ProductIdParam, object, object>,
+  res: Response<void>,
 ) => {
   const { listId, productId } = req.params;
 

@@ -1,4 +1,4 @@
-import { RequestUser } from "../types/user";
+import type { RequestUser } from "../types/user.js";
 
 const assertUser = (user?: RequestUser): RequestUser => {
   if (!user) {

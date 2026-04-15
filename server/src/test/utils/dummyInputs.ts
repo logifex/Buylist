@@ -1,6 +1,6 @@
-import { FullList } from "../../types/list";
-import { ParticipantDetails } from "../../types/participant";
-import { UserInput } from "../../types/user";
+import type { FullList } from "../../types/list.js";
+import type { ParticipantDetails } from "../../types/participant.js";
+import type { UserInput } from "../../types/user.js";
 
 export const dummyUserInputs: UserInput[] = [
   {
@@ -27,8 +27,8 @@ export const dummyUserInputs: UserInput[] = [
 export const dummyParticipants: ParticipantDetails[] = dummyUserInputs.map(
   (u, index) => ({
     role: index === 0 ? "OWNER" : "BASIC",
-    user: { id: u.id!, name: u.name!, photoUrl: u.photoUrl! },
-  })
+    user: { id: u.id, name: u.name, photoUrl: u.photoUrl ?? null },
+  }),
 );
 
 export const basicTestList: FullList = {

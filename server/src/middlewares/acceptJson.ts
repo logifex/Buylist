@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import { HttpError } from "../errors";
+import type { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
+import { HttpError } from "../errors/index.js";
 
 const acceptOnlyJson = (req: Request, res: Response, next: NextFunction) => {
   if (!req.is("json")) {

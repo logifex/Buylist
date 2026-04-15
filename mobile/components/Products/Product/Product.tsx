@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import ProductModel from "@/models/Product";
 import List from "@/models/List";
 import ProductDetails from "./ProductDetails";
-import getGradientColor from "@/utils/getGradientColor";
+import Gradients from "@/constants/Gradients";
 import { LinearGradient } from "expo-linear-gradient";
 
 interface Props extends ProductModel {
@@ -27,7 +27,7 @@ const Product = ({
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        colors={getGradientColor(color)}
+        colors={Gradients[color]}
         style={styles.container}
       >
         <ProductDetails

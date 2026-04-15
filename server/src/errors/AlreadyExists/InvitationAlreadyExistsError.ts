@@ -1,9 +1,9 @@
-import AlreadyExistsError from "./AlreadyExistsError";
+import AlreadyExistsError from "./AlreadyExistsError.js";
 
 class InvitationAlreadyExistsError extends AlreadyExistsError {
   message: string;
 
-  constructor(message: string = "List already has an invitation") {
+  constructor(message = "List already has an invitation") {
     super(message);
     this.name = "InvitationAlreadyExistsError";
     this.code = "INVITATION_ALREADY_EXISTS";

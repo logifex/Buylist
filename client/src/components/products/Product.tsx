@@ -1,7 +1,7 @@
 import { MdDelete, MdEdit } from "react-icons/md";
 import ProductModel from "../../models/Product";
 import { memo } from "react";
-import getGradientColor from "../../utils/getGradientColor";
+import Gradients from "../../constants/Gradients";
 import List from "../../models/List";
 
 interface Props extends ProductModel {
@@ -24,7 +24,7 @@ const Product = ({
     onChange({ ...product, isChecked: e.target.checked });
   };
   const checkedClass = product.isChecked ? " line-through" : "";
-  const backgroundColor = getGradientColor(color);
+  const backgroundColor = Gradients[color];
   const isNote = product.note && product.note !== "";
 
   return (

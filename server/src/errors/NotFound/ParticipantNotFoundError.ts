@@ -1,9 +1,9 @@
-import NotFoundError from "./NotFoundError";
+import NotFoundError from "./NotFoundError.js";
 
 class ParticipantNotFoundError extends NotFoundError {
   message: string;
 
-  constructor(message: string = "Participant not found") {
+  constructor(message = "Participant not found") {
     super(message);
     this.name = "ParticipantNotFoundError";
     this.code = "PARTICIPANT_NOT_FOUND";

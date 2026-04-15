@@ -1,4 +1,4 @@
-import { HelmetOptions } from "helmet";
+import type { HelmetOptions } from "helmet";
 
 const helmetConfig: HelmetOptions = {
   contentSecurityPolicy: false,

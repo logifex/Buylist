@@ -10,4 +10,5 @@ Dockerfile
 .dockerignore
 fly.toml
 well-known
+src/generated
 src/replayHandler.ts

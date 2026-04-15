@@ -1,9 +1,9 @@
-import CustomError from "./CustomError";
+import CustomError from "./CustomError.js";
 
 class NotPermittedError extends CustomError {
   message: string;
 
-  constructor(message: string = "") {
+  constructor(message = "") {
     super(message);
     this.name = "NotPermittedError";
     this.code = "NOT_PERMITTED";

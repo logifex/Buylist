@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../generated/prisma/client.js";
 
 export const productDetailsSelect = {
   id: true,
@@ -6,6 +6,8 @@ export const productDetailsSelect = {
   note: true,
   isChecked: true,
 } satisfies Prisma.ProductSelect;
+
+export const userIdSelect = { id: true } satisfies Prisma.UserSelect;
 
 export const userDetailsSelect = {
   id: true,

@@ -1,19 +1,19 @@
 import { Router } from "express";
-import { ListController } from "../controllers";
-import productRoutes from "./productRoutes";
-import participantRoutes from "./participantRoutes";
+import { ListController } from "../controllers/index.js";
+import productRoutes from "./productRoutes.js";
+import participantRoutes from "./participantRoutes.js";
 import {
   createListInputSchema,
   editListInputSchema,
-} from "../schemas/listSchema";
-import { inviteTokenParamSchema } from "../schemas/invitationSchema";
+} from "../schemas/listSchema.js";
+import { inviteTokenParamSchema } from "../schemas/invitationSchema.js";
 import {
   acceptJson,
   decodeInviteToken,
   verifyListAccess,
   validateRequest,
   authenticate,
-} from "../middlewares";
+} from "../middlewares/index.js";
 
 const router = Router();
 
@@ -28,12 +28,12 @@ router
   .get(
     validateRequest({ params: inviteTokenParamSchema }),
     decodeInviteToken,
-    ListController.getJoinList
+    ListController.getJoinList,
   )
   .post(
     validateRequest({ params: inviteTokenParamSchema }),
     decodeInviteToken,
-    ListController.postJoinList
+    ListController.postJoinList,
   );
 
 router
@@ -42,7 +42,7 @@ router
   .post(
     acceptJson,
     validateRequest({ body: createListInputSchema }),
-    ListController.postList
+    ListController.postList,
   );
 
 router
@@ -52,7 +52,7 @@ router
     verifyListAccess(),
     acceptJson,
     validateRequest({ body: editListInputSchema }),
-    ListController.patchList
+    ListController.patchList,
   )
   .delete(verifyListAccess("OWNER"), ListController.deleteList);
 

@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { ProductController } from "../controllers";
+import { ProductController } from "../controllers/index.js";
 import {
   createProductInputSchema,
   editProductInputSchema,
-} from "../schemas/productSchema";
+} from "../schemas/productSchema.js";
 import {
   acceptJson,
   verifyListAccess,
   validateRequest,
-} from "../middlewares";
+} from "../middlewares/index.js";
 
 const router = Router({ mergeParams: true });
 
@@ -18,7 +18,7 @@ router
     verifyListAccess(),
     acceptJson,
     validateRequest({ body: createProductInputSchema }),
-    ProductController.postProduct
+    ProductController.postProduct,
   );
 
 router
@@ -28,7 +28,7 @@ router
     ProductController.checkProductExists,
     acceptJson,
     validateRequest({ body: editProductInputSchema }),
-    ProductController.patchProduct
+    ProductController.patchProduct,
   )
   .delete(verifyListAccess(), ProductController.deleteProduct);
 

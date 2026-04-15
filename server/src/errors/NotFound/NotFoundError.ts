@@ -1,9 +1,9 @@
-import CustomError from "../CustomError";
+import CustomError from "../CustomError.js";
 
 class NotFoundError extends CustomError {
   message: string;
 
-  constructor(message: string = "") {
+  constructor(message = "") {
     super(message);
     this.name = "NotFoundError";
     this.code = "NOT_FOUND";

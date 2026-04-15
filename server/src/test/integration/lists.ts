@@ -1,29 +1,33 @@
+import type {
+  CreateListInput,
+  EditListInput,
+  FullList,
+} from "../../types/list.js";
 import { describe, it } from "mocha";
 import request from "supertest";
-import app from "../../app";
 import { expect } from "chai";
-import { CreateListInput, EditListInput, FullList } from "../../types/list";
+import app from "../../app.js";
 import {
   invalidListCreateTestCases,
   invalidListTestCases,
   invalidListUpdateTestCases,
   invalidProductCreateTestCases,
   invalidProductTestCases,
-} from "../utils/testCases";
+} from "../utils/testCases.js";
 import {
   basicTestList,
   dummyParticipants,
   dummyUserInputs,
-} from "../utils/dummyInputs";
+} from "../utils/dummyInputs.js";
 import {
   createTestList,
   createTestInviteToken,
   getTestJwt,
   getTestList,
   joinTestList,
-} from "../utils/commonRequests";
-import { ListService } from "../../services";
-import { resourceLimits } from "../../config";
+} from "../utils/commonRequests.js";
+import { ListService } from "../../services/index.js";
+import { resourceLimits } from "../../config/index.js";
 
 const USER_AMOUNT = 3;
 
@@ -32,8 +36,8 @@ const listsDescribe = () => {
 
   before(async () => {
     for (let i = 0; i < USER_AMOUNT; i++) {
-      jwts.push(await getTestJwt(dummyUserInputs[i].id!));
-      await ListService.deleteAllUserLists(dummyUserInputs[i].id!);
+      jwts.push(await getTestJwt(dummyUserInputs[i].id));
+      await ListService.deleteAllUserLists(dummyUserInputs[i].id);
     }
   });
 
@@ -258,15 +262,15 @@ const listsDescribe = () => {
 
             expect(test.body.error.code).to.equal("VALIDATION_ERROR");
             expect(test.body.error.data.length).to.equal(
-              testCase.expectedErrorPaths.length
+              testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
               expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath
+                expectedPath,
               );
             });
           });
-        }
+        },
       );
     });
 
@@ -291,7 +295,7 @@ const listsDescribe = () => {
 
             expect(test.body.error.code).to.equal("VALIDATION_ERROR");
             expect(test.body.error.data.length).to.equal(
-              testCase.expectedErrorPaths.length
+              testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
               expect(test.body.error.data[index].path).to.deep.equal([
@@ -301,7 +305,7 @@ const listsDescribe = () => {
               ]);
             });
           });
-        }
+        },
       );
     });
   });
@@ -328,11 +332,11 @@ const listsDescribe = () => {
       const expected: FullList[] = [];
       expected.push(
         (await createTestList(jwts[0], { name: "first list", color: "BLUE" }))
-          .body
+          .body,
       );
       expected.push(
         (await createTestList(jwts[0], { name: "second list", color: "GREEN" }))
-          .body
+          .body,
       );
       expected.push(
         (
@@ -345,7 +349,7 @@ const listsDescribe = () => {
               { name: "orange", note: "blue" },
             ],
           })
-        ).body
+        ).body,
       );
 
       const test = await request(app)
@@ -367,8 +371,8 @@ const listsDescribe = () => {
 
       expect(
         test.body.every((l: FullList) =>
-          l.participants.some((p) => p.user.id === dummyUserInputs[0].id)
-        )
+          l.participants.some((p) => p.user.id === dummyUserInputs[0].id),
+        ),
       ).to.be.true;
     });
 
@@ -402,7 +406,7 @@ const listsDescribe = () => {
 
       const expected: FullList = { ...list, participants: dummyParticipants };
       expect(test.body.find((l: FullList) => l.id === list.id)).to.deep.equal(
-        expected
+        expected,
       );
     });
   });
@@ -734,15 +738,15 @@ const listsDescribe = () => {
 
             expect(test.body.error.code).to.equal("VALIDATION_ERROR");
             expect(test.body.error.data.length).to.equal(
-              testCase.expectedErrorPaths.length
+              testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
               expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath
+                expectedPath,
               );
             });
           });
-        }
+        },
       );
     });
   });

@@ -1,10 +1,10 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { firebase, prisma, pubClient } from "../config";
-import { UserDetails, UserInput } from "../types/user";
-import { userDetailsSelect } from "../utils/selects";
-import { NotFoundError } from "../errors";
-import { Prisma } from "@prisma/client";
-import SocketService from "./SocketService";
+import type { UserDetails, UserInput } from "../types/user.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { firebase, prisma, pubClient } from "../config/index.js";
+import { userDetailsSelect } from "../utils/selects.js";
+import { NotFoundError } from "../errors/index.js";
+import { Prisma } from "../generated/prisma/client.js";
+import SocketService from "./SocketService.js";
 
 const getUser = (userId: string): Promise<UserDetails | null> => {
   return prisma.user.findUnique({
@@ -42,7 +42,7 @@ const deleteUser = async (userId: string): Promise<void> => {
         }),
         prisma.user.delete({ where: { id: userId } }),
       ],
-      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
     );
     await firebase.auth().deleteUser(userId);
 

@@ -1,6 +1,6 @@
 type TestCases = {
   description: string;
-  input: any;
+  input: object;
   expectedErrorPaths: (string | number)[][];
 }[];
 

@@ -1,27 +1,27 @@
-import request from "supertest";
-import {
+import type {
   CreateProductInput,
   EditProductInput,
   ProductDetails,
-} from "../../types/product";
+} from "../../types/product.js";
+import type { FullList } from "../../types/list.js";
+import request from "supertest";
 import {
   invalidProductCreateTestCases,
   invalidProductTestCases,
   invalidProductUpdateTestCases,
-} from "../utils/testCases";
+} from "../utils/testCases.js";
 import {
   createTestList,
   createTestInviteToken,
   getTestJwt,
   getTestList,
   joinTestList,
-} from "../utils/commonRequests";
-import app from "../../app";
+} from "../utils/commonRequests.js";
+import app from "../../app.js";
 import { expect } from "chai";
-import { FullList } from "../../types/list";
-import { dummyUserInputs } from "../utils/dummyInputs";
-import { ListService } from "../../services";
-import { resourceLimits } from "../../config";
+import { dummyUserInputs } from "../utils/dummyInputs.js";
+import { ListService } from "../../services/index.js";
+import { resourceLimits } from "../../config/index.js";
 
 const USER_AMOUNT = 2;
 
@@ -230,15 +230,15 @@ const productsDescribe = () => {
 
             expect(test.body.error.code).to.equal("VALIDATION_ERROR");
             expect(test.body.error.data.length).to.equal(
-              testCase.expectedErrorPaths.length
+              testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
               expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath
+                expectedPath,
               );
             });
           });
-        }
+        },
       );
     });
   });
@@ -569,15 +569,15 @@ const productsDescribe = () => {
 
             expect(test.body.error.code).to.equal("VALIDATION_ERROR");
             expect(test.body.error.data.length).to.equal(
-              testCase.expectedErrorPaths.length
+              testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
               expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath
+                expectedPath,
               );
             });
           });
-        }
+        },
       );
     });
   });

@@ -1,22 +1,18 @@
-import { NextFunction, Request, Response } from "express";
-import {
+import type { NextFunction, Request, Response } from "express";
+import type {
   CreateListInput,
   EditListInput,
   FullList,
   ListDetails,
   ListIdParam,
   ListPreview,
-} from "../types/list";
-import { InviteTokenParam } from "../types/invitation";
-import { InvitationService, ListService } from "../services";
-import { assertUser } from "../utils";
-import { InvitationNotFoundError, ListNotFoundError } from "../errors";
+} from "../types/list.js";
+import type { InviteTokenParam } from "../types/invitation.js";
+import { InvitationService, ListService } from "../services/index.js";
+import { assertUser } from "../utils/index.js";
+import { InvitationNotFoundError, ListNotFoundError } from "../errors/index.js";
 
-const getLists = async (
-  req: Request,
-  res: Response<FullList[]>,
-  next: NextFunction
-) => {
+const getLists = async (req: Request, res: Response<FullList[]>) => {
   const user = assertUser(req.user);
   const lists = await ListService.getUserLists(user.id);
 
@@ -24,9 +20,9 @@ const getLists = async (
 };
 
 const getList = async (
-  req: Request<ListIdParam, {}, {}>,
+  req: Request<ListIdParam, object, object>,
   res: Response<FullList>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { listId } = req.params;
   const list = await ListService.getList(listId);
@@ -39,9 +35,8 @@ const getList = async (
 };
 
 const postList = async (
-  req: Request<{}, {}, CreateListInput>,
+  req: Request<object, object, CreateListInput>,
   res: Response<FullList>,
-  next: NextFunction
 ) => {
   const user = assertUser(req.user);
   const list = req.body;
@@ -51,9 +46,8 @@ const postList = async (
 };
 
 const patchList = async (
-  req: Request<ListIdParam, {}, EditListInput>,
+  req: Request<ListIdParam, object, EditListInput>,
   res: Response<ListDetails>,
-  next: NextFunction
 ) => {
   const { listId } = req.params;
   const listInput = req.body;
@@ -63,9 +57,8 @@ const patchList = async (
 };
 
 const deleteList = async (
-  req: Request<ListIdParam, {}, {}>,
-  res: Response<{}>,
-  next: NextFunction
+  req: Request<ListIdParam, object, object>,
+  res: Response<void>,
 ) => {
   const { listId } = req.params;
   await ListService.deleteList(listId);
@@ -74,9 +67,9 @@ const deleteList = async (
 };
 
 const getJoinList = async (
-  req: Request<InviteTokenParam, {}, {}>,
+  req: Request<InviteTokenParam, object, object>,
   res: Response<ListPreview>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { inviteToken: token } = req.params;
 
@@ -90,16 +83,16 @@ const getJoinList = async (
 };
 
 const postJoinList = async (
-  req: Request<InviteTokenParam, {}, {}>,
+  req: Request<InviteTokenParam, object, object>,
   res: Response<FullList>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const user = assertUser(req.user);
   const { inviteToken: token } = req.params;
 
   const listId = await InvitationService.joinListFromInviteToken(
     token,
-    user.id
+    user.id,
   );
   const list = await ListService.getList(listId);
 

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import listRoutes from "./listRoutes";
-import authRoutes from "./authRoutes";
-import { decodeInviteToken } from "../middlewares";
-import { InfoController, InvitationController } from "../controllers";
+import listRoutes from "./listRoutes.js";
+import authRoutes from "./authRoutes.js";
+import { decodeInviteToken } from "../middlewares/index.js";
+import { InfoController, InvitationController } from "../controllers/index.js";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.get("/api/instance-id", InfoController.getInstanceId);
 router.get(
   "/invite/:inviteToken",
   decodeInviteToken,
-  InvitationController.getInvitePage
+  InvitationController.getInvitePage,
 );
 
 export default router;

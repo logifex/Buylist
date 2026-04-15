@@ -1,9 +1,9 @@
-import acceptJson from "./acceptJson";
-import authenticate from "./authenticate";
-import decodeInviteToken from "./decodeInviteToken";
-import morganMiddleware from "./morganMiddleware";
-import verifyListAccess from "./verifyListAccess";
-import validateRequest from "./validateRequest";
+import acceptJson from "./acceptJson.js";
+import authenticate from "./authenticate.js";
+import decodeInviteToken from "./decodeInviteToken.js";
+import morganMiddleware from "./morganMiddleware.js";
+import verifyListAccess from "./verifyListAccess.js";
+import validateRequest from "./validateRequest.js";
 
 export {
   morganMiddleware,

@@ -1,8 +1,8 @@
-import InvitationNotFoundError from "./InvitationNotFoundError";
-import ListNotFoundError from "./ListNotFoundError";
-import NotFoundError from "./NotFoundError";
-import ParticipantNotFoundError from "./ParticipantNotFoundError";
-import ProductNotFoundError from "./ProductNotFoundError";
+import InvitationNotFoundError from "./InvitationNotFoundError.js";
+import ListNotFoundError from "./ListNotFoundError.js";
+import NotFoundError from "./NotFoundError.js";
+import ParticipantNotFoundError from "./ParticipantNotFoundError.js";
+import ProductNotFoundError from "./ProductNotFoundError.js";
 
 export {
   NotFoundError,

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import inviteRoutes from "./inviteRoutes";
-import { ParticipantController } from "../controllers";
-import { verifyListAccess } from "../middlewares";
+import inviteRoutes from "./inviteRoutes.js";
+import { ParticipantController } from "../controllers/index.js";
+import { verifyListAccess } from "../middlewares/index.js";
 
 const router = Router({ mergeParams: true });
 

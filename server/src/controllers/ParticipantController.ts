@@ -1,14 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import { ListIdParam } from "../types/list";
-import { UserIdParam } from "../types/user";
-import { ParticipantService } from "../services";
-import { NotPermittedError } from "../errors";
-import { ParticipantDetails } from "../types/participant";
+import type { NextFunction, Request, Response } from "express";
+import type { ListIdParam } from "../types/list.js";
+import type { UserIdParam } from "../types/user.js";
+import type { ParticipantDetails } from "../types/participant.js";
+import { ParticipantService } from "../services/index.js";
+import { NotPermittedError } from "../errors/index.js";
 
 const getParticipants = async (
-  req: Request<ListIdParam, {}, {}>,
+  req: Request<ListIdParam, object, object>,
   res: Response<ParticipantDetails[]>,
-  next: NextFunction
 ) => {
   const { listId } = req.params;
 
@@ -18,9 +17,9 @@ const getParticipants = async (
 };
 
 const removeParticipant = async (
-  req: Request<ListIdParam & UserIdParam, {}, {}>,
-  res: Response<{}>,
-  next: NextFunction
+  req: Request<ListIdParam & UserIdParam, object, object>,
+  res: Response<void>,
+  next: NextFunction,
 ) => {
   const { listId, userId } = req.params;
   const { role, user } = req;
@@ -28,7 +27,7 @@ const removeParticipant = async (
 
   if (!isCurrentUser && role !== "OWNER") {
     return next(
-      new NotPermittedError("Only the owner can remove other participants")
+      new NotPermittedError("Only the owner can remove other participants"),
     );
   }
 

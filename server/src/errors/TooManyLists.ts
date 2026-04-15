@@ -1,9 +1,9 @@
-import CustomError from "./CustomError";
+import CustomError from "./CustomError.js";
 
 class TooManyLists extends CustomError {
   message: string;
 
-  constructor(message: string = "User has exceeded the allowed number of lists") {
+  constructor(message = "User has exceeded the allowed number of lists") {
     super(message);
     this.name = "TooManyLists";
     this.code = "TOO_MANY_LISTS";

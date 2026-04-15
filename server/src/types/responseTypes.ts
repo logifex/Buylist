@@ -1,7 +1,7 @@
-export type ErrorResponse = {
+export interface ErrorResponse {
   error: {
     code?: string;
     message: string;
-    data: any;
+    data: unknown;
   };
-};
+}

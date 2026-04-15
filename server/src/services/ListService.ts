@@ -1,20 +1,24 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { prisma, resourceLimits } from "../config";
-import {
+import type {
   CreateListInput,
   EditListInput,
   FullList,
   ListDetails,
   ListPreview,
-} from "../types/list";
+} from "../types/list.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { prisma, resourceLimits } from "../config/index.js";
 import {
   fullListSelect,
   listDetailsSelect,
   listPreviewSelect,
-} from "../utils/selects";
-import SocketService from "./SocketService";
-import { ListNotFoundError, TooManyLists, TooManyProducts } from "../errors";
-import { Prisma } from "@prisma/client";
+} from "../utils/selects.js";
+import SocketService from "./SocketService.js";
+import {
+  ListNotFoundError,
+  TooManyLists,
+  TooManyProducts,
+} from "../errors/index.js";
+import { Prisma } from "../generated/prisma/client.js";
 
 const getUserLists = (userId: string): Promise<FullList[]> => {
   return prisma.list.findMany({
@@ -46,7 +50,7 @@ const getListPreview = (listId: string): Promise<ListPreview | null> => {
 
 const createList = (
   listInput: CreateListInput,
-  userId: string
+  userId: string,
 ): Promise<FullList> => {
   const { name, color, products } = listInput;
 
@@ -97,7 +101,7 @@ const createList = (
 
 const editList = async (
   listId: string,
-  listInput: EditListInput
+  listInput: EditListInput,
 ): Promise<ListDetails> => {
   const { name, color } = listInput;
 
@@ -152,7 +156,7 @@ const deleteAllUserLists = async (userId: string): Promise<void> => {
         where: where,
       }),
     ],
-    { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+    { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
   );
 
   for (const list of lists) {

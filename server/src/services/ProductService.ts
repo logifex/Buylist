@@ -1,17 +1,21 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { prisma, resourceLimits } from "../config";
-import {
+import type {
   CreateProductInput,
   EditProductInput,
   ProductDetails,
-} from "../types/product";
-import { productDetailsSelect } from "../utils/selects";
-import SocketService from "./SocketService";
-import { ListNotFoundError, ProductNotFoundError, TooManyProducts } from "../errors";
+} from "../types/product.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { prisma, resourceLimits } from "../config/index.js";
+import { productDetailsSelect } from "../utils/selects.js";
+import SocketService from "./SocketService.js";
+import {
+  ListNotFoundError,
+  ProductNotFoundError,
+  TooManyProducts,
+} from "../errors/index.js";
 
 const getProduct = async (
   productId: string,
-  listId: string
+  listId: string,
 ): Promise<ProductDetails | null> => {
   return prisma.product.findUnique({
     where: { id: productId, listId: listId },
@@ -21,7 +25,7 @@ const getProduct = async (
 
 const createProduct = async (
   productInput: CreateProductInput,
-  listId: string
+  listId: string,
 ): Promise<ProductDetails> => {
   const { name, note, isChecked } = productInput;
 
@@ -63,7 +67,7 @@ const createProduct = async (
 const editProduct = async (
   productId: string,
   productInput: EditProductInput,
-  listId: string
+  listId: string,
 ): Promise<ProductDetails> => {
   const { name, note, isChecked } = productInput;
 
@@ -92,7 +96,7 @@ const editProduct = async (
 
 const deleteProduct = async (
   productId: string,
-  listId: string
+  listId: string,
 ): Promise<void> => {
   try {
     await prisma.product.delete({ where: { id: productId, listId: listId } });
