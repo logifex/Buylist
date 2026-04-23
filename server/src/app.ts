@@ -33,7 +33,7 @@ app.use(ErrorController.errorHandlers);
 
 httpServer.listen(PORT, () => {
   logger.info(
-    `App is running at ${env.serverUrl?.toString()}:${PORT.toString()}`,
+    `App is running at ${env.serverUrl ?? "undefined"}:${PORT.toString()}`,
   );
 });
 

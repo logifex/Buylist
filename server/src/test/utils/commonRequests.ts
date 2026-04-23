@@ -14,9 +14,15 @@ export const deleteTestUser = async (userId: string) => {
 };
 
 export const getTestJwt = async (userId: string) => {
+  const host = process.env.FIREBASE_AUTH_EMULATOR_HOST;
+  const googleApiKey = process.env.GOOGLE_API_KEY;
+  if (!host || !googleApiKey) {
+    throw new Error("FIREBASE_AUTH_EMULATOR_HOST or GOOGLE_API_KEY is not set");
+  }
+
   const customToken = await firebase.auth().createCustomToken(userId);
   const response = await fetch(
-    `http://${process.env.FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${process.env.GOOGLE_API_KEY}`,
+    `http://${host}/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${googleApiKey}`,
     {
       headers: { "Content-Type": "application/json" },
       method: "POST",

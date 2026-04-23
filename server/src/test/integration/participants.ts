@@ -1,6 +1,8 @@
 import type { SinonSandbox } from "sinon";
 import type { FullList, ListPreview } from "../../types/list.js";
 import type { ParticipantDetails } from "../../types/participant.js";
+import type { TokenInvitationDetails } from "../../types/invitation.js";
+import type { ErrorResponse } from "../../types/responseTypes.js";
 import request from "supertest";
 import Sinon from "sinon";
 import { expect } from "chai";
@@ -25,31 +27,39 @@ const participantsDescribe = () => {
 
   before(async () => {
     for (let i = 0; i < USER_AMOUNT; i++) {
-      jwts.push(await getTestJwt(dummyUserInputs[i].id!));
-      await ListService.deleteAllUserLists(dummyUserInputs[i].id!);
+      jwts.push(await getTestJwt(dummyUserInputs[i].id));
+      await ListService.deleteAllUserLists(dummyUserInputs[i].id);
     }
   });
 
   describe("creating an invite token", () => {
     it("should create an invite token", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .post(`/api/lists/${list.id}/participants/invite/token`)
         .auth(jwts[0], { type: "bearer" })
         .expect(201);
 
-      expect(new Date(test.body.expiry)).to.be.above(new Date());
-      expect(test.body.token.length).to.equal(22);
+      const body = test.body as TokenInvitationDetails;
+      expect(new Date(body.expiry)).to.be.above(new Date());
+      expect(body.token.length).to.equal(22);
     });
 
     it("should create an invite token as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
       await request(app)
         .delete(`/api/lists/${list.id}/participants/invite/token`)
@@ -60,8 +70,9 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(201);
 
-      expect(new Date(test.body.expiry)).to.be.above(new Date());
-      expect(test.body.token.length).to.equal(22);
+      const body = test.body as TokenInvitationDetails;
+      expect(new Date(body.expiry)).to.be.above(new Date());
+      expect(body.token.length).to.equal(22);
     });
 
     it("should return 404 for creating an invite token for a non-existing list", async () => {
@@ -71,27 +82,33 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for creating an invite token without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .post(`/api/lists/${list.id}/participants/invite/token`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
       await getTestInviteToken(jwts[1], list.id).expect(404);
     });
 
     it("should return 409 for creating an invite token when it already exists", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
       await createTestInviteToken(jwts[0], list.id);
 
       const test = await request(app)
@@ -99,19 +116,20 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(409);
 
-      expect(test.body.error.code).to.equal("INVITATION_ALREADY_EXISTS");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_ALREADY_EXISTS");
     });
   });
 
   describe("getting an invite token", () => {
     it("should get an invite token", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
-      const { body: invitation } = await createTestInviteToken(
-        jwts[0],
-        list.id,
-      );
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
+      const invitation = (await createTestInviteToken(jwts[0], list.id))
+        .body as TokenInvitationDetails;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}/participants/invite/token`)
@@ -122,13 +140,13 @@ const participantsDescribe = () => {
     });
 
     it("should get an invite token as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const { body: invitation } = await createTestInviteToken(
-        jwts[1],
-        list.id,
-      );
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const invitation = (await createTestInviteToken(jwts[1], list.id))
+        .body as TokenInvitationDetails;
       await joinTestList(jwts[0], invitation.token);
 
       const test = await request(app)
@@ -140,16 +158,19 @@ const participantsDescribe = () => {
     });
 
     it("should return 404 for getting a non-existing invite token", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}/participants/invite/token`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("INVITATION_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_NOT_FOUND");
     });
 
     it("should return 404 for getting an invite token in a non-existing list", async () => {
@@ -160,13 +181,16 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for getting an invite token without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
       await createTestInviteToken(jwts[1], list.id);
 
       const test = await request(app)
@@ -174,15 +198,18 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
   });
 
   describe("deleting an invite token", () => {
     it("should delete an invite token", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
       await createTestInviteToken(jwts[0], list.id);
 
       const test = await request(app)
@@ -195,10 +222,15 @@ const participantsDescribe = () => {
     });
 
     it("should delete an invite token as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
 
       const test = await request(app)
@@ -210,16 +242,19 @@ const participantsDescribe = () => {
     });
 
     it("should return 404 for deleting a non-existing invite token", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}/participants/invite/token`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("INVITATION_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_NOT_FOUND");
     });
 
     it("should return 404 for deleting an invite token in a non-existing list", async () => {
@@ -230,13 +265,16 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for deleting an invite token without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
       await createTestInviteToken(jwts[1], list.id);
 
       const test = await request(app)
@@ -244,7 +282,8 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
       await getTestInviteToken(jwts[1], list.id).expect(200);
     });
   });
@@ -261,10 +300,15 @@ const participantsDescribe = () => {
     });
 
     it("should get an invitation list preview", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
 
       const test = await request(app)
         .get(`/api/lists/join/${token}`)
@@ -282,14 +326,20 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("INVITATION_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_NOT_FOUND");
     });
 
     it("should return 404 for getting an expired invitation list", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
 
       // to prevent the firebase auth token from being expired because of the fake timer
       const decodedToken = await firebase.auth().verifyIdToken(jwts[0]);
@@ -306,7 +356,8 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("INVITATION_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_NOT_FOUND");
     });
 
     it("should return 400 for using an invalid invitation token for getting an invitation list", async () => {
@@ -321,9 +372,11 @@ const participantsDescribe = () => {
           .get(`/api/lists/join/${token}`)
           .auth(jwts[0], { type: "bearer" })
           .expect(400);
-        expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-        expect(test.body.error.data.length).to.equal(1);
-        expect(test.body.error.data[0].path).to.deep.equal(["inviteToken"]);
+        const body = test.body as ErrorResponse;
+        expect(body.error.code).to.equal("VALIDATION_ERROR");
+        const errorData = body.error.data as { path: string[] }[];
+        expect(errorData.length).to.equal(1);
+        expect(errorData[0].path).to.deep.equal(["inviteToken"]);
       }
     });
   });
@@ -340,10 +393,15 @@ const participantsDescribe = () => {
     });
 
     it("should join a list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
 
       const test = await request(app)
         .post(`/api/lists/join/${token}`)
@@ -365,14 +423,20 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("INVITATION_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_NOT_FOUND");
     });
 
     it("should return 404 for joining an expired list invitation", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
 
       // to prevent the firebase auth token from being expired because of the fake timer
       const decodedToken = await firebase.auth().verifyIdToken(jwts[0]);
@@ -389,23 +453,30 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("INVITATION_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("INVITATION_NOT_FOUND");
 
       await getTestList(jwts[0], list.id).expect(404);
     });
 
     it("should return 409 for joining a list when already a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
 
       const ownerTest = await request(app)
         .post(`/api/lists/join/${token}`)
         .auth(jwts[1], { type: "bearer" })
         .expect(409);
 
-      expect(ownerTest.body.error.code).to.equal("PARTICIPANT_ALREADY_EXISTS");
+      const ownerTestBody = ownerTest.body as ErrorResponse;
+      expect(ownerTestBody.error.code).to.equal("PARTICIPANT_ALREADY_EXISTS");
 
       await joinTestList(jwts[0], token);
 
@@ -414,7 +485,8 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(409);
 
-      expect(basicTest.body.error.code).to.equal("PARTICIPANT_ALREADY_EXISTS");
+      const basicTestBody = basicTest.body as ErrorResponse;
+      expect(basicTestBody.error.code).to.equal("PARTICIPANT_ALREADY_EXISTS");
     });
 
     it("should return 400 for using an invalid invitation token for joining a list", async () => {
@@ -429,18 +501,22 @@ const participantsDescribe = () => {
           .post(`/api/lists/join/${token}`)
           .auth(jwts[0], { type: "bearer" })
           .expect(400);
-        expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-        expect(test.body.error.data.length).to.equal(1);
-        expect(test.body.error.data[0].path).to.deep.equal(["inviteToken"]);
+        const body = test.body as ErrorResponse;
+        expect(body.error.code).to.equal("VALIDATION_ERROR");
+        const errorData = body.error.data as { path: string[] }[];
+        expect(errorData.length).to.equal(1);
+        expect(errorData[0].path).to.deep.equal(["inviteToken"]);
       }
     });
   });
 
   describe("getting participants", () => {
     it("should get participants", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}/participants`)
@@ -451,10 +527,15 @@ const participantsDescribe = () => {
     });
 
     it("should get many participants in order", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
       await joinTestList(jwts[2], token);
 
@@ -467,10 +548,15 @@ const participantsDescribe = () => {
     });
 
     it("should get participants as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
       await joinTestList(jwts[2], token);
 
@@ -490,29 +576,38 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for getting participants without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}/participants`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
   });
 
   describe("removing a participant", () => {
     it("should remove a participant", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
       await joinTestList(jwts[2], token);
 
@@ -523,9 +618,8 @@ const participantsDescribe = () => {
 
       expect(test.noContent).to.be.true;
 
-      const actualParticipants: ParticipantDetails[] = (
-        await getTestParticipants(jwts[0], list.id)
-      ).body;
+      const actualParticipants = (await getTestParticipants(jwts[0], list.id))
+        .body as ParticipantDetails[];
       expect(actualParticipants.length).to.equal(2);
       expect(
         actualParticipants.every((p) => p.user.id !== dummyUserInputs[1].id),
@@ -536,29 +630,35 @@ const participantsDescribe = () => {
     });
 
     it("should not remove owner", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}/participants/${dummyUserInputs[0].id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(403);
 
-      expect(test.body.error.code).to.equal("REMOVE_OWNER_ERROR");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("REMOVE_OWNER_ERROR");
 
-      const { body: actualParticipants } = await getTestParticipants(
-        jwts[0],
-        list.id,
-      );
+      const actualParticipants = (await getTestParticipants(jwts[0], list.id))
+        .body as ParticipantDetails[];
       expect(actualParticipants).to.deep.equal(list.participants);
     });
 
     it("should remove participant as same participant as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const test = await request(app)
@@ -567,9 +667,8 @@ const participantsDescribe = () => {
         .expect(204);
 
       expect(test.noContent).to.be.true;
-      const actualParticipants: ParticipantDetails[] = (
-        await getTestParticipants(jwts[1], list.id)
-      ).body;
+      const actualParticipants = (await getTestParticipants(jwts[1], list.id))
+        .body as ParticipantDetails[];
       expect(
         actualParticipants.every((p) => p.user.id !== dummyUserInputs[0].id),
       ).to.be.true;
@@ -578,10 +677,15 @@ const participantsDescribe = () => {
     });
 
     it("should return 403 for removing another participant as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
       await joinTestList(jwts[2], token);
 
@@ -590,20 +694,24 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(403);
 
-      expect(test.body.error.code).to.equal("NOT_PERMITTED");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("NOT_PERMITTED");
 
-      const { body: actualParticipants } = await getTestParticipants(
-        jwts[1],
-        list.id,
-      );
+      const actualParticipants = (await getTestParticipants(jwts[1], list.id))
+        .body as ParticipantDetails[];
       expect(actualParticipants.length).to.equal(3);
     });
 
     it("should return 403 for removing owner as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const test = await request(app)
@@ -611,26 +719,32 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(403);
 
-      expect(test.body.error.code).to.equal("NOT_PERMITTED");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("NOT_PERMITTED");
     });
 
     it("should return 404 for removing a non-existing participant", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}/participants/${dummyUserInputs[1].id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("PARTICIPANT_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("PARTICIPANT_NOT_FOUND");
     });
 
     it("should return 404 for removing a non-existing user", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list",
+        })
+      ).body as FullList;
       const fakeId = "d2fb724a-e996-4f11-936e-50fb25ede5ef";
 
       const test = await request(app)
@@ -638,7 +752,8 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("PARTICIPANT_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("PARTICIPANT_NOT_FOUND");
     });
 
     it("should return 404 for removing a participant in a non-existing list", async () => {
@@ -649,14 +764,20 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for removing a participant without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[2], token);
 
       const basicTest = await request(app)
@@ -664,19 +785,19 @@ const participantsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(basicTest.body.error.code).to.equal("LIST_NOT_FOUND");
+      const basicTestBody = basicTest.body as ErrorResponse;
+      expect(basicTestBody.error.code).to.equal("LIST_NOT_FOUND");
 
       const ownerTest = await request(app)
         .delete(`/api/lists/${list.id}/participants/${dummyUserInputs[1].id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(ownerTest.body.error.code).to.equal("LIST_NOT_FOUND");
+      const ownerTestBody = ownerTest.body as ErrorResponse;
+      expect(ownerTestBody.error.code).to.equal("LIST_NOT_FOUND");
 
-      const { body: actualParticipants } = await getTestParticipants(
-        jwts[1],
-        list.id,
-      );
+      const actualParticipants = (await getTestParticipants(jwts[1], list.id))
+        .body as ParticipantDetails[];
       expect(actualParticipants.length).to.equal(2);
     });
   });

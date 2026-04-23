@@ -2,7 +2,10 @@ import type {
   CreateListInput,
   EditListInput,
   FullList,
+  ListDetails,
 } from "../../types/list.js";
+import type { TokenInvitationDetails } from "../../types/invitation.js";
+import type { ErrorResponse } from "../../types/responseTypes.js";
 import { describe, it } from "mocha";
 import request from "supertest";
 import { expect } from "chai";
@@ -48,10 +51,11 @@ const listsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .send({ name: basicTestList.name })
         .expect(201);
+      const body = test.body as FullList;
 
-      const expected: FullList = { ...basicTestList, id: test.body.id };
-      expect(test.body.id).to.not.be.empty;
-      expect(test.body).to.deep.equal(expected);
+      const expected: FullList = { ...basicTestList, id: body.id };
+      expect(body.id).to.not.be.empty;
+      expect(body).to.deep.equal(expected);
     });
 
     it("should trim fields when creating a list", async () => {
@@ -67,10 +71,11 @@ const listsDescribe = () => {
         })
         .expect(201);
 
-      expect(test.body.name).to.equal("to trim");
-      expect(test.body.products[0].name).to.equal("a trimmed name");
-      expect(test.body.products[0].note).to.equal("a note");
-      expect(test.body.products[1].note).to.be.null;
+      const body = test.body as FullList;
+      expect(body.name).to.equal("to trim");
+      expect(body.products[0].name).to.equal("a trimmed name");
+      expect(body.products[0].note).to.equal("a note");
+      expect(body.products[1].note).to.be.null;
     });
 
     it("should create a basic list without being affected by id field", async () => {
@@ -90,9 +95,10 @@ const listsDescribe = () => {
           color: list.color,
         });
 
-      const expected: FullList = { ...list, id: test.body.id };
-      expect(test.body.id).to.not.equal(fakeId);
-      expect(test.body).to.deep.equal(expected);
+      const body = test.body as FullList;
+      const expected: FullList = { ...list, id: body.id };
+      expect(body.id).to.not.equal(fakeId);
+      expect(body).to.deep.equal(expected);
     });
 
     it("should create a basic list without being affected by participants field", async () => {
@@ -111,8 +117,9 @@ const listsDescribe = () => {
           participants: [dummyParticipants[1]],
         });
 
-      const expected: FullList = { ...list, id: test.body.id };
-      expect(test.body).to.deep.equal(expected);
+      const body = test.body as FullList;
+      const expected: FullList = { ...list, id: body.id };
+      expect(body).to.deep.equal(expected);
     });
 
     it("should create a list with products", async () => {
@@ -132,21 +139,22 @@ const listsDescribe = () => {
         .send(newList)
         .expect(201);
 
+      const body = test.body as FullList;
       const expected: FullList = {
         ...basicTestList,
         ...newList,
-        id: test.body.id,
+        id: body.id,
         products: newList.products!.map((product, i) => ({
           ...product,
-          id: test.body.products[i].id,
+          id: body.products[i].id,
           note: product.note ?? null,
           isChecked: product.isChecked ?? false,
         })),
       };
 
-      expect(test.body).to.deep.equal(expected);
-      expect(test.body.products[0].id).to.not.be.empty;
-      expect(test.body.products[1].id).to.not.be.empty;
+      expect(body).to.deep.equal(expected);
+      expect(body.products[0].id).to.not.be.empty;
+      expect(body.products[1].id).to.not.be.empty;
     });
 
     it("should create a list with products without being affected by id", async () => {
@@ -169,8 +177,9 @@ const listsDescribe = () => {
         .send(newList)
         .expect(201);
 
-      expect(test.body.products[0].id).to.not.equal(newList.products[0].id);
-      expect(test.body.products[1].id).to.not.equal(newList.products[1].id);
+      const body = test.body as FullList;
+      expect(body.products[0].id).to.not.equal(newList.products[0].id);
+      expect(body.products[1].id).to.not.equal(newList.products[1].id);
     });
 
     it("should not create a list with too many products", async () => {
@@ -188,11 +197,12 @@ const listsDescribe = () => {
         .send(newList)
         .expect(403);
 
-      expect(test.body.error.code).to.equal("TOO_MANY_PRODUCTS");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("TOO_MANY_PRODUCTS");
     });
 
     it("should not create a list after exceeding the list limit", async () => {
-      await ListService.deleteAllUserLists(dummyUserInputs[0].id!);
+      await ListService.deleteAllUserLists(dummyUserInputs[0].id);
 
       const newList: CreateListInput = {
         name: "A list",
@@ -209,9 +219,10 @@ const listsDescribe = () => {
         .send(newList)
         .expect(403);
 
-      expect(test.body.error.code).to.equal("TOO_MANY_LISTS");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("TOO_MANY_LISTS");
 
-      await ListService.deleteAllUserLists(dummyUserInputs[0].id!);
+      await ListService.deleteAllUserLists(dummyUserInputs[0].id);
     });
 
     it("should return 415 for invalid json when creating a list", async () => {
@@ -229,14 +240,19 @@ const listsDescribe = () => {
         .send('{"name": "list","color": "GREEN"')
         .expect(400);
 
-      expect(test.body.error).to.not.have.property("data");
+      const body = test.body as ErrorResponse;
+      expect(body.error).to.not.have.property("data");
     });
 
     describe("creating an invalid list", () => {
       it("should not create a list with invalid data", async () => {
         const listAmount = (
-          await request(app).get("/api/lists").auth(jwts[0], { type: "bearer" })
-        ).body.length;
+          (
+            await request(app)
+              .get("/api/lists")
+              .auth(jwts[0], { type: "bearer" })
+          ).body as FullList[]
+        ).length;
 
         await request(app)
           .post("/api/lists")
@@ -245,8 +261,12 @@ const listsDescribe = () => {
           .expect(400);
 
         const newListAmount = (
-          await request(app).get("/api/lists").auth(jwts[0], { type: "bearer" })
-        ).body.length;
+          (
+            await request(app)
+              .get("/api/lists")
+              .auth(jwts[0], { type: "bearer" })
+          ).body as FullList[]
+        ).length;
 
         expect(newListAmount).to.equal(listAmount);
       });
@@ -260,14 +280,16 @@ const listsDescribe = () => {
               .send(testCase.input)
               .expect(400);
 
-            expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-            expect(test.body.error.data.length).to.equal(
+            const body = test.body as ErrorResponse;
+            expect(body.error.code).to.equal("VALIDATION_ERROR");
+            const errorData = body.error.data as {
+              path: string;
+            }[];
+            expect(errorData.length).to.equal(
               testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
-              expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath,
-              );
+              expect(errorData[index].path).to.deep.equal(expectedPath);
             });
           });
         },
@@ -293,12 +315,16 @@ const listsDescribe = () => {
               })
               .expect(400);
 
-            expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-            expect(test.body.error.data.length).to.equal(
+            const body = test.body as ErrorResponse;
+            expect(body.error.code).to.equal("VALIDATION_ERROR");
+            const errorData = body.error.data as {
+              path: string;
+            }[];
+            expect(errorData.length).to.equal(
               testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
-              expect(test.body.error.data[index].path).to.deep.equal([
+              expect(errorData[index].path).to.deep.equal([
                 "products",
                 1,
                 ...expectedPath,
@@ -313,7 +339,7 @@ const listsDescribe = () => {
   describe("getting all lists", () => {
     it("should get an empty list array", async () => {
       for (const user of dummyUserInputs) {
-        await ListService.deleteAllUserLists(user.id!);
+        await ListService.deleteAllUserLists(user.id);
       }
 
       const test = await request(app)
@@ -326,17 +352,17 @@ const listsDescribe = () => {
 
     it("should get all lists and in order", async () => {
       for (const user of dummyUserInputs) {
-        await ListService.deleteAllUserLists(user.id!);
+        await ListService.deleteAllUserLists(user.id);
       }
 
       const expected: FullList[] = [];
       expected.push(
         (await createTestList(jwts[0], { name: "first list", color: "BLUE" }))
-          .body,
+          .body as FullList,
       );
       expected.push(
         (await createTestList(jwts[0], { name: "second list", color: "GREEN" }))
-          .body,
+          .body as FullList,
       );
       expected.push(
         (
@@ -349,7 +375,7 @@ const listsDescribe = () => {
               { name: "orange", note: "blue" },
             ],
           })
-        ).body,
+        ).body as FullList,
       );
 
       const test = await request(app)
@@ -369,33 +395,45 @@ const listsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(200);
 
+      const body = test.body as FullList[];
       expect(
-        test.body.every((l: FullList) =>
+        body.every((l: FullList) =>
           l.participants.some((p) => p.user.id === dummyUserInputs[0].id),
         ),
       ).to.be.true;
     });
 
     it("should get lists as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "first list",
-        color: "BLUE",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "first list",
+          color: "BLUE",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const test = await request(app)
         .get("/api/lists")
         .auth(jwts[0], { type: "bearer" })
         .expect(200);
-      expect(test.body.some((l: FullList) => l.id === list.id)).to.be.true;
+      const body = test.body as FullList[];
+      expect(body.some((l: FullList) => l.id === list.id)).to.be.true;
     });
 
     it("should get lists with other participants", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list with participants",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list with participants",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
       await joinTestList(jwts[2], token);
 
@@ -405,7 +443,8 @@ const listsDescribe = () => {
         .expect(200);
 
       const expected: FullList = { ...list, participants: dummyParticipants };
-      expect(test.body.find((l: FullList) => l.id === list.id)).to.deep.equal(
+      const body = test.body as FullList[];
+      expect(body.find((l: FullList) => l.id === list.id)).to.deep.equal(
         expected,
       );
     });
@@ -413,9 +452,11 @@ const listsDescribe = () => {
 
   describe("getting a list", () => {
     it("should get a list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "new list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "new list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}`)
@@ -426,15 +467,17 @@ const listsDescribe = () => {
     });
 
     it("should get a list with products", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "new list",
-        color: "BLUE",
-        products: [
-          { name: "apple" },
-          { name: "banana", isChecked: true, note: "2" },
-          { name: "orange", note: "blue" },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "new list",
+          color: "BLUE",
+          products: [
+            { name: "apple" },
+            { name: "banana", isChecked: true, note: "2" },
+            { name: "orange", note: "blue" },
+          ],
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}`)
@@ -445,11 +488,16 @@ const listsDescribe = () => {
     });
 
     it("should get a list with participants", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "new list",
-        products: [{ name: "apple" }],
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "new list",
+          products: [{ name: "apple" }],
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
       await joinTestList(jwts[2], token);
 
@@ -463,11 +511,16 @@ const listsDescribe = () => {
     });
 
     it("should get a list as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "new list",
-        color: "BROWN",
-      });
-      const token = (await createTestInviteToken(jwts[0], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[0], {
+          name: "new list",
+          color: "BROWN",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[0], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[1], token);
 
       const test = await request(app)
@@ -489,28 +542,34 @@ const listsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for getting a list without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "another person's list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "another person's list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .get(`/api/lists/${list.id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
   });
 
   describe("updating a list", () => {
     it("should update a list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list to update",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list to update",
+        })
+      ).body as FullList;
 
       const listUpdate: EditListInput = {
         name: "Updated!",
@@ -526,7 +585,7 @@ const listsDescribe = () => {
       const expected = { ...listUpdate, id: list.id };
       expect(test.body).to.deep.equal(expected);
 
-      const { body: actualList } = await getTestList(jwts[0], list.id);
+      const actualList = (await getTestList(jwts[0], list.id)).body as FullList;
       expect(actualList).to.deep.equal({
         ...basicTestList,
         ...expected,
@@ -534,9 +593,11 @@ const listsDescribe = () => {
     });
 
     it("should trim fields when updating list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "update list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "update list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .patch(`/api/lists/${list.id}`)
@@ -544,15 +605,18 @@ const listsDescribe = () => {
         .send({ name: "     trim      " })
         .expect(200);
 
-      expect(test.body.name).to.equal("trim");
+      const body = test.body as ListDetails;
+      expect(body.name).to.equal("trim");
     });
 
     it("should update a list without updating id", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list to update",
-        color: "GREEN",
-        products: [{ name: "product" }],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list to update",
+          color: "GREEN",
+          products: [{ name: "product" }],
+        })
+      ).body as FullList;
 
       const patchedList: EditListInput = {
         name: "another list",
@@ -566,14 +630,17 @@ const listsDescribe = () => {
         .send({ ...patchedList, id: fakeId })
         .expect(200);
 
-      expect(test.body.id).to.not.equal(fakeId);
-      expect(test.body).to.deep.equal({ ...patchedList, id: list.id });
+      const body = test.body as ListDetails;
+      expect(body.id).to.not.equal(fakeId);
+      expect(body).to.deep.equal({ ...patchedList, id: list.id });
     });
 
     it("should update only one field", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for one field",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for one field",
+        })
+      ).body as FullList;
 
       const patchedList: EditListInput = {
         name: "New List",
@@ -602,10 +669,15 @@ const listsDescribe = () => {
     });
 
     it("should update list as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list to update",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list to update",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const listUpdate: EditListInput = {
@@ -624,10 +696,12 @@ const listsDescribe = () => {
     });
 
     it("should not update products or participants when updating list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "a list",
-        products: [{ name: "a product" }],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "a list",
+          products: [{ name: "a product" }],
+        })
+      ).body as FullList;
 
       const listUpdate: EditListInput = {
         name: "Updated!",
@@ -651,7 +725,7 @@ const listsDescribe = () => {
         .expect(200);
 
       const expected: FullList = { ...list, ...listUpdate };
-      const { body: actualList } = await getTestList(jwts[0], list.id);
+      const actualList = (await getTestList(jwts[0], list.id)).body as FullList;
       expect(actualList).to.deep.equal(expected);
     });
 
@@ -666,13 +740,16 @@ const listsDescribe = () => {
         })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for updating a list without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "another person's list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "another person's list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .patch(`/api/lists/${list.id}`)
@@ -683,13 +760,15 @@ const listsDescribe = () => {
         })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
-      const { body: actualList } = await getTestList(jwts[1], list.id);
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
+      const actualList = (await getTestList(jwts[1], list.id)).body as FullList;
       expect(actualList.name).to.equal(list.name);
     });
 
     it("should return 415 for invalid json when updating a list", async () => {
-      const { body: list } = await createTestList(jwts[0], { name: "a list" });
+      const list = (await createTestList(jwts[0], { name: "a list" }))
+        .body as FullList;
 
       await request(app)
         .patch(`/api/lists/${list.id}`)
@@ -705,15 +784,16 @@ const listsDescribe = () => {
         .send('{"name": "list","color": "GREEN"')
         .expect(400);
 
-      expect(test.body.error).to.not.have.property("data");
+      const body = test.body as ErrorResponse;
+      expect(body.error).to.not.have.property("data");
     });
 
-    describe("updating a list with invalid values", async () => {
+    describe("updating a list with invalid values", () => {
       let list: FullList;
 
       before(async () => {
         list = (await createTestList(jwts[0], { name: "list to not update" }))
-          .body;
+          .body as FullList;
       });
 
       it("should not update list with invalid data", async () => {
@@ -724,7 +804,8 @@ const listsDescribe = () => {
           .expect(400);
 
         const test = await getTestList(jwts[0], list.id);
-        expect(test.body.name).to.equal(list.name);
+        const body = test.body as FullList;
+        expect(body.name).to.equal(list.name);
       });
 
       [...invalidListTestCases, ...invalidListUpdateTestCases].forEach(
@@ -736,14 +817,16 @@ const listsDescribe = () => {
               .send(testCase.input)
               .expect(400);
 
-            expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-            expect(test.body.error.data.length).to.equal(
+            const body = test.body as ErrorResponse;
+            expect(body.error.code).to.equal("VALIDATION_ERROR");
+            const errorData = body.error.data as {
+              path: string;
+            }[];
+            expect(errorData.length).to.equal(
               testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
-              expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath,
-              );
+              expect(errorData[index].path).to.deep.equal(expectedPath);
             });
           });
         },
@@ -753,10 +836,12 @@ const listsDescribe = () => {
 
   describe("deleting a list", () => {
     it("should delete a list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list to delete",
-        products: [{ name: "product" }],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list to delete",
+          products: [{ name: "product" }],
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}`)
@@ -766,14 +851,20 @@ const listsDescribe = () => {
       expect(test.noContent).to.be.true;
 
       const getListTest = await getTestList(jwts[0], list.id).expect(404);
-      expect(getListTest.body.error.code).to.equal("LIST_NOT_FOUND");
+      const getListTestBody = getListTest.body as ErrorResponse;
+      expect(getListTestBody.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should not delete a list if not owner", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list to not delete",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list to not delete",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const test = await request(app)
@@ -781,7 +872,8 @@ const listsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(403);
 
-      expect(test.body.error.code).to.equal("NOT_PERMITTED");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("NOT_PERMITTED");
       await getTestList(jwts[0], list.id).expect(200);
     });
 
@@ -792,20 +884,24 @@ const listsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for deleting a list without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "another person's list",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "another person's list",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
 
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
       await getTestList(jwts[1], list.id).expect(200);
     });
   });

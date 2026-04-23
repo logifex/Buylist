@@ -4,6 +4,8 @@ import type {
   ProductDetails,
 } from "../../types/product.js";
 import type { FullList } from "../../types/list.js";
+import type { TokenInvitationDetails } from "../../types/invitation.js";
+import type { ErrorResponse } from "../../types/responseTypes.js";
 import request from "supertest";
 import {
   invalidProductCreateTestCases,
@@ -30,17 +32,19 @@ const productsDescribe = () => {
 
   before(async () => {
     for (let i = 0; i < USER_AMOUNT; i++) {
-      jwts.push(await getTestJwt(dummyUserInputs[i].id!));
-      await ListService.deleteAllUserLists(dummyUserInputs[i].id!);
+      jwts.push(await getTestJwt(dummyUserInputs[i].id));
+      await ListService.deleteAllUserLists(dummyUserInputs[i].id);
     }
   });
 
   describe("creating a product", () => {
     it("should create a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [{ name: "product" }],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [{ name: "product" }],
+        })
+      ).body as FullList;
 
       const product: CreateProductInput = {
         name: "banana",
@@ -54,21 +58,24 @@ const productsDescribe = () => {
         .send(product)
         .expect(201);
 
-      const expected = { ...product, id: test.body.id };
-      expect(test.body.id).to.not.be.empty;
-      expect(test.body).to.deep.equal(expected);
+      const body = test.body as ProductDetails;
+      const expected = { ...product, id: body.id };
+      expect(body.id).to.not.be.empty;
+      expect(body).to.deep.equal(expected);
 
-      const actualProducts: ProductDetails[] = (
-        await getTestList(jwts[0], list.id)
-      ).body.products;
+      const actualProducts = (
+        (await getTestList(jwts[0], list.id)).body as FullList
+      ).products;
       expect(actualProducts[0]).to.deep.equal(list.products[0]);
       expect(actualProducts[1]).to.deep.equal(expected);
     });
 
     it("should trim fields when creating a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .post(`/api/lists/${list.id}/products`)
@@ -76,14 +83,17 @@ const productsDescribe = () => {
         .send({ name: "    name      ", note: "     note     " })
         .expect(201);
 
-      expect(test.body.name).to.equal("name");
-      expect(test.body.note).to.equal("note");
+      const body = test.body as ProductDetails;
+      expect(body.name).to.equal("name");
+      expect(body.note).to.equal("note");
     });
 
     it("should create a product without being affected by id field", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+        })
+      ).body as FullList;
 
       const fakeId = "c7601d9e-fe18-47b5-9d2a-d1ed622cbec2";
       const product: CreateProductInput = {
@@ -98,16 +108,22 @@ const productsDescribe = () => {
         .send({ id: fakeId, ...product })
         .expect(201);
 
-      expect(test.body.id).to.not.equal(fakeId);
-      expect(test.body).to.deep.equal({ ...product, id: test.body.id });
+      const body = test.body as ProductDetails;
+      expect(body.id).to.not.equal(fakeId);
+      expect(body).to.deep.equal({ ...product, id: body.id });
     });
 
     it("should create a product as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list for products",
-        color: "YELLOW",
-      });
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list for products",
+          color: "YELLOW",
+        })
+      ).body as FullList;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const product: CreateProductInput = {
@@ -122,28 +138,32 @@ const productsDescribe = () => {
         .send(product)
         .expect(201);
 
-      const expected = { ...product, id: test.body.id };
+      const body = test.body as ProductDetails;
+      const expected = { ...product, id: body.id };
       expect(test.body).to.deep.equal(expected);
     });
 
     it("should not create a product after exceeding the product limit", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: new Array(resourceLimits.PRODUCT_LIMIT).fill({
-          name: "product",
-        }),
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: new Array(resourceLimits.PRODUCT_LIMIT).fill({
+            name: "product",
+          }),
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .post(`/api/lists/${list.id}/products`)
         .auth(jwts[0], { type: "bearer" })
         .send({ name: "new product" })
         .expect(403);
-      expect(test.body.error.code).to.equal("TOO_MANY_PRODUCTS");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("TOO_MANY_PRODUCTS");
 
-      const actualProducts: ProductDetails[] = (
-        await getTestList(jwts[0], list.id)
-      ).body.products;
+      const actualProducts = (
+        (await getTestList(jwts[0], list.id)).body as FullList
+      ).products;
       expect(actualProducts.length).to.equal(resourceLimits.PRODUCT_LIMIT);
     });
 
@@ -155,31 +175,37 @@ const productsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .send({ name: "product" })
         .expect(404);
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for creating a product without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list for products",
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list for products",
+        })
+      ).body as FullList;
 
       const test = await request(app)
         .post(`/api/lists/${list.id}/products`)
         .auth(jwts[0], { type: "bearer" })
         .send({ name: "product" })
         .expect(404);
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
 
-      const actualProducts: ProductDetails[] = (
-        await getTestList(jwts[1], list.id)
-      ).body.products;
+      const actualProducts = (
+        (await getTestList(jwts[1], list.id)).body as FullList
+      ).products;
       expect(actualProducts.length).to.equal(list.products.length);
     });
 
     it("should return 415 for invalid json when creating a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+        })
+      ).body as FullList;
 
       await request(app)
         .post(`/api/lists/${list.id}/products`)
@@ -195,7 +221,8 @@ const productsDescribe = () => {
         .send('{"name": "product","note": "one"')
         .expect(400);
 
-      expect(test.body.error).to.not.have.property("data");
+      const body = test.body as ErrorResponse;
+      expect(body.error).to.not.have.property("data");
     });
 
     describe("creating an invalid product", () => {
@@ -203,7 +230,7 @@ const productsDescribe = () => {
 
       before(async () => {
         list = (await createTestList(jwts[0], { name: "list for products" }))
-          .body;
+          .body as FullList;
       });
 
       it("should not create a product with invalid data", async () => {
@@ -213,9 +240,9 @@ const productsDescribe = () => {
           .send({ name: "a".repeat(100) })
           .expect(400);
 
-        const actualProducts: ProductDetails[] = (
-          await getTestList(jwts[0], list.id)
-        ).body.products;
+        const actualProducts = (
+          (await getTestList(jwts[0], list.id)).body as FullList
+        ).products;
         expect(actualProducts.length).to.equal(list.products.length);
       });
 
@@ -228,14 +255,14 @@ const productsDescribe = () => {
               .send(testCase.input)
               .expect(400);
 
-            expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-            expect(test.body.error.data.length).to.equal(
+            const body = test.body as ErrorResponse;
+            expect(body.error.code).to.equal("VALIDATION_ERROR");
+            const errorData = body.error.data as { path: string[] }[];
+            expect(errorData.length).to.equal(
               testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
-              expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath,
-              );
+              expect(errorData[index].path).to.deep.equal(expectedPath);
             });
           });
         },
@@ -245,17 +272,19 @@ const productsDescribe = () => {
 
   describe("updating a product", () => {
     it("should update a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          { name: "product", note: "note", isChecked: true },
-          {
-            name: "apple",
-            note: "one",
-            isChecked: false,
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            { name: "product", note: "note", isChecked: true },
+            {
+              name: "apple",
+              note: "one",
+              isChecked: false,
+            },
+          ],
+        })
+      ).body as FullList;
       const originalProduct = list.products[1];
 
       const productUpdate: EditProductInput = {
@@ -276,18 +305,20 @@ const productsDescribe = () => {
       };
       expect(test.body).to.deep.equal(expected);
 
-      const actualProducts: ProductDetails[] = (
-        await getTestList(jwts[0], list.id)
-      ).body.products;
+      const actualProducts = (
+        (await getTestList(jwts[0], list.id)).body as FullList
+      ).products;
       expect(actualProducts[0]).to.deep.equal(list.products[0]);
       expect(actualProducts[1]).to.deep.equal(expected);
     });
 
     it("should trim fields when updating a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [{ name: "a product" }],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [{ name: "a product" }],
+        })
+      ).body as FullList;
       const originalProduct: ProductDetails = list.products[0];
 
       const test = await request(app)
@@ -296,21 +327,24 @@ const productsDescribe = () => {
         .send({ name: "   a product      ", note: "     a note   " })
         .expect(200);
 
-      expect(test.body.name).to.equal("a product");
-      expect(test.body.note).to.equal("a note");
+      const body = test.body as ProductDetails;
+      expect(body.name).to.equal("a product");
+      expect(body.note).to.equal("a note");
     });
 
     it("should update a product without updating id", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        color: "RED",
-        products: [
-          {
-            name: "orange",
-            isChecked: true,
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          color: "RED",
+          products: [
+            {
+              name: "orange",
+              isChecked: true,
+            },
+          ],
+        })
+      ).body as FullList;
       const originalProduct: ProductDetails = list.products[0];
 
       const productUpdate: EditProductInput = {
@@ -325,22 +359,25 @@ const productsDescribe = () => {
         .send({ ...productUpdate, id: fakeId })
         .expect(200);
 
-      expect(test.body.id).to.not.equal(fakeId);
-      expect(test.body).to.deep.equal({
+      const body = test.body as ProductDetails;
+      expect(body.id).to.not.equal(fakeId);
+      expect(body).to.deep.equal({
         ...originalProduct,
         ...productUpdate,
       });
     });
 
     it("should update only one field", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          {
-            name: "^$%^$#%%#$",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            {
+              name: "^$%^$#%%#$",
+            },
+          ],
+        })
+      ).body as FullList;
       const originalProduct: ProductDetails = list.products[0];
 
       const productUpdate: EditProductInput = {
@@ -372,17 +409,22 @@ const productsDescribe = () => {
     });
 
     it("should update a product as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list for products",
-        products: [
-          {
-            name: "apple",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list for products",
+          products: [
+            {
+              name: "apple",
+            },
+          ],
+        })
+      ).body as FullList;
       const originalProduct: ProductDetails = list.products[0];
 
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const productUpdate: EditProductInput = {
@@ -405,9 +447,11 @@ const productsDescribe = () => {
     });
 
     it("should return 404 for updating a non-existing product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+        })
+      ).body as FullList;
 
       const productUpdate: EditProductInput = {
         name: "New Product",
@@ -419,18 +463,21 @@ const productsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .send(productUpdate)
         .expect(404);
-      expect(test.body.error.code).to.equal("PRODUCT_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("PRODUCT_NOT_FOUND");
     });
 
     it("should return 404 for updating a product in a non-existing list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          {
-            name: "eggs",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            {
+              name: "eggs",
+            },
+          ],
+        })
+      ).body as FullList;
       const originalProduct: ProductDetails = list.products[0];
 
       const productUpdate: EditProductInput = {
@@ -443,21 +490,26 @@ const productsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .send(productUpdate)
         .expect(404);
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for updating a product in wrong list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          {
-            name: "meat",
-          },
-        ],
-      });
-      const { body: wrongList } = await createTestList(jwts[0], {
-        name: "Wrong list",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            {
+              name: "meat",
+            },
+          ],
+        })
+      ).body as FullList;
+      const wrongList = (
+        await createTestList(jwts[0], {
+          name: "Wrong list",
+        })
+      ).body as FullList;
       const originalProduct: ProductDetails = list.products[0];
 
       const productUpdate: EditProductInput = {
@@ -470,18 +522,21 @@ const productsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .send(productUpdate)
         .expect(404);
-      expect(test.body.error.code).to.equal("PRODUCT_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("PRODUCT_NOT_FOUND");
     });
 
     it("should return 404 for updating a product without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list for products",
-        products: [
-          {
-            name: "bread",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list for products",
+          products: [
+            {
+              name: "bread",
+            },
+          ],
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[0];
 
       const productUpdate: EditProductInput = {
@@ -494,19 +549,22 @@ const productsDescribe = () => {
         .auth(jwts[0], { type: "bearer" })
         .send(productUpdate)
         .expect(404);
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 415 for invalid json when updating a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          {
-            name: "some product",
-            note: "more than 2",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            {
+              name: "some product",
+              note: "more than 2",
+            },
+          ],
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[0];
 
       await request(app)
@@ -523,7 +581,8 @@ const productsDescribe = () => {
         .send('{"name": "product","note": "one"')
         .expect(400);
 
-      expect(test.body.error).to.not.have.property("data");
+      const body = test.body as ErrorResponse;
+      expect(body.error).to.not.have.property("data");
     });
 
     describe("updating an invalid product", () => {
@@ -541,7 +600,7 @@ const productsDescribe = () => {
               },
             ],
           })
-        ).body;
+        ).body as FullList;
         product = list.products[0];
       });
 
@@ -552,9 +611,9 @@ const productsDescribe = () => {
           .send({ name: "a".repeat(100) })
           .expect(400);
 
-        const actualProducts: ProductDetails[] = (
-          await getTestList(jwts[0], list.id)
-        ).body.products;
+        const actualProducts = (
+          (await getTestList(jwts[0], list.id)).body as FullList
+        ).products;
         expect(actualProducts[0].name).to.equal(product.name);
       });
 
@@ -567,14 +626,14 @@ const productsDescribe = () => {
               .send(testCase.input)
               .expect(400);
 
-            expect(test.body.error.code).to.equal("VALIDATION_ERROR");
-            expect(test.body.error.data.length).to.equal(
+            const body = test.body as ErrorResponse;
+            expect(body.error.code).to.equal("VALIDATION_ERROR");
+            const errorData = body.error.data as { path: string[] }[];
+            expect(errorData.length).to.equal(
               testCase.expectedErrorPaths.length,
             );
             testCase.expectedErrorPaths.forEach((expectedPath, index) => {
-              expect(test.body.error.data[index].path).to.deep.equal(
-                expectedPath,
-              );
+              expect(errorData[index].path).to.deep.equal(expectedPath);
             });
           });
         },
@@ -584,19 +643,21 @@ const productsDescribe = () => {
 
   describe("deleting a product", () => {
     before(async () => {
-      await ListService.deleteAllUserLists(dummyUserInputs[0].id!);
+      await ListService.deleteAllUserLists(dummyUserInputs[0].id);
     });
 
     it("should delete a product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          { name: "first product" },
-          {
-            name: "second",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            { name: "first product" },
+            {
+              name: "second",
+            },
+          ],
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[1];
 
       const test = await request(app)
@@ -606,25 +667,30 @@ const productsDescribe = () => {
 
       expect(test.noContent).to.be.true;
 
-      const actualList: FullList = (await getTestList(jwts[0], list.id)).body;
+      const actualList = (await getTestList(jwts[0], list.id)).body as FullList;
       expect(actualList.products.length).to.equal(list.products.length - 1);
       expect(actualList.products[0]).to.deep.equal(list.products[0]);
     });
 
     it("should delete a product as a basic user", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list for products",
-        color: "BLUE",
-        products: [
-          { name: "product", note: "note", isChecked: true },
-          {
-            name: "apple",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list for products",
+          color: "BLUE",
+          products: [
+            { name: "product", note: "note", isChecked: true },
+            {
+              name: "apple",
+            },
+          ],
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[1];
 
-      const token = (await createTestInviteToken(jwts[1], list.id)).body.token;
+      const token = (
+        (await createTestInviteToken(jwts[1], list.id))
+          .body as TokenInvitationDetails
+      ).token;
       await joinTestList(jwts[0], token);
 
       const test = await request(app)
@@ -636,27 +702,32 @@ const productsDescribe = () => {
     });
 
     it("should return 404 for deleting a non-existing product", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+        })
+      ).body as FullList;
       const fakeId = "e3d0c91e-f1d3-46b2-8aca-dad3ea0be77a";
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}/products/${fakeId}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
-      expect(test.body.error.code).to.equal("PRODUCT_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("PRODUCT_NOT_FOUND");
     });
 
     it("should return 404 for deleting a product in non-existing list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          {
-            name: "eggs",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            {
+              name: "eggs",
+            },
+          ],
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[0];
       const fakeId = "e3d0c91e-f1d3-46b2-8aca-dad3ea0be77a";
 
@@ -664,56 +735,65 @@ const productsDescribe = () => {
         .delete(`/api/lists/${fakeId}/products/${product.id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
     });
 
     it("should return 404 for deleting a product in wrong list", async () => {
-      const { body: list } = await createTestList(jwts[0], {
-        name: "list for products",
-        products: [
-          {
-            name: "checked",
-            isChecked: true,
-          },
-        ],
-      });
-      const { body: wrongList } = await createTestList(jwts[0], {
-        name: "list with no products",
-      });
+      const list = (
+        await createTestList(jwts[0], {
+          name: "list for products",
+          products: [
+            {
+              name: "checked",
+              isChecked: true,
+            },
+          ],
+        })
+      ).body as FullList;
+      const wrongList = (
+        await createTestList(jwts[0], {
+          name: "list with no products",
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[0];
 
       const test = await request(app)
         .delete(`/api/lists/${wrongList.id}/products/${product.id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
-      expect(test.body.error.code).to.equal("PRODUCT_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("PRODUCT_NOT_FOUND");
 
-      const actualProducts: ProductDetails[] = (
-        await getTestList(jwts[0], list.id)
-      ).body.products;
+      const actualProducts = (
+        (await getTestList(jwts[0], list.id)).body as FullList
+      ).products;
       expect(actualProducts.length).to.equal(list.products.length);
     });
 
     it("should return 404 for deleting a product without being a participant", async () => {
-      const { body: list } = await createTestList(jwts[1], {
-        name: "list for products",
-        products: [
-          {
-            name: "apple",
-          },
-        ],
-      });
+      const list = (
+        await createTestList(jwts[1], {
+          name: "list for products",
+          products: [
+            {
+              name: "apple",
+            },
+          ],
+        })
+      ).body as FullList;
       const product: ProductDetails = list.products[0];
 
       const test = await request(app)
         .delete(`/api/lists/${list.id}/products/${product.id}`)
         .auth(jwts[0], { type: "bearer" })
         .expect(404);
-      expect(test.body.error.code).to.equal("LIST_NOT_FOUND");
+      const body = test.body as ErrorResponse;
+      expect(body.error.code).to.equal("LIST_NOT_FOUND");
 
-      const actualProducts: ProductDetails[] = (
-        await getTestList(jwts[1], list.id)
-      ).body.products;
+      const actualProducts = (
+        (await getTestList(jwts[1], list.id)).body as FullList
+      ).products;
       expect(actualProducts.length).to.equal(list.products.length);
     });
   });
