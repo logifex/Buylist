@@ -3,9 +3,9 @@ import React, { useContext, useState } from "react";
 import Product, { ProductInput } from "@/models/Product";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import ThemeContext from "@/store/theme-context";
-import Text from "@/components/Ui/ThemedText";
 import ExistingProductDialog from "./ExistingProductDialog";
 import ListConstants from "@/constants/ListConstants";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type Props = {
   products: Product[];
@@ -76,14 +76,19 @@ const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
         onPress={handleAddProduct}
         hitSlop={4}
       >
-        <Text style={styles.buttonText}>+</Text>
+        <MaterialIcons
+          name="add"
+          size={32}
+          color="black"
+          accessibilityLabel="הוספת מוצר"
+        />
       </Pressable>
       <ExistingProductDialog
         ref={existingProductBottomSheet.ref}
         existingProduct={existingProduct}
         onAddProduct={addProduct}
         onEditProduct={onEditProduct}
-        dismiss={existingProductBottomSheet.dismiss}
+        onRequestClose={existingProductBottomSheet.dismiss}
       />
     </View>
   );
@@ -108,15 +113,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 100,
-    marginRight: 8,
+    marginEnd: 8,
     borderWidth: 0.5,
   },
   addButtonPressed: {
     opacity: 0.75,
-  },
-  buttonText: {
-    fontSize: 24,
-    color: "black",
   },
 });
 

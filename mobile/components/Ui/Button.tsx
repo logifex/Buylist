@@ -1,10 +1,4 @@
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
+import { Pressable, StyleSheet, View, ViewStyle } from "react-native";
 import React, { PropsWithChildren, useContext } from "react";
 import ThemeContext from "@/store/theme-context";
 
@@ -14,8 +8,8 @@ type Props = PropsWithChildren<{
   onPress: () => void;
   disabled?: boolean;
   type?: ButtonType;
-  style?: StyleProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
+  style?: ViewStyle;
+  containerStyle?: ViewStyle;
 }>;
 
 const Button = ({

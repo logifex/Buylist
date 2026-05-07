@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   iconText: {
-    marginLeft: 4,
+    marginStart: 4,
   },
 });
 

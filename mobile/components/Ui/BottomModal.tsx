@@ -27,7 +27,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type BottomModalProps = PropsWithChildren<{
   title?: string;
-  snapPoints: (string | number)[];
+  enableDynamicSizing?: boolean;
+  snapPoints?: (string | number)[];
   backdropBehavior?: BackdropPressBehavior;
   showHandle?: boolean;
   closeKeyboard?: boolean;
@@ -48,6 +49,7 @@ const BackdropComponent = ({
 
 const BottomModal = ({
   title,
+  enableDynamicSizing = true,
   snapPoints,
   backdropBehavior = "close",
   showHandle = true,
@@ -90,18 +92,20 @@ const BottomModal = ({
     setIsShowing(index < 0 ? false : true);
   }, []);
 
+  const Container = enableDynamicSizing ? BottomSheetView : View;
+
   return (
     <View>
       <BottomSheetModal
         ref={ref}
-        snapPoints={snapPoints.map((s) =>
-          typeof s === "string" ? s : s + insets.bottom,
-        )}
-        enableDynamicSizing={false}
+        bottomInset={insets.bottom}
+        snapPoints={snapPoints}
+        enableDynamicSizing={enableDynamicSizing}
         onChange={handleSheetChanges}
         keyboardBlurBehavior="restore"
         keyboardBehavior="interactive"
         android_keyboardInputMode="adjustPan"
+        style={{ marginLeft: insets.left, marginRight: insets.right }}
         handleIndicatorStyle={[
           styles.handleIndicator,
           {
@@ -111,21 +115,23 @@ const BottomModal = ({
         ]}
         backgroundStyle={[
           styles.background,
-          { backgroundColor: theme.modalBackground },
+          {
+            backgroundColor: theme.modalBackground,
+          },
         ]}
         enablePanDownToClose
         backdropComponent={(props) =>
           BackdropComponent({ ...props, backdropBehavior: backdropBehavior })
         }
       >
-        <View style={styles.fullSpace}>
+        <Container style={styles.fullSpace}>
           {title && (
             <View style={[styles.header, { borderBottomColor: theme.hr }]}>
               <Text style={styles.text}>{title}</Text>
             </View>
           )}
           <View style={styles.fullSpace}>{children}</View>
-        </View>
+        </Container>
       </BottomSheetModal>
     </View>
   );

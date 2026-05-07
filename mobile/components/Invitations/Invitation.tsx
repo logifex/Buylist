@@ -133,7 +133,7 @@ const Invitation = ({ onShareList, list }: Props) => {
 const styles = StyleSheet.create({
   invitationLinkContainer: {
     alignItems: "center",
-    paddingTop: 12,
+    paddingVertical: 16,
   },
   linkContainer: {
     padding: 16,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   linkIcon: {
     alignSelf: "center",
-    marginRight: 16,
+    marginEnd: 16,
     borderRadius: 4,
     padding: 4,
   },
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   button: {
-    width: 200,
+    minWidth: 200,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   buttonText: {
-    marginLeft: 8,
+    marginStart: 8,
     fontSize: 16,
     color: "black",
   },

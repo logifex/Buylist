@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable } from "react-native";
-import React, { useContext } from "react";
+import React, { JSX, useContext } from "react";
 import ThemeContext from "@/store/theme-context";
 import Text from "./ThemedText";
 
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    marginLeft: 20,
+    marginStart: 20,
     fontWeight: "600",
     fontSize: 16,
     lineHeight: 24,

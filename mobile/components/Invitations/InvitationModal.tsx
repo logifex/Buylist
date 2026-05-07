@@ -16,7 +16,6 @@ const InvitationModal = ({ onRequestClose, onShareList, list, ref }: Props) => {
     <AuthRequiredBottomModal
       ref={ref}
       title="הזמנה לרשימה"
-      snapPoints={[300]}
       showHandle
       closeKeyboard
       onRequestClose={onRequestClose}

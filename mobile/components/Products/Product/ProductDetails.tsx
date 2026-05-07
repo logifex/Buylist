@@ -1,10 +1,11 @@
-import React, { useMemo, useCallback, useState, useRef } from "react";
+import React, { useMemo, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import Product from "@/models/Product";
 import ProductContent from "./ProductContent";
 import ProductEditForm from "./ProductEditForm";
 import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";
-import Checkbox from "expo-checkbox";
+import { Checkbox } from "expo-checkbox";
+import { useRecyclingState } from "@shopify/flash-list";
 
 interface Props extends Product {
   isSynced?: boolean;
@@ -25,13 +26,7 @@ const ProductDetails = ({
   onEditProduct,
   onDeleteProduct,
 }: Props) => {
-  const [edit, setEdit] = useState(false);
-
-  const lastItemId = useRef(id);
-  if (id !== lastItemId.current) {
-    lastItemId.current = id;
-    setEdit(false);
-  }
+  const [edit, setEdit] = useRecyclingState(false, [id]);
 
   const product: Product = useMemo(
     () => ({ id, name, note, isChecked }),

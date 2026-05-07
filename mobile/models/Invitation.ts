@@ -1,4 +1,4 @@
-export interface TokenInvitation {
+interface TokenInvitation {
   token: string;
   expiry: Date;
 }

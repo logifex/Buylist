@@ -4,7 +4,6 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import List from "@/models/List";
 import BottomModal from "@/components/Ui/BottomModal";
 import MenuItem from "@/components/Ui/MenuItem";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ColorDetails = {
   listColor: List["color"];
@@ -29,8 +28,6 @@ const colors: ColorDetails[] = [
 ];
 
 const ColorMenu = ({ onRequestClose, onPick, ref }: Props) => {
-  const insets = useSafeAreaInsets();
-
   const handleColorPick = (color: List["color"]) => {
     onRequestClose();
     onPick(color);
@@ -41,13 +38,12 @@ const ColorMenu = ({ onRequestClose, onPick, ref }: Props) => {
       ref={ref}
       title="צבע הרשימה"
       snapPoints={["60%"]}
+      enableDynamicSizing={false}
       showHandle
       closeKeyboard
       onRequestClose={onRequestClose}
     >
-      <BottomSheetScrollView
-        contentContainerStyle={{ paddingBottom: insets.bottom }}
-      >
+      <BottomSheetScrollView>
         {colors.map((color) => (
           <MenuItem
             key={color.listColor}

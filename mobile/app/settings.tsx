@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import ThemeContext from "@/store/theme-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import PageContainer from "@/components/Ui/PageContainer";
 
 const Settings = () => {
   const { userInfo, signOut } = useContext(AuthContext);
@@ -48,7 +49,7 @@ const Settings = () => {
 
   return (
     <>
-      <View style={styles.fullSpace}>
+      <PageContainer>
         <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom }}>
           <Category title="פרופיל">
             <View style={styles.profile}>
@@ -95,11 +96,10 @@ const Settings = () => {
             <Text>גרסה {Application.nativeApplicationVersion}</Text>
           </Category>
         </ScrollView>
-      </View>
+      </PageContainer>
       <BottomModal
         ref={deleteAccountSheetModal.ref}
         onRequestClose={deleteAccountSheetModal.dismiss}
-        snapPoints={[200]}
       >
         <DialogPrompt
           onConfirm={handleDeleteAccount}
@@ -117,9 +117,6 @@ const Settings = () => {
 };
 
 const styles = StyleSheet.create({
-  fullSpace: {
-    flex: 1,
-  },
   profile: {
     width: "100%",
     alignSelf: "center",

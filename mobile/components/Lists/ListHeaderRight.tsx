@@ -33,7 +33,7 @@ const ListHeaderRight = ({
         accessibilityLabel="שינוי צבע הרשימה"
       />
     </HeaderButton>
-    <HeaderButton onPress={menuPresent} first>
+    <HeaderButton onPress={menuPresent}>
       <MaterialIcon
         name="menu"
         size={24}

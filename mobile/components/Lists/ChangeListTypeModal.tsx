@@ -48,7 +48,6 @@ const ChangeListTypeModal = ({
     <AuthRequiredBottomModal
       ref={ref}
       title={isShared ? "שינוי לרשימה מקומית" : "שינוי לרשימה מקוונת"}
-      snapPoints={[300]}
       onRequestClose={onRequestClose}
     >
       <View style={styles.container}>
@@ -84,13 +83,13 @@ const ChangeListTypeModal = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: 12,
+    paddingVertical: 12,
   },
   text: {
     textAlign: "center",
   },
   button: {
-    width: 200,
+    minWidth: 200,
     margin: 8,
   },
   buttonContainer: {

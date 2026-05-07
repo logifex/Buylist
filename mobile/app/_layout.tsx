@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { Stack } from "expo-router";
 import HeaderButton from "../components/Ui/HeaderButton";
@@ -14,11 +15,7 @@ import { connectSocket } from "@/config/socket";
 import AuthContext from "@/store/auth-context";
 
 if (__DEV__) {
-  require("@/ReactotronConfig");
-}
-
-export const unstable_settings = {
-  initialRouteName: 'index',
+  import("@/ReactotronConfig");
 }
 
 export type RootStackParamList = {
@@ -35,7 +32,6 @@ const HomeHeaderRight = ({ navigation }: { navigation: any }) => {
           navigation.navigate("settings");
         }
       }}
-      first
     >
       <MaterialIcon
         name="settings"
@@ -80,9 +76,15 @@ const RootLayoutContent = () => {
   const statusBarStyle = currentColorSchemeName === "dark" ? "light" : "dark";
   const title = __DEV__ ? "Buylist (Dev)" : "Buylist";
 
+  useEffect(() => {
+    NavigationBar.setStyle(
+      currentColorSchemeName === "dark" ? "dark" : "light",
+    );
+  }, [currentColorSchemeName]);
+
   return (
     <>
-      <SystemBars style={statusBarStyle} />
+      <StatusBar style={statusBarStyle} />
       <View style={[styles.fullSpace, { backgroundColor: theme.background }]}>
         <Stack>
           <Stack.Screen

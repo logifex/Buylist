@@ -65,7 +65,6 @@ const ProductList = ({
         }
         keyExtractor={(item) => (typeof item === "string" ? item : item.id)}
         keyboardShouldPersistTaps="handled"
-        estimatedItemSize={65}
         ListEmptyComponent={
           <Text style={styles.emptyText}>אין מוצרים ברשימה.</Text>
         }

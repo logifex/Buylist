@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   content: {
-    marginLeft: 8,
+    marginStart: 8,
     flex: 1,
   },
   text: {

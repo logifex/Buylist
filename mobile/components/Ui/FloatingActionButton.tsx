@@ -1,5 +1,4 @@
-import React from "react";
-import { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import { ColorValue, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,7 +12,14 @@ const FloatingActionButton = ({ onPress, color, children }: Props) => {
 
   return (
     <Pressable
-      style={[styles.container, { marginBottom: insets.bottom }]}
+      style={[
+        styles.container,
+        {
+          marginBottom: insets.bottom,
+          marginRight: insets.right,
+          marginLeft: insets.left,
+        },
+      ]}
       onPress={onPress}
     >
       {({ pressed }) => (

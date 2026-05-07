@@ -5,7 +5,6 @@ import AuthContext from "@/store/auth-context";
 import Text from "./ThemedText";
 import AuthButton from "./AuthButton";
 import { StyleSheet, View } from "react-native";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const AuthRequiredBottomModal = ({
   children,
@@ -26,7 +25,7 @@ const AuthRequiredBottomModal = ({
   return (
     <BottomModal {...props} ref={ref}>
       {message ? (
-        <View>
+        <View style={styles.container}>
           <Text style={styles.messageText}>{message}</Text>
           {isConnected && <AuthButton />}
         </View>
@@ -38,6 +37,9 @@ const AuthRequiredBottomModal = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 16,
+  },
   messageText: {
     marginVertical: 8,
     textAlign: "center",

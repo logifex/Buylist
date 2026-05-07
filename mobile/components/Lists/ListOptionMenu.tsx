@@ -1,7 +1,7 @@
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useContext } from "react";
 import List, { ListInfo, SharedList } from "@/models/List";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
@@ -11,11 +11,11 @@ import MenuItem from "../Ui/MenuItem";
 import DialogPrompt from "../Ui/Prompts/DialogPrompt";
 import AuthContext from "@/store/auth-context";
 import Text from "../Ui/ThemedText";
-import Participants from "@/components/Participants/Participants";
 import InputPrompt from "../Ui/Prompts/InputPrompt";
 import ListConstants from "@/constants/ListConstants";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ChangeListTypeModal from "./ChangeListTypeModal";
+import ParticipantsModal from "../Participants/ParticipantsModal";
 
 type Props = {
   onRequestClose: () => void;
@@ -59,11 +59,12 @@ const ListOptionMenu = ({
         ref={ref}
         onRequestClose={onRequestClose}
         title="ניהול רשימה"
-        snapPoints={[300]}
+        snapPoints={["40%", "75%"]}
+        enableDynamicSizing={false}
         showHandle
         closeKeyboard
       >
-        <View>
+        <BottomSheetScrollView>
           {isShared && (
             <MenuItem
               text="משתתפים"
@@ -141,13 +142,12 @@ const ListOptionMenu = ({
               }}
             />
           )}
-        </View>
+        </BottomSheetScrollView>
       </BottomModal>
       <BottomModal
         ref={editModal.ref}
         onRequestClose={editModal.dismiss}
         title="עריכת רשימה"
-        snapPoints={[250]}
       >
         <InputPrompt
           name="שם הרשימה"
@@ -158,42 +158,31 @@ const ListOptionMenu = ({
           autoFocus
         />
       </BottomModal>
-      <BottomModal
-        ref={deleteModal.ref}
-        onRequestClose={deleteModal.dismiss}
-        snapPoints={[200]}
-      >
+      <BottomModal ref={deleteModal.ref} onRequestClose={deleteModal.dismiss}>
         <DialogPrompt
           onConfirm={() => onDeleteList(list.id)}
           onClose={deleteModal.dismiss}
         >
           <Text style={styles.modalText}>
-            האם למחוק את הרשימה "{list.name}"?
+            {`האם למחוק את הרשימה "${list.name}"?`}
           </Text>
         </DialogPrompt>
       </BottomModal>
-      <BottomModal
-        ref={leaveModal.ref}
-        onRequestClose={leaveModal.dismiss}
-        snapPoints={[200]}
-      >
+      <BottomModal ref={leaveModal.ref} onRequestClose={leaveModal.dismiss}>
         <DialogPrompt
           onConfirm={() => onLeaveList(list.id)}
           onClose={leaveModal.dismiss}
         >
           <Text style={styles.modalText}>
-            האם לעזוב את הרשימה "{list.name}"?
+            {`האם לעזוב את הרשימה "${list.name}"?`}
           </Text>
         </DialogPrompt>
       </BottomModal>
-      <BottomModal
-        ref={participantsModal.ref}
-        onRequestClose={participantsModal.dismiss}
-        snapPoints={["25%", "50%", "75%"]}
-        title="משתתפים"
-      >
-        <Participants list={list as SharedList} />
-      </BottomModal>
+      <ParticipantsModal
+        list={list as SharedList}
+        participantsModalRef={participantsModal.ref}
+        onParticipantsRequestClose={participantsModal.dismiss}
+      />
       <ChangeListTypeModal
         ref={changeListTypeModal.ref}
         list={list}

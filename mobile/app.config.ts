@@ -5,12 +5,11 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
   name: IS_DEV ? "Buylist (Dev)" : "Buylist",
   slug: "buylist",
-  version: "1.1.2",
+  version: "1.1.5",
   orientation: "default",
   icon: "./assets/images/icon.png",
   scheme: "buylist",
   userInterfaceStyle: "automatic",
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     infoPlist: {
@@ -72,15 +71,8 @@ export default {
         },
       },
     ],
-    [
-      "react-native-edge-to-edge",
-      {
-        android: {
-          parentTheme: "Default",
-        },
-      },
-    ],
     "expo-localization",
+    "expo-font",
     "@react-native-firebase/app",
     "@react-native-firebase/auth",
     "@react-native-google-signin/google-signin",
@@ -88,9 +80,8 @@ export default {
       "expo-build-properties",
       {
         android: {
-          enableProguardInReleaseBuilds: true,
+          enableMinifyInReleaseBuilds: true,
           enableShrinkResourcesInReleaseBuilds: true,
-          supportsRTL: true,
           usesCleartextTraffic: IS_DEV,
         },
       },
@@ -98,9 +89,11 @@ export default {
   ],
   experiments: {
     typedRoutes: true,
+    reactCompiler: true,
   },
   extra: {
     supportsRTL: true,
+    forcesRTL: true,
     eas: {
       projectId: "75b7cfdb-113c-45ea-9899-1f7cf5bbd049",
     },

@@ -10,7 +10,7 @@ type Props = {
   existingProduct?: Product;
   onAddProduct: (productName: string) => void;
   onEditProduct: (product: Product) => void;
-  dismiss: () => void;
+  onRequestClose: () => void;
   ref: React.RefObject<BottomSheetModal | null>;
 };
 
@@ -18,7 +18,7 @@ const ExistingProductDialog = ({
   existingProduct,
   onAddProduct,
   onEditProduct,
-  dismiss,
+  onRequestClose,
   ref,
 }: Props) => {
   const handleAddProduct = () => {
@@ -41,10 +41,9 @@ const ExistingProductDialog = ({
   return (
     <BottomModal
       ref={ref}
-      snapPoints={[200]}
       showHandle
       backdropBehavior="none"
-      onRequestClose={dismiss}
+      onRequestClose={onRequestClose}
     >
       <DialogPrompt
         onConfirm={checked ? handleUncheckProduct : handleAddProduct}
@@ -53,7 +52,7 @@ const ExistingProductDialog = ({
         secondaryTitle={checked ? "להוסיף" : undefined}
         cancelType={checked ? "empty" : "primary"}
         secondaryType="empty"
-        onClose={dismiss}
+        onClose={onRequestClose}
       >
         <Text style={styles.text}>{text}</Text>
       </DialogPrompt>

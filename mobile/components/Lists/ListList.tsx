@@ -47,8 +47,7 @@ const ListList = ({ lists, onListPress, onStar }: Props) => {
       <FlashList
         data={sortedLists}
         extraData={sortedLists}
-        estimatedItemSize={76}
-        contentContainerStyle={{ paddingBottom: insets.bottom}}
+        contentContainerStyle={{ paddingBottom: insets.bottom }}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListHeaderComponent={

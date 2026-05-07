@@ -14,7 +14,7 @@ import { ListPreview } from "@/models/List";
 import ErrorCodes from "@/constants/ErrorCodes";
 
 const JoinList = () => {
-  const url = Linking.useURL();
+  const url = Linking.useLinkingURL();
   const [handled, setHandled] = useState(false);
   const [invitationLinkList, setInvitationLinkList] = useState<ListPreview>();
 
@@ -56,9 +56,13 @@ const JoinList = () => {
   }, [present, url]);
 
   useEffect(() => {
-    Linking.addEventListener("url", () => {
+    const subscription = Linking.addEventListener("url", () => {
       setHandled(false);
     });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -106,7 +110,6 @@ const JoinList = () => {
   return (
     <BottomModal
       ref={invitationLinkSheetModal.ref}
-      snapPoints={[175]}
       onRequestClose={invitationLinkSheetModal.dismiss}
       backdropBehavior="none"
       closeKeyboard
@@ -117,7 +120,7 @@ const JoinList = () => {
       >
         {invitationLinkList && (
           <Text style={styles.text}>
-            האם להצטרף אל הרשימה "{invitationLinkList.name}"?
+            {`האם להצטרף אל הרשימה "${invitationLinkList.name}"?`}
           </Text>
         )}
       </DialogPrompt>

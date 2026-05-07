@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useCallback, useContext, useEffect } from "react";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import ListList from "@/components/Lists/ListList";
@@ -16,6 +16,7 @@ import List, { SharedList } from "@/models/List";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 import ListConstants from "@/constants/ListConstants";
 import Toast from "react-native-toast-message";
+import PageContainer from "@/components/Ui/PageContainer";
 
 const Home = () => {
   const { theme } = useContext(ThemeContext);
@@ -53,7 +54,7 @@ const Home = () => {
   }, [sharedLists, queryClient]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (userCtx.userInfo) {
         refetchLists();
       }
@@ -93,7 +94,7 @@ const Home = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <PageContainer style={styles.container}>
       <ListList
         lists={combinedLists}
         onListPress={handlePressList}
@@ -113,7 +114,6 @@ const Home = () => {
       <BottomModal
         ref={addListBottomSheet.ref}
         title="יצירת רשימה"
-        snapPoints={[250]}
         onRequestClose={addListBottomSheet.dismiss}
       >
         <InputPrompt
@@ -124,14 +124,13 @@ const Home = () => {
           maxLength={ListConstants.maxListNameLength}
         />
       </BottomModal>
-    </View>
+    </PageContainer>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    flex: 1,
   },
 });
 

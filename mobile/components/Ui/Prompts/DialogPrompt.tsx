@@ -1,7 +1,6 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { PropsWithChildren } from "react";
 import Button, { ButtonType } from "../Button";
-import { StyleSheet } from "react-native";
 import Text from "../ThemedText";
 
 type Props = PropsWithChildren<{
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   secondaryButton: {
-    marginRight: 16,
+    marginEnd: 16,
   },
   primaryText: {
     color: "black",

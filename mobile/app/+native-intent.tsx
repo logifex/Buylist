@@ -5,5 +5,8 @@ export function redirectSystemPath({
   path: string;
   initial: boolean;
 }) {
+  if (!initial) {
+    return false;
+  }
   return "/";
 }

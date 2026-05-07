@@ -1,11 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import React, {
-  useContext,
-  useEffect,
-  useCallback,
-  useState,
-  useRef,
-} from "react";
+import React, { useContext, useEffect, useCallback, useState } from "react";
 import ProductAddRow from "@/components/Products/ProductAddRow";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import filterProductsChecked from "@/utils/filterProductsChecked";
@@ -32,6 +26,7 @@ import useListSocketHandlers from "@/hooks/useListSocketHandlers";
 import ThemeContext from "@/store/theme-context";
 import ListConstants from "@/constants/ListConstants";
 import Toast from "react-native-toast-message";
+import PageContainer from "@/components/Ui/PageContainer";
 
 const Lists = () => {
   const router = useRouter();
@@ -128,6 +123,7 @@ const Lists = () => {
   const handleDeleteList = (listId: string) => {
     if (!isShared) {
       listsCtx.deleteList(listId);
+      router.back();
     } else {
       deleteList.mutate();
     }
@@ -228,7 +224,7 @@ const Lists = () => {
   const filteredProducts = filterProductsChecked(list.products);
 
   return (
-    <View style={styles.container}>
+    <PageContainer style={styles.container}>
       <ProductAddRow
         products={list.products}
         onAddProduct={handleAddProduct}
@@ -262,13 +258,12 @@ const Lists = () => {
         onShareList={handleShareList}
         list={list}
       />
-    </View>
+    </PageContainer>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
   },
 });

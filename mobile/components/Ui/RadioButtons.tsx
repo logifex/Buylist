@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   text: {
-    marginLeft: 8,
+    marginStart: 8,
     fontSize: 16,
   },
 });
