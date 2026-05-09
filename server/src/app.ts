@@ -1,3 +1,5 @@
+import "./instrument.js";
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -14,7 +16,7 @@ import routes from "./routes/index.js";
 import { ErrorController } from "./controllers/index.js";
 import { configSocket } from "./socket.js";
 
-const PORT = env.port;
+const PORT = parseInt(env.port, 10);
 
 const app = express();
 export const httpServer = createServer(app);
@@ -31,9 +33,9 @@ app.use(routes);
 app.use(ErrorController.handleNotFound);
 app.use(ErrorController.errorHandlers);
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, env.host, () => {
   logger.info(
-    `App is running at ${env.serverUrl ?? "undefined"}:${PORT.toString()}`,
+    `App is running at ${env.host ?? env.serverUrl}:${PORT.toString()}`,
   );
 });
 

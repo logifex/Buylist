@@ -1,12 +1,13 @@
-import dotenv from "dotenv";
+import { configDotenv } from "dotenv";
 
 if (process.env.NODE_ENV !== "production") {
-  dotenv.config();
+  configDotenv();
 }
 
 export default {
   nodeEnv: process.env.NODE_ENV,
-  port: process.env.PORT ?? 3000,
+  port: process.env.PORT ?? "3000",
+  host: process.env.HOST,
   databaseUrl: process.env.DATABASE_URL,
   redisUrl: process.env.REDIS_URL,
   googleApplicationCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS,

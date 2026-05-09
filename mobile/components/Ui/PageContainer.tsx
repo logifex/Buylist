@@ -6,7 +6,7 @@ type Props = PropsWithChildren<{
   style?: ViewStyle;
 }>;
 
-const PageContainer = ({ children, style }: Props) => {
+const PageContainer = ({ style, children }: Props) => {
   const insets = useSafeAreaInsets();
 
   return (

@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ErrorResponse } from "../types/responseTypes.js";
 import type { BodyParserError } from "../types/error.js";
+import * as Sentry from "@sentry/node";
 import {
   AlreadyExistsError,
   AuthenticationError,
@@ -106,6 +107,7 @@ const handleHttpError = (
 
   if (!isHttpError) {
     logger.error(error);
+    Sentry.captureException(error);
   }
 
   if (!isHttpError || error.message === "") {
