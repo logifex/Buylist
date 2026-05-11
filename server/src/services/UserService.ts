@@ -1,5 +1,5 @@
 import type { UserDetails, UserInput } from "../types/user.js";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace.js";
 import { firebase, prisma, pubClient } from "../config/index.js";
 import { userDetailsSelect } from "../utils/selects.js";
 import { NotFoundError } from "../errors/index.js";

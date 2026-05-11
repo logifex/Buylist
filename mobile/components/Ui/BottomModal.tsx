@@ -98,7 +98,6 @@ const BottomModal = ({
     <View>
       <BottomSheetModal
         ref={ref}
-        bottomInset={insets.bottom}
         snapPoints={snapPoints}
         enableDynamicSizing={enableDynamicSizing}
         onChange={handleSheetChanges}
@@ -124,7 +123,7 @@ const BottomModal = ({
           BackdropComponent({ ...props, backdropBehavior: backdropBehavior })
         }
       >
-        <Container style={styles.fullSpace}>
+        <Container style={[styles.fullSpace, { paddingBottom: insets.bottom }]}>
           {title && (
             <View style={[styles.header, { borderBottomColor: theme.hr }]}>
               <Text style={styles.text}>{title}</Text>

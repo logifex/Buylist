@@ -56,7 +56,11 @@ const ListsReducer = (
     case "ADD_PRODUCT": {
       const newState = state.slice();
       const newCurList = newState.find((l) => l.id === action.payload.listId);
-      newCurList?.products.push(action.payload.product);
+      if (newCurList) {
+        newCurList.products = newCurList.products.concat(
+          action.payload.product,
+        );
+      }
 
       return newState;
     }
@@ -64,12 +68,13 @@ const ListsReducer = (
       const { id: productId, name, note, isChecked } = action.payload.product;
       const newState = state.slice();
       const newCurList = newState.find((l) => l.id === action.payload.listId);
-      const editProduct = newCurList?.products.find((p) => p.id === productId);
-
-      if (editProduct) {
-        editProduct.name = name;
-        editProduct.note = note;
-        editProduct.isChecked = isChecked;
+      if (newCurList) {
+        newCurList.products = newCurList.products.map((p) => {
+          if (p.id === productId) {
+            return { ...p, name, note, isChecked };
+          }
+          return p;
+        });
       }
 
       return newState;

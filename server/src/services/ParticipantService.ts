@@ -1,5 +1,5 @@
 import type { ParticipantDetails } from "../types/participant.js";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace.js";
 import { Role } from "../generated/prisma/enums.js";
 import { prisma } from "../config/index.js";
 import SocketService from "./SocketService.js";

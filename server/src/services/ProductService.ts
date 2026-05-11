@@ -3,7 +3,7 @@ import type {
   EditProductInput,
   ProductDetails,
 } from "../types/product.js";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace.js";
 import { prisma, resourceLimits } from "../config/index.js";
 import { productDetailsSelect } from "../utils/selects.js";
 import SocketService from "./SocketService.js";

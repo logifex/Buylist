@@ -1,6 +1,6 @@
 import type { TokenInvitationDetails } from "../types/invitation.js";
 import type { ListPreview } from "../types/list.js";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace.js";
 import { prisma } from "../config/index.js";
 import {
   InvitationAlreadyExistsError,
