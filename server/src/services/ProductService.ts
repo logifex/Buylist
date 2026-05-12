@@ -41,7 +41,7 @@ const createProduct = async (
         throw new TooManyProducts();
       }
 
-      return prisma.product.create({
+      return tx.product.create({
         data: {
           name: name,
           note: note,

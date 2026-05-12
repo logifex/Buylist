@@ -20,7 +20,7 @@ const ProductService = {
       },
     );
 
-    const json: Product = await response.json();
+    const json = (await response.json()) as Product;
     return { ...json, isSynced: true };
   },
   async updateProduct(listId: string, product: Product) {

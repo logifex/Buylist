@@ -14,11 +14,12 @@ const ProductAddRow = ({ onSubmit }: Props) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (enteredProductName === "") {
+    const newProductName = enteredProductName.trim();
+    if (newProductName === "") {
       return;
     }
 
-    onSubmit(enteredProductName);
+    onSubmit(newProductName);
     setEnteredProductName("");
   };
 

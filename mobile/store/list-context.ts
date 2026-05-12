@@ -12,7 +12,7 @@ export type ListsContextType = {
   editProduct: (listId: string, product: Product) => void;
   deleteProduct: (listId: string, productId: string) => void;
   starList: (listId: string, star: boolean) => void;
-  updateListStar: (oldListId: string, newListId: string) => void;
+  updateStarListId: (oldListId: string, newListId: string) => void;
 };
 
 const ListsContext = React.createContext<ListsContextType>({
@@ -25,7 +25,7 @@ const ListsContext = React.createContext<ListsContextType>({
   editProduct: () => {},
   deleteProduct: () => {},
   starList: () => {},
-  updateListStar: () => {},
+  updateStarListId: () => {},
 });
 
 export default ListsContext;

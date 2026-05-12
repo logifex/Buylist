@@ -83,7 +83,7 @@ const createList = (
       throw new TooManyLists();
     }
 
-    return prisma.list.create({
+    return tx.list.create({
       data: {
         name: name,
         color: color,

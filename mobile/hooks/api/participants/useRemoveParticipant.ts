@@ -10,8 +10,8 @@ const useRemoveParticipant = ({ listId }: { listId: string }) => {
     networkMode: "always",
     mutationFn: ({ participantId }: { participantId: string }) =>
       ListService.removeParticipant(listId, participantId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: ListQueryKeys.detailParticipants(listId),
       });
     },

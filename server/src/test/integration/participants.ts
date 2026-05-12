@@ -1,10 +1,9 @@
-import type { SinonSandbox } from "sinon";
+import Sinon, { type SinonSandbox } from "sinon";
 import type { FullList, ListPreview } from "../../types/list.js";
 import type { ParticipantDetails } from "../../types/participant.js";
 import type { TokenInvitationDetails } from "../../types/invitation.js";
 import type { ErrorResponse } from "../../types/responseTypes.js";
 import request from "supertest";
-import Sinon from "sinon";
 import { expect } from "chai";
 import {
   createTestList,

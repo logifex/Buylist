@@ -63,7 +63,7 @@ const useCreateProduct = ({ listId }: { listId: string }) => {
     meta: { persist: true },
     scope: { id: `${listId}-productCreate` },
     mutationFn: createProductDefaultMutationFn,
-    onMutate: async ({ product }) => {
+    onMutate: ({ product }) => {
       const tempId = Crypto.randomUUID();
       const newList = queryClient.setQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),

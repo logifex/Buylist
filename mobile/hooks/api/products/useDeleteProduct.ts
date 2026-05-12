@@ -42,7 +42,7 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
     mutationKey: ListMutationKeys.productDelete(),
     meta: { persist: true },
     mutationFn: deleteProductDefaultMutationFn,
-    onMutate: async ({ productId }) => {
+    onMutate: ({ productId }) => {
       const previousList = queryClient.getQueryData<SharedList | undefined>(
         ListQueryKeys.detail(listId),
       );

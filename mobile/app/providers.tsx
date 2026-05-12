@@ -49,8 +49,8 @@ const Providers = ({ children }: PropsWithChildren) => {
         },
       }}
       client={queryClient}
-      onSuccess={() => {
-        queryClient.resumePausedMutations();
+      onSuccess={async () => {
+        await queryClient.resumePausedMutations();
       }}
     >
       <AppContextProvider>

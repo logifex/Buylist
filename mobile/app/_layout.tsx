@@ -13,16 +13,23 @@ import { StyleSheet, View } from "react-native";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { connectSocket } from "@/config/socket";
 import AuthContext from "@/store/auth-context";
+import { NavigationProp } from "@react-navigation/native";
 
 if (__DEV__) {
   import("@/ReactotronConfig");
 }
 
 export type RootStackParamList = {
+  index: undefined;
   list: { listId: string; isShared: string };
+  settings: undefined;
 };
 
-const HomeHeaderRight = ({ navigation }: { navigation: any }) => {
+const HomeHeaderRight = ({
+  navigation,
+}: {
+  navigation: NavigationProp<RootStackParamList>;
+}) => {
   const { theme } = useContext(ThemeContext);
 
   return (
@@ -66,7 +73,7 @@ const RootLayoutContent = () => {
   useEffect(() => {
     const askReview = async () => {
       if (runtimes === 5 && (await StoreReview.hasAction())) {
-        StoreReview.requestReview();
+        await StoreReview.requestReview();
       }
     };
 
@@ -91,7 +98,10 @@ const RootLayoutContent = () => {
             name="index"
             options={({ navigation }) => ({
               title: title,
-              headerRight: () => HomeHeaderRight({ navigation: navigation }),
+              headerRight: () =>
+                HomeHeaderRight({
+                  navigation: navigation as NavigationProp<RootStackParamList>,
+                }),
             })}
           />
           <Stack.Screen name="list" />

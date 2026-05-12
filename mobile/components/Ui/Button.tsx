@@ -22,7 +22,7 @@ const Button = ({
 }: Props) => {
   const { theme } = useContext(ThemeContext);
 
-  let typeStyle = {
+  const typeStyle = {
     backgroundColor: theme.card,
     borderColor: theme.card,
   };

@@ -16,7 +16,7 @@ const options: ThemeOption[] = [
 const ThemeSelect = () => {
   const themeCtx = useContext(ThemeContext);
 
-  const handleThemeSelect = async (value: string) => {
+  const handleThemeSelect = (value: string) => {
     const selectedTheme = value as ThemeStateType;
     themeCtx.setPreferredTheme(selectedTheme);
   };

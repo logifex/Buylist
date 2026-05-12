@@ -1,5 +1,5 @@
-import { StyleSheet, View } from "react-native";
-import React, { useCallback, useState } from "react";
+import { Keyboard, StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import Product from "@/models/Product";
 import ProductButtons from "./ProductButtons";
@@ -21,11 +21,18 @@ const ProductEditForm = ({
   const [editName, setEditName] = useState(product.name);
   const [editNote, setEditNote] = useState(product.note ?? "");
 
+  useEffect(() => {
+    Keyboard.dismiss();
+    return () => {
+      Keyboard.dismiss();
+    };
+  }, []);
+
   const stopEditing = useCallback(() => {
     setEdit(false);
   }, [setEdit]);
 
-  const submitHandler = useCallback(async () => {
+  const submitHandler = useCallback(() => {
     const trimmedName = editName.trim();
     const trimmedNote = editNote.trim();
 
@@ -34,7 +41,6 @@ const ProductEditForm = ({
       (trimmedName === product.name && trimmedNote === product.note)
     ) {
       stopEditing();
-
       return;
     }
 

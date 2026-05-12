@@ -100,7 +100,7 @@ const Lists = () => {
     router.back,
   );
 
-  const handleChangeListColor = async (color: List["color"]) => {
+  const handleChangeListColor = (color: List["color"]) => {
     if (!list) {
       return;
     }
@@ -109,7 +109,7 @@ const Lists = () => {
     handleEditList(newList);
   };
 
-  const handleEditList = async (listToEdit: ListInfo) => {
+  const handleEditList = (listToEdit: ListInfo) => {
     if (!isShared) {
       listsCtx.editList(id, listToEdit);
     } else {
@@ -135,7 +135,7 @@ const Lists = () => {
     listsCtx.starList(id, false);
   };
 
-  const handleAddProduct = async (product: ProductInput) => {
+  const handleAddProduct = (product: ProductInput) => {
     if (list && list.products.length >= ListConstants.maxProductAmount) {
       Toast.show({
         type: "base",
@@ -160,7 +160,7 @@ const Lists = () => {
     listsCtx;
   const { mutate: mutateUpdateProduct } = updateProduct;
   const handleEditProduct = useCallback(
-    async (product: Product) => {
+    (product: Product) => {
       if (!isShared) {
         updateLocalProduct(id, product);
       } else {
@@ -175,7 +175,7 @@ const Lists = () => {
 
   const { mutate: mutateDeleteProduct } = deleteProduct;
   const handleDeleteProduct = useCallback(
-    async (productId: string) => {
+    (productId: string) => {
       if (!isShared) {
         deleteLocalProduct(id, productId);
       } else {
@@ -193,7 +193,7 @@ const Lists = () => {
   }
 
   const handleIdChanged = (oldId: string, newId: string) => {
-    listsCtx.updateListStar(oldId, newId);
+    listsCtx.updateStarListId(oldId, newId);
   };
 
   const handleShareList = async () => {

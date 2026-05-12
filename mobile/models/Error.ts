@@ -1,7 +1,7 @@
 export type BackendError = {
   code?: string;
   message: string;
-  data: any;
+  data: unknown;
 };
 
 export class ApiError extends Error {

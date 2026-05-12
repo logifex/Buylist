@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
-import React, { useContext, useState } from "react";
+import { Keyboard, StyleSheet } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import ThemeContext from "@/store/theme-context";
 import DialogPrompt from "./DialogPrompt";
 import Text from "../ThemedText";
@@ -27,6 +27,12 @@ const InputPrompt = ({
   const [validation, setValidation] = useState({ isValid: true, message: "" });
 
   const { theme } = useContext(ThemeContext);
+
+  useEffect(() => {
+    return () => {
+      Keyboard.dismiss();
+    };
+  }, []);
 
   const handleInputChanged = (newInput: string) => {
     setInputValue(newInput);

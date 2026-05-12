@@ -6,6 +6,10 @@ import { InfoController, InvitationController } from "../controllers/index.js";
 
 const router = Router();
 
+router.get("/healthz", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 router.use("/api/lists", listRoutes);
 
 router.use("/api/auth", authRoutes);

@@ -6,10 +6,13 @@ import ThemeContext, {
 } from "./theme-context";
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
-  const [selectedTheme, setSelectedTheme] = useState<ThemeStateType>("default");
+  const [selectedTheme, setSelectedTheme] = useState<ThemeStateType>(() => {
+    const storedTheme = localStorage.getItem("theme") as ColorSchemeName;
+    return storedTheme ?? "default";
+  });
 
   const deviceScheme: ColorSchemeName = window.matchMedia(
-    "(prefers-color-scheme: dark)"
+    "(prefers-color-scheme: dark)",
   ).matches
     ? "dark"
     : "light";
@@ -22,18 +25,10 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
     if (metaThemeColor) {
       metaThemeColor.setAttribute(
         "content",
-        scheme === "dark" ? "#1e1e1e" : "#F57C00"
+        scheme === "dark" ? "#1e1e1e" : "#F57C00",
       );
     }
   }, [scheme]);
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") as ColorSchemeName;
-
-    if (storedTheme) {
-      setSelectedTheme(storedTheme);
-    }
-  }, []);
 
   const setPreferredTheme = (newTheme: ThemeStateType) => {
     setSelectedTheme(newTheme);

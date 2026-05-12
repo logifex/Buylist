@@ -156,11 +156,14 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
     }
   }, []);
 
-  const updateListStar = useCallback((oldListId: string, newListId: string) => {
-    setStarredLists((prevLists) =>
-      prevLists.map((id) => (id === oldListId ? newListId : id)),
-    );
-  }, []);
+  const updateStarListId = useCallback(
+    (oldListId: string, newListId: string) => {
+      setStarredLists((prevLists) =>
+        prevLists.map((id) => (id === oldListId ? newListId : id)),
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
     const loadData = async () => {
@@ -203,7 +206,7 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
     editProduct: handleEditProduct,
     deleteProduct: handleDeleteProduct,
     starList: handleStarList,
-    updateListStar: updateListStar,
+    updateStarListId: updateStarListId,
   };
 
   return <ListsContext value={listsContext}>{children}</ListsContext>;

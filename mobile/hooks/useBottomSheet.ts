@@ -22,7 +22,7 @@ const useBottomSheetRef = () => {
     ref: bottomSheetModalRef,
     present: handlePresentModalPress,
     dismiss: handleDismissModalPress,
-  } as BottomSheetActions;
+  };
 };
 
 export default useBottomSheetRef;

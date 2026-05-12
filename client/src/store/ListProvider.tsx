@@ -2,24 +2,18 @@ import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import ListContext, { ListContextType } from "./list-context";
 
 const ListProvider = ({ children }: PropsWithChildren) => {
-  const [starredLists, setStarredLists] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
+  const [starredLists, setStarredLists] = useState<string[]>(() => {
     const starredListsJson = localStorage.getItem("starredLists");
     const storedStarredLists = (
       starredListsJson ? JSON.parse(starredListsJson) : []
     ) as string[];
 
-    setStarredLists(storedStarredLists);
-    setLoaded(true);
-  }, []);
+    return storedStarredLists;
+  });
 
   useEffect(() => {
-    if (loaded) {
-      localStorage.setItem("starredLists", JSON.stringify(starredLists));
-    }
-  }, [starredLists, loaded]);
+    localStorage.setItem("starredLists", JSON.stringify(starredLists));
+  }, [starredLists]);
 
   const handleStarList = useCallback((listId: string, star: boolean) => {
     if (!star) {

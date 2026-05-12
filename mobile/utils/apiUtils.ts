@@ -28,7 +28,7 @@ export const transformResponseError = async (
 ): Promise<ApiError> => {
   const contentType = response.headers.get("content-type");
   if (contentType?.includes("application/json")) {
-    const json: { error: BackendError } = await response.json();
+    const json = (await response.json()) as { error: BackendError };
     console.log(json.error.message);
     return new ApiError(json.error.message, response.status, json.error);
   }
