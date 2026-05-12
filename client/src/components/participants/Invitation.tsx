@@ -40,7 +40,7 @@ const Invitation = ({ listId }: Props) => {
       {!getTokenInvitation.data && (
         <div>
           <button
-            className="bg-primary-500 dark:bg-dark-main-700 text-black dark:text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-primary-600 dark:hover:bg-dark-main-600"
+            className="bg-primary-500 dark:bg-dark-main-700 text-black dark:text-white py-2 px-4 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary-500 hover:bg-primary-600 dark:hover:bg-dark-main-600"
             type="button"
             disabled={
               createTokenInvitation.isPending || getTokenInvitation.isLoading

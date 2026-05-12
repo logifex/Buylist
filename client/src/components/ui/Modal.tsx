@@ -29,7 +29,7 @@ const Modal = ({
 
   return ReactDOM.createPortal(
     <div
-      className="overflow-hidden fixed inset-0 bg-background dark:bg-dark-background bg-opacity-80 dark:bg-opacity-80 flex items-center justify-center"
+      className="overflow-hidden fixed inset-0 bg-background/80 dark:bg-dark-background/80 flex items-center justify-center"
       onClick={(e) => {
         e.stopPropagation();
         if (canClose && onClose) {
@@ -44,7 +44,7 @@ const Modal = ({
         }}
       >
         {showClose && (
-          <div className="absolute top-4 end-4 text-black dark:text-white text-xl">
+          <div className="absolute top-4 inset-e-4 text-black dark:text-white text-xl">
             <button type="button" onClick={onClose}>
               x
             </button>

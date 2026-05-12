@@ -64,7 +64,7 @@ const EditListModalContent = ({ list, hideModal, onEditList }: Props) => {
           <p className="mb-1 text-black dark:text-white">צבע הרשימה</p>
           <select
             id="list-color-input"
-            className="w-full p-1 rounded-md bg-gray-300 text-gray-700 dark:text-gray-100 dark:bg-dark-main-700 border border-dark-main-600 focus:outline-none focus:ring-2 focus:ring-primary-500 mb-4"
+            className="w-full p-1 rounded-md bg-gray-300 text-gray-700 dark:text-gray-100 dark:bg-dark-main-700 border border-dark-main-600 focus:outline-hidden focus:ring-2 focus:ring-primary-500 mb-4"
             value={enteredListInfo.color}
             onChange={handleChange("color")}
           >

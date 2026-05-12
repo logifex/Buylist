@@ -1,6 +1,41 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@custom-variant hover (&:hover);
+
+@theme {
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f57c00;
+  --color-primary-600: #d97706;
+
+  --color-background: #f2f2f2;
+
+  --color-dark-background: #010101;
+
+  --color-dark-main-400: #858585;
+  --color-dark-main-500: #696969;
+  --color-dark-main-600: #4f4f4f;
+  --color-dark-main-700: #363636;
+  --color-dark-main-800: #1e1e1e;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 body {
   direction: rtl;

@@ -15,7 +15,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: Props) => {
         <h1 className="text-2xl">שגיאה</h1>
         <p>{errorMessage}</p>
         <button
-          className="bg-primary-500 dark:bg-dark-main-700 text-black dark:text-white px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-primary-600 dark:hover:bg-dark-main-600 mt-2"
+          className="bg-primary-500 dark:bg-dark-main-700 text-black dark:text-white px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary-500 hover:bg-primary-600 dark:hover:bg-dark-main-600 mt-2"
           type="button"
           onClick={resetErrorBoundary}
         >

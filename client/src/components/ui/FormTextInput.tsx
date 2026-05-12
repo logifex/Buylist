@@ -6,7 +6,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 
 const FormTextInput = ({ label, ...props }: Props) => {
   let className: React.HTMLAttributes<HTMLInputElement>["className"] =
-    "w-full p-2 rounded-md bg-gray-300 text-gray-700 placeholder-gray-600 dark:bg-dark-main-700 dark:text-gray-100 dark:placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 mb-4";
+    "w-full p-2 rounded-md bg-gray-300 text-gray-700 placeholder-gray-600 dark:bg-dark-main-700 dark:text-gray-100 dark:placeholder-gray-400 border border-gray-600 focus:outline-hidden focus:ring-2 focus:ring-primary-500 mb-4";
 
   if (label) {
     className += " block pt-7";
@@ -22,7 +22,7 @@ const FormTextInput = ({ label, ...props }: Props) => {
       {input}
       <label
         htmlFor={props.id}
-        className="absolute top-1 start-2 text-gray-600 dark:text-gray-300 font-bold"
+        className="absolute top-1 inset-s-2 text-gray-600 dark:text-gray-300 font-bold"
       >
         {label}
       </label>

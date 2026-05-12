@@ -21,7 +21,7 @@ const Dialog = ({
 }: Props) => {
   return (
     <div>
-      <div className="text-center pb-6 break-words">
+      <div className="text-center pb-6 wrap-break-word">
         <p className="text-black dark:text-white whitespace-pre-line">{text}</p>
       </div>
       <DialogButtons

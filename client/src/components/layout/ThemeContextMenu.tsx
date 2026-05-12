@@ -27,7 +27,7 @@ const ThemeContextMenu = ({ menuRef, contextMenuOpen, closeMenu }: Props) => {
         {options.map((o) => (
           <li key={o.value}>
             <button
-              className="block w-full text-center p-2 text-gray-600 hover:bg-gray-300 dark:text-gray-200 dark:hover:bg-dark-main-700 focus:outline-none rounded-md"
+              className="block w-full text-center p-2 text-gray-600 hover:bg-gray-300 dark:text-gray-200 dark:hover:bg-dark-main-700 focus:outline-hidden rounded-md"
               type="button"
               onClick={() => {
                 setPreferredTheme(o.value);

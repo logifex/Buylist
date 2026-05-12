@@ -25,7 +25,7 @@ const List = ({ list, isStarred, onStar }: Props) => {
   }
 
   return (
-    <div className="p-4 rounded-md shadow-md bg-gray-200 hover:bg-gray-300 dark:bg-dark-main-800 dark:hover:bg-dark-main-700 break-words flex items-center group">
+    <div className="p-4 rounded-md shadow-md bg-gray-200 hover:bg-gray-300 dark:bg-dark-main-800 dark:hover:bg-dark-main-700 wrap-break-word flex items-center group">
       <div className="w-5">
         <button
           type="button"

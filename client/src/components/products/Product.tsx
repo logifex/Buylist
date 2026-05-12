@@ -44,7 +44,7 @@ const Product = ({
             onChange={handleCheck}
           />
         </div>
-        <div className="flex flex-col break-words min-w-0">
+        <div className="flex flex-col wrap-break-word min-w-0">
           <p className={`text-lg text-black${checkedClass}`}>{product.name}</p>
           <p
             className={`text-sm${checkedClass} ${
