@@ -1,11 +1,9 @@
 export interface UserDetails {
   id: string;
-  name: string | null;
+  name: string;
   photoUrl: string | null;
 }
 
-interface User extends UserDetails {
-  email: string | null;
+export interface User extends UserDetails {
+  email: string;
 }
-
-export default User;

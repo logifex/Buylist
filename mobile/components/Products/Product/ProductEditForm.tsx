@@ -1,16 +1,16 @@
 import { Keyboard, StyleSheet, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
-import Product from "@/models/Product";
+import { Product } from "@/models/Product";
 import ProductButtons from "./ProductButtons";
 import ListConstants from "@/constants/ListConstants";
 
-type Props = {
+interface Props {
   product: Product;
   accessibilityId: string;
   onEditProduct: (product: Product) => void;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 const ProductEditForm = ({
   product,

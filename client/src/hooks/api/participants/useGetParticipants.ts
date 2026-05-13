@@ -1,22 +1,25 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import ListService from "../../../services/ListService";
-import List from "../../../models/List";
+import type { List } from "../../../models/List";
 
-const useGetParticipants = ({ listId }: { listId: string }) => {
+export const participantsQueryOptions = (listId: string) =>
+  queryOptions({
+    queryKey: ListQueryKeys.detailParticipants(listId),
+    queryFn: () => ListService.fetchParticipants(listId),
+    refetchOnMount: "always",
+  });
+
+export const useGetParticipants = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useQuery({
-    queryKey: ListQueryKeys.detailParticipants(listId),
-    refetchOnMount: "always",
-    queryFn: () => ListService.fetchParticipants(listId),
+    ...participantsQueryOptions(listId),
     initialData: () => {
       const list = queryClient.getQueryData<List | undefined>(
-        ListQueryKeys.detail(listId)
+        ListQueryKeys.detail(listId),
       );
       return list?.participants;
     },
   });
 };
-
-export default useGetParticipants;

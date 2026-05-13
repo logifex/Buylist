@@ -1,5 +1,5 @@
-import List, { ListInfo, ListInput } from "../models/List";
-import Participant from "../models/Participant";
+import type { List, ListInfo, ListInput } from "../models/List";
+import type { Participant } from "../models/Participant";
 import { fetchWithAuth } from "../utils/apiUtils";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -50,7 +50,7 @@ const ListService = {
   },
   async fetchParticipants(listId: string): Promise<Participant[]> {
     const response = await fetchWithAuth(
-      `${serverUrl}/api/lists/${listId}/participants`
+      `${serverUrl}/api/lists/${listId}/participants`,
     );
 
     const participants = (await response.json()) as Participant[];
@@ -59,7 +59,7 @@ const ListService = {
   async removeParticipant(listId: string, participantId: string) {
     await fetchWithAuth(
       `${serverUrl}/api/lists/${listId}/participants/${participantId}`,
-      { method: "DELETE" }
+      { method: "DELETE" },
     );
   },
 };

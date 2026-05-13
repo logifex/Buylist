@@ -1,17 +1,17 @@
 import { Keyboard, StyleSheet, TextInput, View, Pressable } from "react-native";
 import React, { useContext, useState } from "react";
-import Product, { ProductInput } from "@/models/Product";
+import { Product, ProductInput } from "@/models/Product";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import ThemeContext from "@/store/theme-context";
 import ExistingProductDialog from "./ExistingProductDialog";
 import ListConstants from "@/constants/ListConstants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-type Props = {
+interface Props {
   products: Product[];
   onAddProduct: (product: ProductInput) => void;
   onEditProduct: (product: Product) => void;
-};
+}
 
 const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
   const [enteredProductName, setEnteredProductName] = useState("");

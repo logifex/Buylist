@@ -28,17 +28,17 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
       }
     };
 
-    getStoredTheme();
+    void getStoredTheme();
   }, []);
 
   const setPreferredTheme = (newTheme: ThemeStateType) => {
     setSelectedTheme(newTheme);
 
     if (newTheme === "default") {
-      AppDataService.removeTheme();
+      void AppDataService.removeTheme();
       return;
     }
-    AppDataService.writeTheme(newTheme);
+    void AppDataService.writeTheme(newTheme);
   };
 
   const themeContext: ThemeContextType = {

@@ -1,8 +1,8 @@
 import React from "react";
 
-export type AppContextType = {
+export interface AppContextType {
   runtimes: number;
-};
+}
 
 const AppContext = React.createContext<AppContextType>({
   runtimes: 0,

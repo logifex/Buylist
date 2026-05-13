@@ -3,22 +3,22 @@ import React, { useContext, useEffect, useCallback, useState } from "react";
 import ProductAddRow from "@/components/Products/ProductAddRow";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import filterProductsChecked from "@/utils/filterProductsChecked";
-import Product, { ProductInput } from "@/models/Product";
+import { Product, ProductInput } from "@/models/Product";
 import ProductList from "@/components/Products/ProductList";
 import ColorMenu from "@/components/Lists/ColorMenu";
 import ListOptionMenu from "@/components/Lists/ListOptionMenu";
-import List, { ListInfo } from "@/models/List";
+import { List, ListInfo } from "@/models/List";
 import InvitationModal from "@/components/Invitations/InvitationModal";
 import ListsContext from "@/store/list-context";
-import useGetList from "@/hooks/api/lists/useGetList";
+import { useGetList } from "@/hooks/api/lists/useGetList";
 import { ApiError } from "@/models/Error";
-import useUpdateList from "@/hooks/api/lists/useUpdateList";
-import useDeleteList from "@/hooks/api/lists/useDeleteList";
-import useCreateProduct from "@/hooks/api/products/useCreateProduct";
-import useUpdateProduct from "@/hooks/api/products/useUpdateProduct";
-import useDeleteProduct from "@/hooks/api/products/useDeleteProduct";
-import useCreateList from "@/hooks/api/lists/useCreateList";
-import useLeaveList from "@/hooks/api/lists/useLeaveList";
+import { useUpdateList } from "@/hooks/api/lists/useUpdateList";
+import { useDeleteList } from "@/hooks/api/lists/useDeleteList";
+import { useCreateProduct } from "@/hooks/api/products/useCreateProduct";
+import { useUpdateProduct } from "@/hooks/api/products/useUpdateProduct";
+import { useDeleteProduct } from "@/hooks/api/products/useDeleteProduct";
+import { useCreateList } from "@/hooks/api/lists/useCreateList";
+import { useLeaveList } from "@/hooks/api/lists/useLeaveList";
 import { useLocalSearchParams, useRouter, useNavigation } from "expo-router";
 import { RootStackParamList } from "./_layout";
 import ListHeaderRight from "@/components/Lists/ListHeaderRight";
@@ -28,7 +28,7 @@ import ListConstants from "@/constants/ListConstants";
 import Toast from "react-native-toast-message";
 import PageContainer from "@/components/Ui/PageContainer";
 
-const Lists = () => {
+const ListScreen = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const params = useLocalSearchParams<RootStackParamList["list"]>();
@@ -58,13 +58,13 @@ const Lists = () => {
     : listsCtx.lists.find((l) => l.id === id);
 
   useEffect(() => {
-    if (getList?.error) {
+    if (getList.error) {
       const apiError = getList.error as ApiError;
       if (apiError.status === 404) {
         router.back();
       }
     }
-  }, [getList?.error, router]);
+  }, [getList.error, router]);
 
   const listName = list?.name;
   useEffect(() => {
@@ -91,12 +91,14 @@ const Lists = () => {
     theme,
   ]);
 
+  const { refetch: refetchAsync } = getList;
+  const refetch = useCallback(() => void refetchAsync(), [refetchAsync]);
   useListSocketHandlers(
     isShared,
     id,
     pendingProducts,
     setPendingProducts,
-    getList.refetch,
+    refetch,
     router.back,
   );
 
@@ -268,4 +270,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Lists;
+export default ListScreen;

@@ -3,7 +3,7 @@ import InvitationService from "../../../services/InvitationService";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import { toast } from "react-toastify";
 
-const useCreateTokenInvitation = ({ listId }: { listId: string }) => {
+export const useCreateTokenInvitation = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -11,7 +11,7 @@ const useCreateTokenInvitation = ({ listId }: { listId: string }) => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         ListQueryKeys.detailTokenInvitation(listId),
-        data
+        data,
       );
     },
     onError: (err) => {
@@ -20,5 +20,3 @@ const useCreateTokenInvitation = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useCreateTokenInvitation;

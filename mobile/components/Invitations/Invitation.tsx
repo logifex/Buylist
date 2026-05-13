@@ -1,7 +1,7 @@
-import useCreateTokenInvitation from "@/hooks/api/invitations/useCreateTokenInvitation";
-import useDeleteTokenInvitation from "@/hooks/api/invitations/useDeleteTokenInvitation";
-import useGetTokenInvitation from "@/hooks/api/invitations/useGetTokenInvitation";
-import List, { SharedList } from "@/models/List";
+import { useCreateTokenInvitation } from "@/hooks/api/invitations/useCreateTokenInvitation";
+import { useDeleteTokenInvitation } from "@/hooks/api/invitations/useDeleteTokenInvitation";
+import { useGetTokenInvitation } from "@/hooks/api/invitations/useGetTokenInvitation";
+import { List, SharedList } from "@/models/List";
 import ThemeContext from "@/store/theme-context";
 import React, { useContext, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -10,16 +10,17 @@ import Button from "../Ui/Button";
 import Text from "../Ui/ThemedText";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import * as Clipboard from "expo-clipboard";
+import isSharedList from "@/utils/isSharedList";
 
-type Props = {
+interface Props {
   onShareList: () => Promise<SharedList>;
   list: List;
-};
+}
 
 const Invitation = ({ onShareList, list }: Props) => {
   const [loading, setLoading] = useState(false);
 
-  const isShared = !!(list as SharedList).participants;
+  const isShared = isSharedList(list);
   const getTokenInvitation = useGetTokenInvitation({
     listId: list.id,
     enabled: isShared,
@@ -28,8 +29,12 @@ const Invitation = ({ onShareList, list }: Props) => {
   const deleteTokenInvitation = useDeleteTokenInvitation({ listId: list.id });
 
   const linkHost = process.env.EXPO_PUBLIC_SERVER_URL;
+  if (!linkHost) {
+    throw new Error("Link host is not defined");
+  }
+
   const invitationLink = getTokenInvitation.data?.token
-    ? `${linkHost}/invite/${getTokenInvitation.data?.token}`
+    ? `${linkHost}/invite/${getTokenInvitation.data.token}`
     : undefined;
 
   const handleCreateInvitationToken = async () => {
@@ -84,7 +89,7 @@ const Invitation = ({ onShareList, list }: Props) => {
             style={styles.button}
             containerStyle={styles.buttonContainer}
             disabled={loading}
-            onPress={handleCreateInvitationToken}
+            onPress={() => void handleCreateInvitationToken()}
           >
             <MaterialIcon name="link" size={20} color="black" />
             <Text style={styles.buttonText}>
@@ -97,7 +102,7 @@ const Invitation = ({ onShareList, list }: Props) => {
         <View
           style={[styles.linkContainer, { backgroundColor: theme.background }]}
         >
-          <Pressable style={styles.link} onPress={handleCopyLink}>
+          <Pressable style={styles.link} onPress={() => void handleCopyLink()}>
             <MaterialIcon
               style={[styles.linkIcon, { backgroundColor: theme.secondary }]}
               name="link"

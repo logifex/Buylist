@@ -1,9 +1,9 @@
-import { RefObject, useContext } from "react";
+import { useContext, type RefObject } from "react";
 import AuthContext from "../../store/auth-context";
 import { MdDelete } from "react-icons/md";
 import ModalContext from "../../store/modal-context";
 import Dialog from "../ui/Dialog";
-import useDeleteAccount from "../../hooks/api/auth/deleteAccount";
+import { useDeleteAccount } from "../../hooks/api/auth/deleteAccount";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 

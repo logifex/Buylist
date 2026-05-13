@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import InvitationService from "../../../services/InvitationService";
 
-const useJoinList = () => {
+export const useJoinList = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -13,5 +13,3 @@ const useJoinList = () => {
     },
   });
 };
-
-export default useJoinList;

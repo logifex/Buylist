@@ -31,7 +31,9 @@ const Header = () => {
             ref={themeBtnRef}
             className="block"
             type="button"
-            onClick={() => setThemeMenuOpen((s) => !s)}
+            onClick={() => {
+              setThemeMenuOpen((s) => !s);
+            }}
           >
             {currentColorSchemeName === "dark" ? (
               <IoMoon size={22} title="שינוי ערכת נושא" />
@@ -42,7 +44,9 @@ const Header = () => {
           <ThemeContextMenu
             menuRef={themeMenuRef}
             contextMenuOpen={themeMenuOpen}
-            closeMenu={() => setThemeMenuOpen(false)}
+            closeMenu={() => {
+              setThemeMenuOpen(false);
+            }}
           />
         </div>
         {userInfo && (
@@ -51,7 +55,9 @@ const Header = () => {
               ref={profileBtnRef}
               className="block"
               type="button"
-              onClick={() => setProfileMenuOpen((s) => !s)}
+              onClick={() => {
+                setProfileMenuOpen((s) => !s);
+              }}
             >
               <img
                 alt="פרופיל"
@@ -63,7 +69,9 @@ const Header = () => {
             <ProfileContextMenu
               menuRef={profileMenuRef}
               contextMenuOpen={profileMenuOpen}
-              closeMenu={() => setProfileMenuOpen(false)}
+              closeMenu={() => {
+                setProfileMenuOpen(false);
+              }}
             />
           </div>
         )}

@@ -4,7 +4,7 @@ import { SharedList } from "@/models/List";
 import Toast from "react-native-toast-message";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useDeleteList = ({ listId }: { listId: string }) => {
+export const useDeleteList = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -29,5 +29,3 @@ const useDeleteList = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useDeleteList;

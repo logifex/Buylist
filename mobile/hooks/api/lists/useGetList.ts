@@ -1,9 +1,19 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import ListService from "@/services/ListService";
 import { SharedList } from "@/models/List";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useGetList = ({
+export const listQueryOptions = (listId: string) =>
+  queryOptions({
+    queryKey: ListQueryKeys.detail(listId),
+    queryFn: () => ListService.fetchList(listId),
+    refetchOnReconnect: "always",
+    refetchOnWindowFocus: "always",
+    refetchOnMount: "always",
+    meta: { persist: true },
+  });
+
+export const useGetList = ({
   listId,
   enabled,
 }: {
@@ -13,13 +23,8 @@ const useGetList = ({
   const queryClient = useQueryClient();
 
   return useQuery({
+    ...listQueryOptions(listId),
     enabled: enabled,
-    queryKey: ListQueryKeys.detail(listId),
-    queryFn: () => ListService.fetchList(listId),
-    refetchOnReconnect: "always",
-    refetchOnWindowFocus: "always",
-    refetchOnMount: "always",
-    meta: { persist: true },
     initialData: () => {
       const lists = queryClient.getQueryData<SharedList[] | undefined>(
         ListQueryKeys.all,
@@ -28,5 +33,3 @@ const useGetList = ({
     },
   });
 };
-
-export default useGetList;

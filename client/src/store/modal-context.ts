@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { ModalProps } from "../components/ui/Modal";
+import { type ModalProps } from "../components/ui/Modal";
 
 export interface ModalContextType {
   showModal: (props: ModalProps) => void;

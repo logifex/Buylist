@@ -1,11 +1,11 @@
 import React from "react";
-import User from "@/models/User";
+import { User } from "@/models/User";
 
-export type AuthContextType = {
+export interface AuthContextType {
   userInfo?: User;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
-};
+}
 
 const AuthContext = React.createContext<AuthContextType>({
   userInfo: undefined,

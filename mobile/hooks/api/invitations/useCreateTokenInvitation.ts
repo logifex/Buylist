@@ -3,7 +3,7 @@ import Toast from "react-native-toast-message";
 import InvitationService from "@/services/InvitationService";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useCreateTokenInvitation = () => {
+export const useCreateTokenInvitation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -21,5 +21,3 @@ const useCreateTokenInvitation = () => {
     },
   });
 };
-
-export default useCreateTokenInvitation;

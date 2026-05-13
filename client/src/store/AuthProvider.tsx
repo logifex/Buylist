@@ -1,8 +1,17 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from "react";
-import User from "../models/User";
-import { onAuthStateChanged, signInWithPopup, signOut as authSignOut } from "firebase/auth";
+import {
+  type PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import type { User } from "../models/User";
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut as authSignOut,
+} from "firebase/auth";
 import { auth, provider } from "../config/firebase";
-import AuthContext, { AuthContextType } from "./auth-context";
+import AuthContext, { type AuthContextType } from "./auth-context";
 import { useQueryClient } from "@tanstack/react-query";
 import ListQueryKeys from "../constants/QueryKeys";
 import { toast } from "react-toastify";
@@ -12,32 +21,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const [ready, setReady] = useState(false);
 
   const queryClient = useQueryClient();
-
-  const onSignOut = useCallback(async () => {
-    await queryClient.cancelQueries();
-    queryClient.removeQueries({ queryKey: ListQueryKeys.all });
-    setUserInfo(undefined);
-  }, [queryClient]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        void onSignOut();
-      } else {
-        setUserInfo({
-          id: user.uid,
-          email: user.email,
-          name: user.displayName,
-          photoUrl: user.photoURL,
-        });
-      }
-      setReady(true);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [onSignOut]);
 
   const signIn = async () => {
     try {
@@ -56,6 +39,37 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       console.error(err);
     }
   };
+
+  const onSignOut = useCallback(async () => {
+    await queryClient.cancelQueries();
+    queryClient.removeQueries({ queryKey: ListQueryKeys.all });
+    setUserInfo(undefined);
+  }, [queryClient]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        void onSignOut();
+      } else {
+        if (!user.email || !user.displayName) {
+          void signOut();
+          return;
+        }
+
+        setUserInfo({
+          id: user.uid,
+          email: user.email,
+          name: user.displayName,
+          photoUrl: user.photoURL,
+        });
+      }
+      setReady(true);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [onSignOut]);
 
   const authContext: AuthContextType = {
     userInfo: userInfo,

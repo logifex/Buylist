@@ -1,15 +1,15 @@
 import { View, StyleSheet } from "react-native";
 import React, { useCallback } from "react";
-import Product from "@/models/Product";
+import { Product } from "@/models/Product";
 import Text from "@/components/Ui/ThemedText";
 import ProductButtons from "./ProductButtons";
 
-type Props = {
+interface Props {
   product: Product;
   accessibilityId: string;
   onDeleteProduct: (productId: string) => void;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 const ProductContent = ({
   product,

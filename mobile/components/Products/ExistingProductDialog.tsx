@@ -1,18 +1,18 @@
 import { StyleSheet } from "react-native";
 import React from "react";
-import Product from "@/models/Product";
+import { Product } from "@/models/Product";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import BottomModal from "@/components/Ui/BottomModal";
 import DialogPrompt from "@/components/Ui/Prompts/DialogPrompt";
 import Text from "@/components/Ui/ThemedText";
 
-type Props = {
+interface Props {
   existingProduct?: Product;
   onAddProduct: (productName: string) => void;
   onEditProduct: (product: Product) => void;
   onRequestClose: () => void;
   ref: React.RefObject<BottomSheetModal | null>;
-};
+}
 
 const ExistingProductDialog = ({
   existingProduct,
@@ -33,10 +33,12 @@ const ExistingProductDialog = ({
     }
   };
 
-  const checked = existingProduct && existingProduct.isChecked;
-  const text = checked
-    ? `המוצר ${existingProduct.name} כבר קיים במסומנים,\nהאם להחזיר אותו לרשימה?`
-    : `המוצר ${existingProduct?.name} כבר קיים ברשימה,\nהאם להוסיף בכל זאת?`;
+  const checked = existingProduct?.isChecked;
+  const text =
+    existingProduct &&
+    (checked
+      ? `המוצר ${existingProduct.name} כבר קיים במסומנים,\nהאם להחזיר אותו לרשימה?`
+      : `המוצר ${existingProduct.name} כבר קיים ברשימה,\nהאם להוסיף בכל זאת?`);
 
   return (
     <BottomModal

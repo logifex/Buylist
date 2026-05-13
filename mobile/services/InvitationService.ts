@@ -1,8 +1,12 @@
 import { ListPreview, SharedList } from "@/models/List";
 import { fetchWithAuth } from "@/utils/apiUtils";
-import TokenInvitation from "@/models/Invitation";
+import { TokenInvitation, TokenResponse } from "@/models/Invitation";
 
 const serverUrl = process.env.EXPO_PUBLIC_SERVER_URL;
+
+if (!serverUrl) {
+  throw new Error("Server URL is not defined");
+}
 
 const InvitationService = {
   async getInvitationList(token: string): Promise<ListPreview> {
@@ -10,7 +14,7 @@ const InvitationService = {
       `${serverUrl}/api/lists/join/${token}`,
     );
 
-    return await response.json();
+    return (await response.json()) as ListPreview;
   },
   async joinList(token: string): Promise<SharedList> {
     const response = await fetchWithAuth(
@@ -18,14 +22,14 @@ const InvitationService = {
       { method: "POST" },
     );
 
-    return await response.json();
+    return (await response.json()) as SharedList;
   },
   async getTokenInvitation(listId: string): Promise<TokenInvitation> {
     const response = await fetchWithAuth(
       `${serverUrl}/api/lists/${listId}/participants/invite/token`,
     );
 
-    const json = await response.json();
+    const json = (await response.json()) as TokenResponse;
     return {
       ...json,
       expiry: new Date(json.expiry),
@@ -37,7 +41,7 @@ const InvitationService = {
       { method: "POST" },
     );
 
-    const json = await response.json();
+    const json = (await response.json()) as TokenResponse;
     return {
       ...json,
       expiry: new Date(json.expiry),

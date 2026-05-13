@@ -16,14 +16,14 @@ import AuthContext from "@/store/auth-context";
 import { NavigationProp } from "@react-navigation/native";
 
 if (__DEV__) {
-  import("@/ReactotronConfig");
+  void import("@/ReactotronConfig");
 }
 
-export type RootStackParamList = {
+export interface RootStackParamList {
   index: undefined;
   list: { listId: string; isShared: string };
   settings: undefined;
-};
+}
 
 const HomeHeaderRight = ({
   navigation,
@@ -66,7 +66,7 @@ const RootLayoutContent = () => {
 
   useEffect(() => {
     if (isInternetReachable && isLoggedIn) {
-      connectSocket();
+      void connectSocket();
     }
   }, [isInternetReachable, isLoggedIn]);
 
@@ -77,7 +77,7 @@ const RootLayoutContent = () => {
       }
     };
 
-    askReview();
+    void askReview();
   }, [runtimes]);
 
   const statusBarStyle = currentColorSchemeName === "dark" ? "light" : "dark";

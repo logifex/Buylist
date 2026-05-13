@@ -1,4 +1,4 @@
-import List from "../models/List";
+import type { List } from "../models/List";
 
 const Gradients: Record<List["color"], readonly [string, string]> = {
   GRAY: ["#757575", "#BDBDBD"],

@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import { ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 
 export interface ModalProps {
   content: ReactNode;
@@ -58,7 +58,7 @@ const Modal = ({
         {content}
       </div>
     </div>,
-    modalRoot
+    modalRoot,
   );
 };
 

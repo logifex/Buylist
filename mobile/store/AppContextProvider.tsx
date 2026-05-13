@@ -13,7 +13,7 @@ const AppContextProvider = ({ children }: PropsWithChildren) => {
       setRuntimes(currentRuntimes);
     };
 
-    incrementRuntimes();
+    void incrementRuntimes();
   }, []);
 
   const appContext: AppContextType = {

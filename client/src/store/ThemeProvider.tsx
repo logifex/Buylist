@@ -1,14 +1,13 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import ThemeContext, {
-  ColorSchemeName,
-  ThemeContextType,
-  ThemeStateType,
+  type ColorSchemeName,
+  type ThemeContextType,
+  type ThemeStateType,
 } from "./theme-context";
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [selectedTheme, setSelectedTheme] = useState<ThemeStateType>(() => {
-    const storedTheme = localStorage.getItem("theme") as ColorSchemeName;
-    return storedTheme ?? "default";
+    return (localStorage.getItem("theme") ?? "default") as ColorSchemeName;
   });
 
   const deviceScheme: ColorSchemeName = window.matchMedia(

@@ -1,19 +1,19 @@
 import { StyleSheet, View } from "react-native";
 import React, { useCallback, useMemo } from "react";
-import ProductModel, { FilteredProducts } from "@/models/Product";
-import List from "@/models/List";
+import { Product as ProductModel, FilteredProducts } from "@/models/Product";
+import { List } from "@/models/List";
 import Product from "./Product/Product";
 import Text from "@/components/Ui/ThemedText";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Props = {
+interface Props {
   filteredProducts: FilteredProducts;
   listColor: List["color"];
   isShared: boolean;
   onEditProduct: (product: ProductModel) => void;
   onDeleteProduct: (productId: string) => void;
-};
+}
 
 const ProductList = ({
   filteredProducts,
@@ -44,7 +44,9 @@ const ProductList = ({
             {...item}
             color={listColor}
             isShared={isShared}
-            accessibilityId={`${item.isChecked ? "checked " : ""}${index + 1}`}
+            accessibilityId={`${item.isChecked ? "checked " : ""}${(
+              index + 1
+            ).toString()}`}
             onEditProduct={onEditProduct}
             onDeleteProduct={onDeleteProduct}
           />

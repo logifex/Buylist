@@ -1,4 +1,4 @@
-import Product, { FilteredProducts } from "@/models/Product";
+import { Product, FilteredProducts } from "@/models/Product";
 
 const filterProductsChecked = (products: Product[]) => {
   return products.reduce<FilteredProducts>(

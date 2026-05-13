@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import ListService from "../../../services/ListService";
 import ListQueryKeys from "../../../constants/QueryKeys";
-import List from "../../../models/List";
+import type { List } from "../../../models/List";
 import { ApiError } from "../../../models/Error";
 import AuthContext from "../../../store/auth-context";
 
-const useLeaveList = ({ listId }: { listId: string }) => {
+export const useLeaveList = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
   const { userInfo } = useContext(AuthContext);
 
@@ -22,11 +22,9 @@ const useLeaveList = ({ listId }: { listId: string }) => {
       queryClient.setQueryData(
         ListQueryKeys.all,
         (previousLists: List[] | undefined) =>
-          previousLists?.filter((l) => l.id !== listId)
+          previousLists?.filter((l) => l.id !== listId),
       );
       queryClient.removeQueries({ queryKey: ListQueryKeys.detail(listId) });
     },
   });
 };
-
-export default useLeaveList;

@@ -5,15 +5,15 @@ import AuthContext from "@/store/auth-context";
 import Text from "@/components/Ui/ThemedText";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import Participant from "./Participant";
-import ParticipantModel from "@/models/Participant";
-import useGetParticipants from "@/hooks/api/participants/useGetParticipants";
+import { Participant as ParticipantModel } from "@/models/Participant";
+import { useGetParticipants } from "@/hooks/api/participants/useGetParticipants";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 import { useQueryClient } from "@tanstack/react-query";
 
-type Props = {
+interface Props {
   list: SharedList;
   onRemovePress: (participant: ParticipantModel) => void;
-};
+}
 
 const Participants = ({ list, onRemovePress }: Props) => {
   const queryClient = useQueryClient();

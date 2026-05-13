@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from "react";
 import { StyleSheet } from "react-native";
-import Product from "@/models/Product";
+import { Product } from "@/models/Product";
 import ProductContent from "./ProductContent";
 import ProductEditForm from "./ProductEditForm";
 import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";

@@ -1,10 +1,10 @@
 import { useCallback, useContext, useEffect } from "react";
-import ParticipantModel from "../../models/Participant";
+import type { Participant as ParticipantModel } from "../../models/Participant";
 import Participant from "./Participant";
 import AuthContext from "../../store/auth-context";
-import useGetParticipants from "../../hooks/api/participants/useGetParticipants";
-import List from "../../models/List";
-import useRemoveParticipant from "../../hooks/api/participants/useRemoveParticipant";
+import { useGetParticipants } from "../../hooks/api/participants/useGetParticipants";
+import type { List } from "../../models/List";
+import { useRemoveParticipant } from "../../hooks/api/participants/useRemoveParticipant";
 import ListQueryKeys from "../../constants/QueryKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import Invitation from "./Invitation";
@@ -26,7 +26,7 @@ const Participants = ({ list }: Props) => {
       queryClient.setQueryData(
         ListQueryKeys.detail(list.id),
         (prevList: List | undefined) =>
-          prevList && { ...prevList, participants: getParticipants.data }
+          prevList && { ...prevList, participants: getParticipants.data },
       );
     }
   }, [getParticipants.data, list.id, queryClient]);
@@ -45,7 +45,7 @@ const Participants = ({ list }: Props) => {
   const participants: ParticipantModel[] = [];
   if (getParticipants.data && currentUserParticipant) {
     const otherParticipants = getParticipants.data.filter(
-      (p) => p.user.id !== currentUserParticipant.user.id
+      (p) => p.user.id !== currentUserParticipant.user.id,
     );
     participants.push(...[currentUserParticipant, ...otherParticipants]);
   }
@@ -55,7 +55,7 @@ const Participants = ({ list }: Props) => {
     (userId: string) => {
       mutateRemoveParticipant({ participantId: userId });
     },
-    [mutateRemoveParticipant]
+    [mutateRemoveParticipant],
   );
 
   return (

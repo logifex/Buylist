@@ -4,7 +4,7 @@ const useContextMenu = (): [
   React.RefObject<HTMLDivElement | null>,
   boolean,
   React.Dispatch<React.SetStateAction<boolean>>,
-  React.RefObject<HTMLButtonElement | null>
+  React.RefObject<HTMLButtonElement | null>,
 ] => {
   const menuRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);

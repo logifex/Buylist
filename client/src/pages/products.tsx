@@ -1,17 +1,17 @@
 import { Link, useNavigate, useParams } from "react-router";
-import useGetList from "../hooks/api/lists/useGetList";
+import { useGetList } from "../hooks/api/lists/useGetList";
 import ProductList from "../components/products/ProductList";
 import ProductAddRow from "../components/products/ProductAddRow";
-import useCreateProduct from "../hooks/api/products/useCreateProduct";
-import useDeleteProduct from "../hooks/api/products/useDeleteProduct";
-import Product from "../models/Product";
-import useUpdateProduct from "../hooks/api/products/useUpdateProduct";
+import { useCreateProduct } from "../hooks/api/products/useCreateProduct";
+import { useDeleteProduct } from "../hooks/api/products/useDeleteProduct";
+import type { Product } from "../models/Product";
+import { useUpdateProduct } from "../hooks/api/products/useUpdateProduct";
 import { useCallback, useContext, useEffect } from "react";
 import ModalContext from "../store/modal-context";
-import useUpdateList from "../hooks/api/lists/useUpdateList";
-import { ListInput } from "../models/List";
-import useDeleteList from "../hooks/api/lists/useDeleteList";
-import useLeaveList from "../hooks/api/lists/useLeaveList";
+import { useUpdateList } from "../hooks/api/lists/useUpdateList";
+import type { ListInput } from "../models/List";
+import { useDeleteList } from "../hooks/api/lists/useDeleteList";
+import { useLeaveList } from "../hooks/api/lists/useLeaveList";
 import ExistingProductDialog from "../components/products/ExistingProductDialog";
 import Loading from "../components/ui/Loading";
 import ListDetailsCard from "../components/lists/ListDetailsCard";
@@ -40,7 +40,6 @@ const ProductsPage = () => {
   const { data: list, refetch: refetchAsync } = getList;
 
   const refetch = useCallback(() => void refetchAsync(), [refetchAsync]);
-
   useListSocketHandlers(listId, refetch);
 
   useEffect(() => {
@@ -123,7 +122,7 @@ const ProductsPage = () => {
     (updatedProduct: Product) => {
       updateProductMutate({ product: updatedProduct });
     },
-    [updateProductMutate]
+    [updateProductMutate],
   );
 
   const { mutate: deleteProductMutate } = deleteProduct;
@@ -131,7 +130,7 @@ const ProductsPage = () => {
     (productId: string) => {
       deleteProductMutate({ productId: productId });
     },
-    [deleteProductMutate]
+    [deleteProductMutate],
   );
 
   if (

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import ListModel from "../../models/List";
+import type { List as ListModel } from "../../models/List";
 import filterProductsChecked from "../../utils/filterProductsChecked";
 import { MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 import { Link } from "react-router";
@@ -12,14 +12,14 @@ interface Props {
 
 const List = ({ list, isStarred, onStar }: Props) => {
   const filteredProducts = filterProductsChecked(list.products);
-  let productLengthText = `${filteredProducts.unChecked.length} מוצרים`;
+  let productLengthText = `${filteredProducts.unChecked.length.toString()} מוצרים`;
 
   if (filteredProducts.unChecked.length === 1) {
     productLengthText = "מוצר אחד";
   }
 
   if (filteredProducts.checked.length > 0) {
-    productLengthText += ` (+${filteredProducts.checked.length} ${
+    productLengthText += ` (+${filteredProducts.checked.length.toString()} ${
       filteredProducts.checked.length === 1 ? "מסומן" : "מסומנים"
     })`;
   }
@@ -30,7 +30,9 @@ const List = ({ list, isStarred, onStar }: Props) => {
         <button
           type="button"
           className={isStarred ? "block" : "hidden group-hover:block"}
-          onClick={() => onStar(list.id, !isStarred)}
+          onClick={() => {
+            onStar(list.id, !isStarred);
+          }}
         >
           {isStarred ? (
             <MdOutlineStar size={20} title="מסומן בכוכב" />

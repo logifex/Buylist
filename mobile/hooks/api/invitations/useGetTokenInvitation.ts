@@ -1,8 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import InvitationService from "@/services/InvitationService";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useGetTokenInvitation = ({
+export const tokenInvitationQueryOptions = (listId: string) =>
+  queryOptions({
+    queryKey: ListQueryKeys.detailTokenInvitation(listId),
+    queryFn: () => InvitationService.getTokenInvitation(listId),
+    refetchOnMount: "always",
+    retry: 0,
+  });
+
+export const useGetTokenInvitation = ({
   listId,
   enabled,
 }: {
@@ -10,12 +18,7 @@ const useGetTokenInvitation = ({
   enabled: boolean;
 }) => {
   return useQuery({
-    queryKey: ListQueryKeys.detailTokenInvitation(listId),
+    ...tokenInvitationQueryOptions(listId),
     enabled: enabled,
-    refetchOnMount: "always",
-    queryFn: () => InvitationService.getTokenInvitation(listId),
-    retry: 0,
   });
 };
-
-export default useGetTokenInvitation;

@@ -6,7 +6,7 @@ import { ListQueryKeys } from "@/constants/QueryKeys";
 import { ApiError } from "@/models/Error";
 import ErrorCodes from "@/constants/ErrorCodes";
 
-const useCreateList = () => {
+export const useCreateList = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -14,8 +14,10 @@ const useCreateList = () => {
     mutationFn: ({ list }: { list: ListInput }) => ListService.createList(list),
     onSuccess: async (data) => {
       await queryClient.cancelQueries({ queryKey: ListQueryKeys.all });
-      queryClient.setQueryData(ListQueryKeys.all, (prevLists: SharedList[]) =>
-        prevLists ? [...prevLists, data] : [data],
+      queryClient.setQueryData(
+        ListQueryKeys.all,
+        (prevLists: SharedList[] | undefined) =>
+          prevLists ? [...prevLists, data] : [data],
       );
     },
     onError: (err) => {
@@ -36,5 +38,3 @@ const useCreateList = () => {
     },
   });
 };
-
-export default useCreateList;

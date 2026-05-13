@@ -1,8 +1,8 @@
 import React from "react";
-import List, { ListInput } from "@/models/List";
-import Product, { ProductInput } from "@/models/Product";
+import { List, ListInput } from "@/models/List";
+import { Product, ProductInput } from "@/models/Product";
 
-export type ListsContextType = {
+export interface ListsContextType {
   lists: List[];
   starredLists: string[];
   addList: (listName: ListInput) => string;
@@ -13,19 +13,33 @@ export type ListsContextType = {
   deleteProduct: (listId: string, productId: string) => void;
   starList: (listId: string, star: boolean) => void;
   updateStarListId: (oldListId: string, newListId: string) => void;
-};
+}
 
 const ListsContext = React.createContext<ListsContextType>({
   lists: [],
   starredLists: [],
   addList: () => "",
-  editList: () => {},
-  deleteList: () => {},
-  addProduct: () => {},
-  editProduct: () => {},
-  deleteProduct: () => {},
-  starList: () => {},
-  updateStarListId: () => {},
+  editList: () => {
+    return;
+  },
+  deleteList: () => {
+    return;
+  },
+  addProduct: () => {
+    return;
+  },
+  editProduct: () => {
+    return;
+  },
+  deleteProduct: () => {
+    return;
+  },
+  starList: () => {
+    return;
+  },
+  updateStarListId: () => {
+    return;
+  },
 });
 
 export default ListsContext;

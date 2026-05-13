@@ -65,8 +65,8 @@ queryClient.setMutationDefaults(ListMutationKeys.update(), {
 
 onlineManager.setOnline(false);
 
-export const persister = createAsyncStoragePersister({
+const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
 });
 
-export default queryClient;
+export { queryClient, persister };

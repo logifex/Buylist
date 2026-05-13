@@ -1,11 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Product from "@/models/Product";
+import { Product } from "@/models/Product";
 import { SharedList } from "@/models/List";
 import Toast from "react-native-toast-message";
 import ProductService from "@/services/ProductService";
 import { ListMutationKeys, ListQueryKeys } from "@/constants/QueryKeys";
 
-export type UpdateProductVariables = { listId: string; product: Product };
+export interface UpdateProductVariables {
+  listId: string;
+  product: Product;
+}
 export type UpdateProductContext =
   | { prevProduct: Product | undefined }
   | undefined;
@@ -25,11 +28,11 @@ export const updateProductDefaultOnError = (
   console.log(err.message);
   Toast.show({
     type: "base",
-    text1: `שגיאה בעריכת המוצר '${context?.prevProduct?.name}'`,
+    text1: `שגיאה בעריכת המוצר '${context?.prevProduct?.name ?? "null"}'`,
   });
 };
 
-const useUpdateProduct = ({ listId }: { listId: string }) => {
+export const useUpdateProduct = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -88,5 +91,3 @@ const useUpdateProduct = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useUpdateProduct;

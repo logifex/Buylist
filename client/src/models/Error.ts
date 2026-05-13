@@ -2,7 +2,7 @@ export interface BackendError {
   code?: string;
   message: string;
   data: unknown;
-};
+}
 
 export class ApiError extends Error {
   status: number;

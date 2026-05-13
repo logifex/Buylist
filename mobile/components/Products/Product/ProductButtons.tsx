@@ -4,14 +4,14 @@ import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 type MaterialIconName = React.ComponentProps<typeof MaterialIcon>["name"];
 
-type Props = {
+interface Props {
   startIconName: MaterialIconName;
   endIconName: MaterialIconName;
   startIconLabel: string;
   endIconLabel: string;
   onStartPress: () => void;
   onEndPress: () => void;
-};
+}
 
 const ProductButtons = ({
   startIconName,

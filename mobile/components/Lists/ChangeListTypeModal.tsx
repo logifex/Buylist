@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import AuthRequiredBottomModal from "../Ui/AuthRequiredBottomModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import List, { SharedList } from "@/models/List";
+import { List, SharedList } from "@/models/List";
 import Text from "../Ui/ThemedText";
 import Button from "../Ui/Button";
 import Toast from "react-native-toast-message";
+import isSharedList from "@/utils/isSharedList";
 
-type Props = {
+interface Props {
   list: List;
   onRequestClose: () => void;
   onShareList: () => Promise<SharedList>;
   onChangeToLocalList: () => Promise<void>;
   ref: React.RefObject<BottomSheetModal | null>;
-};
+}
 
 const ChangeListTypeModal = ({
   list,
@@ -24,7 +25,7 @@ const ChangeListTypeModal = ({
 }: Props) => {
   const [loading, setLoading] = useState(false);
 
-  const isShared = !!(list as SharedList).participants;
+  const isShared = isSharedList(list);
 
   const handleChangeListType = async (shared: boolean) => {
     setLoading(true);
@@ -51,7 +52,7 @@ const ChangeListTypeModal = ({
       onRequestClose={onRequestClose}
     >
       <View style={styles.container}>
-        {isShared && (list as SharedList).participants.length > 1 ? (
+        {isShared && list.participants.length > 1 ? (
           <Text style={styles.text}>
             לא ניתן להפוך רשימה עם כמה משתתפים לרשימה מקומית.
           </Text>
@@ -66,7 +67,7 @@ const ChangeListTypeModal = ({
               type="primary"
               style={styles.button}
               containerStyle={styles.buttonContainer}
-              onPress={handleChangeListType.bind(null, !isShared)}
+              onPress={() => void handleChangeListType(!isShared)}
               disabled={loading}
             >
               <Text style={styles.buttonText}>

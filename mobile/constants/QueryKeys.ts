@@ -1,5 +1,5 @@
 export const ListQueryKeys = {
-  all: ["lists"],
+  all: ["lists"] as const,
   detail: (id: string) => [...ListQueryKeys.all, id],
   detailParticipants: (id: string) => [
     ...ListQueryKeys.detail(id),

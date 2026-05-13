@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import React, { useContext } from "react";
-import List, { ListInfo, SharedList } from "@/models/List";
+import { List, ListInfo, SharedList } from "@/models/List";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
@@ -16,8 +16,9 @@ import ListConstants from "@/constants/ListConstants";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ChangeListTypeModal from "./ChangeListTypeModal";
 import ParticipantsModal from "../Participants/ParticipantsModal";
+import isSharedList from "@/utils/isSharedList";
 
-type Props = {
+interface Props {
   onRequestClose: () => void;
   list: List;
   onEditList: (list: ListInfo) => void;
@@ -26,7 +27,7 @@ type Props = {
   onShareList: () => Promise<SharedList>;
   onChangeToLocalList: () => Promise<void>;
   ref: React.RefObject<BottomSheetModal | null>;
-};
+}
 
 const iconSize = 20;
 
@@ -49,9 +50,8 @@ const ListOptionMenu = ({
   const { userInfo } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
 
-  const isShared = !!(list as SharedList).participants;
-  const isOwner =
-    isShared && (list as SharedList).participants[0].user.id === userInfo?.id;
+  const isShared = isSharedList(list);
+  const isOwner = isShared && list.participants[0].user.id === userInfo?.id;
 
   return (
     <>
@@ -151,7 +151,9 @@ const ListOptionMenu = ({
       >
         <InputPrompt
           name="שם הרשימה"
-          onConfirm={(listName) => onEditList({ ...list, name: listName })}
+          onConfirm={(listName) => {
+            onEditList({ ...list, name: listName });
+          }}
           onClose={editModal.dismiss}
           defaultValue={list.name}
           maxLength={ListConstants.maxListNameLength}
@@ -160,7 +162,9 @@ const ListOptionMenu = ({
       </BottomModal>
       <BottomModal ref={deleteModal.ref} onRequestClose={deleteModal.dismiss}>
         <DialogPrompt
-          onConfirm={() => onDeleteList(list.id)}
+          onConfirm={() => {
+            onDeleteList(list.id);
+          }}
           onClose={deleteModal.dismiss}
         >
           <Text style={styles.modalText}>
@@ -170,7 +174,9 @@ const ListOptionMenu = ({
       </BottomModal>
       <BottomModal ref={leaveModal.ref} onRequestClose={leaveModal.dismiss}>
         <DialogPrompt
-          onConfirm={() => onLeaveList(list.id)}
+          onConfirm={() => {
+            onLeaveList(list.id);
+          }}
           onClose={leaveModal.dismiss}
         >
           <Text style={styles.modalText}>

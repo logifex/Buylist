@@ -1,9 +1,9 @@
 import React from "react";
-import User from "../models/User";
+import type { User } from "../models/User";
 
 export interface AuthContextType {
   userInfo?: User;
-  ready: boolean,
+  ready: boolean;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
 }

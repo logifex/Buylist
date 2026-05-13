@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type SubmitEventHandler } from "react";
 import DialogButtons from "../ui/DialogButtons";
 import ListConstants from "../../constants/ListConstants";
 import FormTextInput from "../ui/FormTextInput";
@@ -17,7 +17,7 @@ const CreateListModalContent = ({ hideModal, onAddList }: Props) => {
     setListName(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (listName.length === 0) {
       setErrorMessage("שם הרשימה לא יכול להיות ריק");

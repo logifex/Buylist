@@ -1,21 +1,21 @@
 import { ColorValue, StyleSheet, View } from "react-native";
 import React from "react";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import List from "@/models/List";
+import { List } from "@/models/List";
 import BottomModal from "@/components/Ui/BottomModal";
 import MenuItem from "@/components/Ui/MenuItem";
 
-type ColorDetails = {
+interface ColorDetails {
   listColor: List["color"];
   text: string;
   color: ColorValue;
-};
+}
 
-type Props = {
+interface Props {
   onRequestClose: () => void;
   onPick: (color: List["color"]) => void;
   ref: React.RefObject<BottomSheetModal | null>;
-};
+}
 
 const colors: ColorDetails[] = [
   { listColor: "GRAY", text: "אפור", color: "#BDBDBD" },
@@ -56,7 +56,9 @@ const ColorMenu = ({ onRequestClose, onPick, ref }: Props) => {
                 ]}
               />
             }
-            onPress={() => handleColorPick(color.listColor)}
+            onPress={() => {
+              handleColorPick(color.listColor);
+            }}
           />
         ))}
       </BottomSheetScrollView>

@@ -42,14 +42,16 @@ export const fetchWithAuth = async (
   timeout = 7.5 * 1000,
 ) => {
   const authHeader = await getAuthHeader();
-  const headers = { ...authHeader, ...options.headers };
+  const headers = new Headers(options.headers);
+  headers.set("Authorization", authHeader.Authorization);
+  if (options.body) {
+    headers.set("Content-Type", "application/json");
+  }
   const { signal, abort } = createTimeoutSignal(timeout);
 
   const response = await fetch(url, {
     ...options,
-    headers: options.body
-      ? { "Content-Type": "application/json", ...headers }
-      : headers,
+    headers: headers,
     signal: signal,
   });
 

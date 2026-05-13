@@ -1,4 +1,4 @@
-import Product, { ProductInput } from "../models/Product";
+import type { Product, ProductInput } from "../models/Product";
 import { fetchWithAuth } from "../utils/apiUtils";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -6,7 +6,7 @@ const serverUrl = import.meta.env.VITE_SERVER_URL;
 const ProductService = {
   async createProduct(
     listId: string,
-    productInput: ProductInput
+    productInput: ProductInput,
   ): Promise<Product> {
     const response = await fetchWithAuth(
       `${serverUrl}/api/lists/${listId}/products`,
@@ -17,7 +17,7 @@ const ProductService = {
           note: productInput.note,
           isChecked: productInput.isChecked,
         }),
-      }
+      },
     );
 
     const product = (await response.json()) as Product;
@@ -42,7 +42,7 @@ const ProductService = {
   async deleteProduct(listId: string, productId: string) {
     await fetchWithAuth(
       `${serverUrl}/api/lists/${listId}/products/${productId}`,
-      { method: "DELETE" }
+      { method: "DELETE" },
     );
   },
 };

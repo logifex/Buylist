@@ -14,7 +14,7 @@ import { onlineManager, focusManager } from "@tanstack/react-query";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import shouldDehydrateMutation from "@/utils/shouldDehydrateMutation";
-import queryClient, { persister } from "@/config/queryClient";
+import { queryClient, persister } from "@/config/queryClient";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Providers = ({ children }: PropsWithChildren) => {
@@ -32,7 +32,9 @@ const Providers = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const subscription = AppState.addEventListener("change", onAppStateChange);
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import ThemeContext, { ThemeStateType } from "@/store/theme-context";
 import RadioButtons from "@/components/Ui/RadioButtons";
 
-type ThemeOption = {
+interface ThemeOption {
   label: string;
   value: ThemeStateType;
-};
+}
 
 const options: ThemeOption[] = [
   { label: "ברירת המחדל של המערכת", value: "default" },

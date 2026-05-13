@@ -1,7 +1,7 @@
-import socket from "@/config/socket";
+import { socket } from "@/config/socket";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 import { ListInfo, SharedList } from "@/models/List";
-import Product, { ProductInput } from "@/models/Product";
+import { Product, ProductInput } from "@/models/Product";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 

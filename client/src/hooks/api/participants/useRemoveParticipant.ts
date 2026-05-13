@@ -3,7 +3,7 @@ import ListService from "../../../services/ListService";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import { toast } from "react-toastify";
 
-const useRemoveParticipant = ({ listId }: { listId: string }) => {
+export const useRemoveParticipant = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -20,5 +20,3 @@ const useRemoveParticipant = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useRemoveParticipant;

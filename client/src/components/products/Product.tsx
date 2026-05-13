@@ -1,8 +1,8 @@
 import { MdDelete, MdEdit } from "react-icons/md";
-import ProductModel from "../../models/Product";
+import type { Product as ProductModel } from "../../models/Product";
 import { memo } from "react";
 import Gradients from "../../constants/Gradients";
-import List from "../../models/List";
+import type { List } from "../../models/List";
 
 interface Props extends ProductModel {
   color: List["color"];
@@ -56,7 +56,12 @@ const Product = ({
         </div>
       </div>
       <div className="flex">
-        <button type="button" onClick={() => onEditClick(product)}>
+        <button
+          type="button"
+          onClick={() => {
+            onEditClick(product);
+          }}
+        >
           <MdEdit color="black" size={48} title="עריכת מוצר" />
         </button>
         <button

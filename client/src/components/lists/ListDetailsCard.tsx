@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import List, { ListInput } from "../../models/List";
+import type { List, ListInput } from "../../models/List";
 import ModalContext from "../../store/modal-context";
 import EditListModalContent from "./EditListModalContent";
 import Dialog from "../ui/Dialog";
@@ -44,7 +44,7 @@ const ListDetailsCard = ({
     });
   };
 
-  const isOwner = list?.participants[0].user.id === userInfo?.id;
+  const isOwner = list.participants[0].user.id === userInfo?.id;
 
   const handleDeleteLeaveListClick = () => {
     showModal({
@@ -73,7 +73,7 @@ const ListDetailsCard = ({
   const participantsText =
     list.participants.length === 1
       ? "משתתף אחד"
-      : `${list.participants.length} משתתפים`;
+      : `${list.participants.length.toString()} משתתפים`;
 
   return (
     <div className="flex md:block">

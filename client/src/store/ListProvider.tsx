@@ -1,14 +1,15 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from "react";
-import ListContext, { ListContextType } from "./list-context";
+import {
+  type PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import ListContext, { type ListContextType } from "./list-context";
 
 const ListProvider = ({ children }: PropsWithChildren) => {
   const [starredLists, setStarredLists] = useState<string[]>(() => {
     const starredListsJson = localStorage.getItem("starredLists");
-    const storedStarredLists = (
-      starredListsJson ? JSON.parse(starredListsJson) : []
-    ) as string[];
-
-    return storedStarredLists;
+    return (starredListsJson ? JSON.parse(starredListsJson) : []) as string[];
   });
 
   useEffect(() => {

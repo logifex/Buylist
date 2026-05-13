@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react";
-import List from "../../models/List";
-import ProductModel from "../../models/Product";
+import type { List } from "../../models/List";
+import type { Product as ProductModel } from "../../models/Product";
 import filterProductsChecked from "../../utils/filterProductsChecked";
 import Product from "./Product";
 import ModalContext from "../../store/modal-context";
@@ -23,20 +23,20 @@ const ProductList = ({ products, color, onChange, onDelete }: Props) => {
           <EditProductModalContent
             product={product}
             hideModal={hideModal}
-            onEditProduct={(productInput) =>
+            onEditProduct={(productInput) => {
               onChange({
                 note: null,
                 isChecked: false,
                 ...productInput,
                 id: product.id,
-              })
-            }
+              });
+            }}
           />
         ),
         title: "עריכת מוצר",
       });
     },
-    [showModal, hideModal, onChange]
+    [showModal, hideModal, onChange],
   );
 
   const renderProducts = (products: ProductModel[]) =>

@@ -1,17 +1,17 @@
 import React, { useCallback, useContext } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import Text from "@/components/Ui/ThemedText";
-import ListModel from "@/models/List";
+import { List as ListModel } from "@/models/List";
 import List from "@/components/Lists/List";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import ListsContext from "@/store/list-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Props = {
+interface Props {
   lists: ListModel[];
   onListPress: (list: ListModel) => void;
   onStar: (listId: string, star: boolean) => void;
-};
+}
 
 const ListList = ({ lists, onListPress, onStar }: Props) => {
   const { starredLists } = useContext(ListsContext);

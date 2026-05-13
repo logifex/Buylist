@@ -1,4 +1,4 @@
-import ParticipantModel from "../../models/Participant";
+import type { Participant as ParticipantModel } from "../../models/Participant";
 
 interface Props {
   participant: ParticipantModel;
@@ -29,7 +29,9 @@ const Participant = ({ participant, isUserOwner, onRemove }: Props) => {
           <button
             className="bg-gray-300 hover:bg-gray-400 text-black dark:bg-dark-main-600 dark:hover:bg-dark-main-700 dark:text-white p-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             type="button"
-            onClick={() => onRemove(participant.user.id)}
+            onClick={() => {
+              onRemove(participant.user.id);
+            }}
           >
             הסרה
           </button>

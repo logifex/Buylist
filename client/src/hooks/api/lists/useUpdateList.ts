@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ListService from "../../../services/ListService";
-import List, { ListInput } from "../../../models/List";
+import type { List, ListInput } from "../../../models/List";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import { toast } from "react-toastify";
 
-const useUpdateList = ({ listId }: { listId: string }) => {
+export const useUpdateList = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -13,12 +13,12 @@ const useUpdateList = ({ listId }: { listId: string }) => {
     onSuccess: (data) => {
       const newList = queryClient.setQueryData<List | undefined>(
         ListQueryKeys.detail(listId),
-        (prevList) => prevList && { ...prevList, ...data }
+        (prevList) => prevList && { ...prevList, ...data },
       );
       queryClient.setQueryData(
         ListQueryKeys.all,
         (prevLists: List[] | undefined) =>
-          prevLists?.map((l) => (l.id === listId ? newList : l))
+          prevLists?.map((l) => (l.id === listId ? newList : l)),
       );
     },
     onError: (err) => {
@@ -27,5 +27,3 @@ const useUpdateList = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useUpdateList;

@@ -12,7 +12,10 @@ import { ListMutationKeys, ListQueryKeys } from "@/constants/QueryKeys";
 import { ApiError } from "@/models/Error";
 import ErrorCodes from "@/constants/ErrorCodes";
 
-export type CreateProductVariables = { listId: string; product: ProductInput };
+export interface CreateProductVariables {
+  listId: string;
+  product: ProductInput;
+}
 export type CreateProductContext = { tempId: string } | undefined;
 
 export const createProductDefaultMutationFn = async ({
@@ -55,7 +58,7 @@ export const createProductDefaultOnError =
     });
   };
 
-const useCreateProduct = ({ listId }: { listId: string }) => {
+export const useCreateProduct = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -104,5 +107,3 @@ const useCreateProduct = ({ listId }: { listId: string }) => {
     onError: createProductDefaultOnError(queryClient),
   });
 };
-
-export default useCreateProduct;

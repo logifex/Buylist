@@ -9,7 +9,7 @@ import BottomModal from "@/components/Ui/BottomModal";
 import DialogPrompt from "@/components/Ui/Prompts/DialogPrompt";
 import Text from "@/components/Ui/ThemedText";
 import { ApiError } from "@/models/Error";
-import useJoinList from "@/hooks/api/invitations/useJoinList";
+import { useJoinList } from "@/hooks/api/invitations/useJoinList";
 import { ListPreview } from "@/models/List";
 import ErrorCodes from "@/constants/ErrorCodes";
 
@@ -32,14 +32,15 @@ const JoinList = () => {
     setHandled(true);
 
     const path = Linking.parse(url).path;
-    if (!path || !path.startsWith("invite/")) {
+    if (!path?.startsWith("invite/")) {
       return;
     }
     const invitationToken = path.split("/")[1];
 
     try {
-      const invitationList =
-        await InvitationService.getInvitationList(invitationToken);
+      const invitationList = await InvitationService.getInvitationList(
+        invitationToken,
+      );
       setInvitationLinkList(invitationList);
       present();
     } catch (err) {
@@ -71,9 +72,9 @@ const JoinList = () => {
     }
 
     if (userInfo) {
-      handleInvitationLink();
+      void handleInvitationLink();
     } else {
-      signIn();
+      void signIn();
     }
   }, [url, handled, handleInvitationLink, userInfo, signIn]);
 
@@ -83,7 +84,7 @@ const JoinList = () => {
     }
 
     const path = Linking.parse(url).path;
-    if (!path || !path.startsWith("invite/")) {
+    if (!path?.startsWith("invite/")) {
       return;
     }
     const token = path.split("/")[1];
@@ -115,7 +116,7 @@ const JoinList = () => {
       closeKeyboard
     >
       <DialogPrompt
-        onConfirm={joinLinkListHandler}
+        onConfirm={() => void joinLinkListHandler()}
         onClose={invitationLinkSheetModal.dismiss}
       >
         {invitationLinkList && (

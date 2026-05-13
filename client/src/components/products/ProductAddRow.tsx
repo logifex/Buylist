@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type SubmitEventHandler } from "react";
 import ListConstants from "../../constants/ListConstants";
 
 interface Props {
@@ -12,7 +12,7 @@ const ProductAddRow = ({ onSubmit }: Props) => {
     setEnteredProductName(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const newProductName = enteredProductName.trim();
     if (newProductName === "") {

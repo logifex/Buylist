@@ -2,6 +2,11 @@ import "tsx/cjs";
 
 const IS_DEV = process.env.APP_VARIANT === "development";
 
+const androidPackage = process.env.ANDROID_PACKAGE;
+if (!androidPackage) {
+  throw new Error("No android package defined in app.config");
+}
+
 export default {
   name: IS_DEV ? "Buylist (Dev)" : "Buylist",
   slug: "buylist",
@@ -21,11 +26,15 @@ export default {
       process.env.GOOGLE_SERVICES_JSON ?? "google-services.json",
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon-foreground.png",
-      backgroundImage: `./assets/images/${IS_DEV ? "adaptive-icon-background-dev.png" : "adaptive-icon-background.png"}`,
+      backgroundImage: `./assets/images/${
+        IS_DEV
+          ? "adaptive-icon-background-dev.png"
+          : "adaptive-icon-background.png"
+      }`,
       monochromeImage: "./assets/images/adaptive-icon-monochrome.png",
     },
-    playStoreUrl: `https://play.google.com/store/apps/details?id=${process.env.ANDROID_PACKAGE}`,
-    package: process.env.ANDROID_PACKAGE,
+    playStoreUrl: `https://play.google.com/store/apps/details?id=${androidPackage}`,
+    package: androidPackage,
     intentFilters: [
       {
         action: "VIEW",

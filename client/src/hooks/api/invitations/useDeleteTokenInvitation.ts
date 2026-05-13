@@ -3,7 +3,7 @@ import InvitationService from "../../../services/InvitationService";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import { toast } from "react-toastify";
 
-const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
+export const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -22,5 +22,3 @@ const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useDeleteTokenInvitation;

@@ -1,5 +1,5 @@
-import { RefObject, useContext } from "react";
-import ThemeContext, { ThemeStateType } from "../../store/theme-context";
+import { type RefObject, useContext } from "react";
+import ThemeContext, { type ThemeStateType } from "../../store/theme-context";
 
 interface Props {
   menuRef: RefObject<HTMLDivElement | null>;

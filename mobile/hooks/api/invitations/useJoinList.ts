@@ -4,7 +4,7 @@ import InvitationService from "@/services/InvitationService";
 import Toast from "react-native-toast-message";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useJoinList = () => {
+export const useJoinList = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -13,8 +13,10 @@ const useJoinList = () => {
       InvitationService.joinList(token),
     onSuccess: async (data) => {
       await queryClient.cancelQueries({ queryKey: ListQueryKeys.all });
-      queryClient.setQueryData(ListQueryKeys.all, (prevLists: SharedList[]) =>
-        prevLists ? [...prevLists, data] : [data],
+      queryClient.setQueryData(
+        ListQueryKeys.all,
+        (prevLists: SharedList[] | undefined) =>
+          prevLists ? [...prevLists, data] : [data],
       );
     },
     onError: (err) => {
@@ -26,5 +28,3 @@ const useJoinList = () => {
     },
   });
 };
-
-export default useJoinList;

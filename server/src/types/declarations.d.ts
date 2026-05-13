@@ -1,1 +1,1 @@
-declare module 'eslint-plugin-chai-friendly';
+declare module "eslint-plugin-chai-friendly";

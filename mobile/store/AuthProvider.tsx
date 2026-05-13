@@ -9,7 +9,7 @@ import {
   statusCodes,
   isErrorWithCode,
 } from "@react-native-google-signin/google-signin";
-import User from "@/models/User";
+import { User } from "@/models/User";
 import AuthContext, { AuthContextType } from "./auth-context";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -18,6 +18,7 @@ import {
   signInWithCredential,
   signOut as authSignOut,
   connectAuthEmulator,
+  FirebaseAuthTypes,
 } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { auth } from "@/config/firebase";
@@ -36,7 +37,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const queryClient = useQueryClient();
 
   const signInWithIdToken = useCallback(async (idToken: string) => {
-    const googleCredential = GoogleAuthProvider.credential(idToken);
+    const GoogleAuth = GoogleAuthProvider as {
+      credential(idToken: string): FirebaseAuthTypes.AuthCredential;
+    };
+    const googleCredential = GoogleAuth.credential(idToken);
     await signInWithCredential(auth, googleCredential);
   }, []);
 
@@ -98,18 +102,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   }, [signInWithIdToken]);
 
-  const onSignOut = useCallback(async () => {
-    try {
-      await GoogleSignin.signOut();
-      await queryClient.cancelQueries();
-      queryClient.removeQueries();
-      queryClient.getMutationCache().clear();
-      setUserInfo(undefined);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [queryClient]);
-
   const signOut = async () => {
     try {
       await authSignOut(auth);
@@ -122,12 +114,29 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const onSignOut = useCallback(async () => {
+    try {
+      await GoogleSignin.signOut();
+      await queryClient.cancelQueries();
+      queryClient.removeQueries();
+      queryClient.getMutationCache().clear();
+      setUserInfo(undefined);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [queryClient]);
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        await onSignOut();
+        void onSignOut();
       } else {
-        const currentUser = {
+        if (!user.email || !user.displayName) {
+          void signOut();
+          return;
+        }
+
+        const currentUser: User = {
           id: user.uid,
           email: user.email,
           name: user.displayName,
@@ -152,11 +161,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     const newUser = GoogleSignin.getCurrentUser();
 
     if (!newUser?.idToken) {
-      signInSilently();
+      void signInSilently();
       return;
     }
 
-    signInWithIdToken(newUser.idToken);
+    void signInWithIdToken(newUser.idToken);
   }, [signInSilently, signInWithIdToken]);
 
   const authContext: AuthContextType = {

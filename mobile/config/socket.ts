@@ -8,21 +8,25 @@ const socket = io(process.env.EXPO_PUBLIC_SERVER_URL, {
   withCredentials: true,
 });
 
-onIdTokenChanged(auth, async (user) => {
-  if (!user) {
-    socket.disconnect();
-    return;
-  }
+onIdTokenChanged(auth, (user) => {
+  const connect = async () => {
+    if (!user) {
+      socket.disconnect();
+      return;
+    }
 
-  const token = await getIdToken(user);
+    const token = await getIdToken(user);
 
-  socket.io.opts.extraHeaders = {
-    ...socket.io.opts.extraHeaders,
-    Authorization: `Bearer ${token}`,
+    socket.io.opts.extraHeaders = {
+      ...socket.io.opts.extraHeaders,
+      Authorization: `Bearer ${token}`,
+    };
   };
+
+  void connect();
 });
 
-export const connectSocket = async () => {
+const connectSocket = async () => {
   if (socket.connected) {
     return;
   }
@@ -45,4 +49,4 @@ export const connectSocket = async () => {
   }
 };
 
-export default socket;
+export { socket, connectSocket };

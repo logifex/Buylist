@@ -2,13 +2,13 @@ import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import Text from "@/components/Ui/ThemedText";
 import Button from "@/components/Ui/Button";
-import ParticipantModel from "@/models/Participant";
+import { Participant as ParticipantModel } from "@/models/Participant";
 
-type Props = {
+interface Props {
   participant: ParticipantModel;
   isUserOwner: boolean;
   onRemove: (participant: ParticipantModel) => void;
-};
+}
 
 const Participant = ({ participant, isUserOwner, onRemove }: Props) => {
   const handleRemove = () => {

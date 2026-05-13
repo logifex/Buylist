@@ -9,7 +9,11 @@ const AuthButton = () => {
 
   return (
     <Button
-      onPress={userCtx.userInfo ? userCtx.signOut : userCtx.signIn}
+      onPress={
+        userCtx.userInfo
+          ? () => void userCtx.signOut()
+          : () => void userCtx.signIn()
+      }
       style={styles.button}
       containerStyle={styles.buttonContainer}
     >

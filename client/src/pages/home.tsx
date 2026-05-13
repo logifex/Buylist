@@ -16,7 +16,11 @@ const HomePage = () => {
         </p>
       </div>
       <LoginButton className="bg-primary-500 hover:bg-primary-600 dark:bg-dark-main-800 dark:hover:bg-dark-main-700 px-4 py-2 rounded-lg" />
-      <a className="text-blue-400 hover:underline" href="/privacy-policy" target="blank">
+      <a
+        className="text-blue-400 hover:underline"
+        href="/privacy-policy"
+        target="blank"
+      >
         מדיניות פרטיות
       </a>
       <div className="mt-8 text-center">

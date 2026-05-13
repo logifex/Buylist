@@ -3,13 +3,16 @@ import React, { useContext } from "react";
 import ThemeContext from "@/store/theme-context";
 import Text from "./ThemedText";
 
-type RadioButtonOption = { label: string; value: string };
+interface RadioButtonOption {
+  label: string;
+  value: string;
+}
 
-type Props = {
+interface Props {
   options: RadioButtonOption[];
   selectedValue: string;
   onValueChange: (value: string) => void;
-};
+}
 
 const RadioButtons = ({ options, selectedValue, onValueChange }: Props) => {
   const { theme } = useContext(ThemeContext);
@@ -24,7 +27,9 @@ const RadioButtons = ({ options, selectedValue, onValueChange }: Props) => {
                 styles.pressable,
                 pressed && { backgroundColor: theme.pressedColor },
               ]}
-              onPress={() => onValueChange(option.value)}
+              onPress={() => {
+                onValueChange(option.value);
+              }}
             >
               <View style={styles.container}>
                 <View style={[styles.outerIcon, { borderColor: theme.text }]}>

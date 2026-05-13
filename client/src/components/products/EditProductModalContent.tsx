@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, type SubmitEventHandler } from "react";
 import DialogButtons from "../ui/DialogButtons";
-import Product, { ProductInput } from "../../models/Product";
+import type { Product, ProductInput } from "../../models/Product";
 import ListConstants from "../../constants/ListConstants";
 import useFormState from "../../hooks/useFormState";
 import FormTextInput from "../ui/FormTextInput";
@@ -20,7 +20,7 @@ const EditProductModalContent = ({
   const { state: enteredProduct, handleChange } = useFormState({ ...product });
   const [errorMessage, setErrorMessage] = useState<string>();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (enteredProduct.name === "") {
       setErrorMessage("שם המוצר לא יכול להיות ריק");

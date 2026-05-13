@@ -27,7 +27,7 @@ onIdTokenChanged(auth, (user) => {
   void connect();
 });
 
-export const connectSocket = async () => {
+const connectSocket = async () => {
   if (socket.connected) {
     return;
   }
@@ -50,4 +50,4 @@ export const connectSocket = async () => {
   }
 };
 
-export default socket;
+export { socket, connectSocket };

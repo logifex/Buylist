@@ -5,8 +5,8 @@ import React, {
   useReducer,
   useState,
 } from "react";
-import List, { ListInput } from "@/models/List";
-import Product, { ProductInput } from "@/models/Product";
+import { List, ListInput } from "@/models/List";
+import { Product, ProductInput } from "@/models/Product";
 import ListsContext, { ListsContextType } from "@/store/list-context";
 import AppDataService from "@/services/AppDataService";
 import * as Crypto from "expo-crypto";
@@ -181,18 +181,18 @@ const ListsProvider = ({ children }: PropsWithChildren) => {
       setLoaded(true);
     };
 
-    loadData();
+    void loadData();
   }, []);
 
   useEffect(() => {
     if (loaded) {
-      AppDataService.writeLists(listsState);
+      void AppDataService.writeLists(listsState);
     }
   }, [listsState, loaded]);
 
   useEffect(() => {
     if (loaded) {
-      AppDataService.writeStarredLists(starredLists);
+      void AppDataService.writeStarredLists(starredLists);
     }
   }, [starredLists, loaded]);
 

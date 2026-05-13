@@ -11,11 +11,7 @@ const AuthenticationLayout = () => {
     return <Loading />;
   }
 
-  return userInfo ? (
-    <Outlet />
-  ) : (
-    <HomePage />
-  );
+  return userInfo ? <Outlet /> : <HomePage />;
 };
 
 export default AuthenticationLayout;

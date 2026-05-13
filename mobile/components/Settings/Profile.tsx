@@ -2,11 +2,11 @@ import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import Text from "@/components/Ui/ThemedText";
 
-type Props = {
+interface Props {
   name: string | null;
   email: string | null;
   photoUrl: string | null;
-};
+}
 
 const Profile = ({ name, email, photoUrl }: Props) => {
   return (

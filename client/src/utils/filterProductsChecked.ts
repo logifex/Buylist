@@ -1,4 +1,4 @@
-import Product, { FilteredProducts } from "../models/Product";
+import type { Product, FilteredProducts } from "../models/Product";
 
 const filterProductsChecked = (products: Product[]) => {
   return products.reduce<FilteredProducts>(
@@ -7,7 +7,7 @@ const filterProductsChecked = (products: Product[]) => {
 
       return res;
     },
-    { unChecked: [], checked: [] }
+    { unChecked: [], checked: [] },
   );
 };
 

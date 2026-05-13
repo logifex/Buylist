@@ -1,12 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import List from "../models/List";
+import { List } from "../models/List";
 import { ThemeStateType } from "../store/theme-context";
 import { ColorSchemeName } from "react-native";
 
 const AppDataService = {
   readLists: async (): Promise<List[]> => {
     const listsJson = await AsyncStorage.getItem("listsdata");
-    const storedLists = listsJson ? JSON.parse(listsJson) : [];
+    const storedLists = (listsJson ? JSON.parse(listsJson) : []) as List[];
 
     return storedLists;
   },
@@ -16,7 +16,9 @@ const AppDataService = {
   },
   readStarredLists: async (): Promise<string[]> => {
     const starredListsJson = await AsyncStorage.getItem("starredlists");
-    const starredLists = starredListsJson ? JSON.parse(starredListsJson) : [];
+    const starredLists = (
+      starredListsJson ? JSON.parse(starredListsJson) : []
+    ) as string[];
 
     return starredLists;
   },

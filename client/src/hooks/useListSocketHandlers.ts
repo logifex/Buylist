@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import Product from "../models/Product";
-import socket from "../config/socket";
-import List, { ListInfo } from "../models/List";
+import type { Product } from "../models/Product";
+import { socket } from "../config/socket";
+import type { List, ListInfo } from "../models/List";
 import ListQueryKeys from "../constants/QueryKeys";
 
 const useListSocketHandlers = (listId: string, refetch: () => void) => {
@@ -31,7 +31,7 @@ const useListSocketHandlers = (listId: string, refetch: () => void) => {
           prevList && {
             ...prevList,
             ...updatedList,
-          }
+          },
       );
     };
     socket.on("listUpdate", listUpdateListener);
@@ -40,7 +40,7 @@ const useListSocketHandlers = (listId: string, refetch: () => void) => {
       queryClient.setQueryData(
         ListQueryKeys.all,
         (oldLists: List[] | undefined) =>
-          oldLists?.filter((l) => l.id !== listId)
+          oldLists?.filter((l) => l.id !== listId),
       );
       void queryClient.invalidateQueries({
         queryKey: ListQueryKeys.detail(listId),
@@ -62,7 +62,7 @@ const useListSocketHandlers = (listId: string, refetch: () => void) => {
               ],
             }
           );
-        }
+        },
       );
     };
     socket.on("productCreate", productCreateListener);
@@ -75,11 +75,11 @@ const useListSocketHandlers = (listId: string, refetch: () => void) => {
             prevList && {
               ...prevList,
               products: prevList.products.map((p) =>
-                p.id === updatedProduct.id ? updatedProduct : p
+                p.id === updatedProduct.id ? updatedProduct : p,
               ),
             }
           );
-        }
+        },
       );
     };
     socket.on("productUpdate", productUpdateListener);
@@ -94,7 +94,7 @@ const useListSocketHandlers = (listId: string, refetch: () => void) => {
               products: prevList.products.filter((p) => p.id !== productId),
             }
           );
-        }
+        },
       );
     };
     socket.on("productDelete", productDeleteListener);

@@ -3,7 +3,7 @@ import Toast from "react-native-toast-message";
 import InvitationService from "@/services/InvitationService";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
+export const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -25,5 +25,3 @@ const useDeleteTokenInvitation = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useDeleteTokenInvitation;

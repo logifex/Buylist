@@ -4,17 +4,17 @@ import BottomModal from "../Ui/BottomModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Participants from "./Participants";
 import { SharedList } from "@/models/List";
-import useRemoveParticipant from "@/hooks/api/participants/useRemoveParticipant";
+import { useRemoveParticipant } from "@/hooks/api/participants/useRemoveParticipant";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
-import Participant from "@/models/Participant";
+import { Participant } from "@/models/Participant";
 import DialogPrompt from "../Ui/Prompts/DialogPrompt";
 import Text from "../Ui/ThemedText";
 
-type Props = {
+interface Props {
   list: SharedList;
   onParticipantsRequestClose: () => void;
   participantsModalRef: React.RefObject<BottomSheetModal | null>;
-};
+}
 
 const ParticipantsModal = ({
   list,

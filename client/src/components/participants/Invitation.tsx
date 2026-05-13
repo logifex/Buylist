@@ -1,7 +1,7 @@
 import { IoLink } from "react-icons/io5";
-import useCreateTokenInvitation from "../../hooks/api/invitations/useCreateTokenInvitation";
-import useDeleteTokenInvitation from "../../hooks/api/invitations/useDeleteTokenInvitation";
-import useGetTokenInvitation from "../../hooks/api/invitations/useGetTokenInvitation";
+import { useCreateTokenInvitation } from "../../hooks/api/invitations/useCreateTokenInvitation";
+import { useDeleteTokenInvitation } from "../../hooks/api/invitations/useDeleteTokenInvitation";
+import { useGetTokenInvitation } from "../../hooks/api/invitations/useGetTokenInvitation";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -45,7 +45,9 @@ const Invitation = ({ listId }: Props) => {
             disabled={
               createTokenInvitation.isPending || getTokenInvitation.isLoading
             }
-            onClick={() => createTokenInvitation.mutate()}
+            onClick={() => {
+              createTokenInvitation.mutate();
+            }}
           >
             {createTokenInvitation.isPending ? "טוען..." : "יצירת קישור הזמנה"}
           </button>
@@ -66,7 +68,9 @@ const Invitation = ({ listId }: Props) => {
             className="text-red-500 mt-2"
             type="button"
             disabled={deleteTokenInvitation.isPending}
-            onClick={() => deleteTokenInvitation.mutate()}
+            onClick={() => {
+              deleteTokenInvitation.mutate();
+            }}
           >
             מחיקת קישור
           </button>

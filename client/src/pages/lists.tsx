@@ -1,8 +1,8 @@
 import ListList from "../components/lists/ListList";
-import useGetLists from "../hooks/api/lists/useGetLists";
+import { useGetLists } from "../hooks/api/lists/useGetLists";
 import { useCallback, useContext } from "react";
 import ModalContext from "../store/modal-context";
-import useCreateList from "../hooks/api/lists/useCreateList";
+import { useCreateList } from "../hooks/api/lists/useCreateList";
 import CreateListModalContent from "../components/lists/CreateListModalContent";
 import Loading from "../components/ui/Loading";
 import ListContext from "../store/list-context";
@@ -34,7 +34,7 @@ const ListsPage = () => {
     (listId: string, star: boolean) => {
       starList(listId, star);
     },
-    [starList]
+    [starList],
   );
 
   if (getLists.error) {

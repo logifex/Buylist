@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import React, { memo } from "react";
-import ProductModel from "@/models/Product";
-import List from "@/models/List";
+import { Product as ProductModel } from "@/models/Product";
+import { List } from "@/models/List";
 import ProductDetails from "./ProductDetails";
 import Gradients from "@/constants/Gradients";
 import { LinearGradient } from "expo-linear-gradient";

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router";
-import useJoinList from "../hooks/api/invitations/useJoinList";
+import { useJoinList } from "../hooks/api/invitations/useJoinList";
 import { useCallback, useContext, useEffect, useState } from "react";
 import InvitationService from "../services/InvitationService";
 import Dialog from "../components/ui/Dialog";

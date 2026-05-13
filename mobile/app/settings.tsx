@@ -8,7 +8,7 @@ import Text from "@/components/Ui/ThemedText";
 import ThemeSelect from "@/components/Settings/ThemeSelect";
 import AuthButton from "@/components/Ui/AuthButton";
 import * as Application from "expo-application";
-import useDeleteAccount from "@/hooks/api/auth/deleteAccount";
+import { useDeleteAccount } from "@/hooks/api/auth/useDeleteAccount";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import BottomModal from "@/components/Ui/BottomModal";
 import DialogPrompt from "@/components/Ui/Prompts/DialogPrompt";
@@ -102,7 +102,7 @@ const Settings = () => {
         onRequestClose={deleteAccountSheetModal.dismiss}
       >
         <DialogPrompt
-          onConfirm={handleDeleteAccount}
+          onConfirm={() => void handleDeleteAccount()}
           onClose={deleteAccountSheetModal.dismiss}
         >
           <Text style={styles.dialogText}>

@@ -9,7 +9,13 @@ import queryClient from "./config/queryClient.ts";
 import ThemeProvider from "./store/ThemeProvider.tsx";
 import ListProvider from "./store/ListProvider.tsx";
 
-createRoot(document.getElementById("root")!).render(
+const container = document.getElementById("root");
+
+if (!container) {
+  throw new Error("Failed to find the root element");
+}
+
+createRoot(container).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -22,5 +28,5 @@ createRoot(document.getElementById("root")!).render(
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
-  </StrictMode>
+  </StrictMode>,
 );

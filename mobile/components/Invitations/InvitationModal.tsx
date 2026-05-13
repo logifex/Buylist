@@ -1,15 +1,15 @@
 import React from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import List, { SharedList } from "@/models/List";
+import { List, SharedList } from "@/models/List";
 import AuthRequiredBottomModal from "../Ui/AuthRequiredBottomModal";
 import Invitation from "./Invitation";
 
-type Props = {
+interface Props {
   onRequestClose: () => void;
   onShareList: () => Promise<SharedList>;
   list: List;
   ref: React.RefObject<BottomSheetModal | null>;
-};
+}
 
 const InvitationModal = ({ onRequestClose, onShareList, list, ref }: Props) => {
   return (

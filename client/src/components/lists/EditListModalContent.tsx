@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, type SubmitEventHandler } from "react";
 import DialogButtons from "../ui/DialogButtons";
-import List, { ListInfo } from "../../models/List";
+import type { List, ListInfo } from "../../models/List";
 import ListConstants from "../../constants/ListConstants";
 import useFormState from "../../hooks/useFormState";
 import FormTextInput from "../ui/FormTextInput";
@@ -31,7 +31,7 @@ const EditListModalContent = ({ list, hideModal, onEditList }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string>();
   const { state: enteredListInfo, handleChange } = useFormState({ ...list });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (enteredListInfo.name.length === 0) {
       setErrorMessage("שם הרשימה לא יכול להיות ריק");

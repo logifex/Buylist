@@ -3,11 +3,11 @@ import React, { JSX, useContext } from "react";
 import ThemeContext from "@/store/theme-context";
 import Text from "./ThemedText";
 
-type Props = {
+interface Props {
   startComponent?: JSX.Element;
   text: string;
   onPress: () => void;
-};
+}
 
 const MenuItem = ({ startComponent, text, onPress }: Props) => {
   const { theme } = useContext(ThemeContext);

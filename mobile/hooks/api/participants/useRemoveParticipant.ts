@@ -3,7 +3,7 @@ import ListService from "@/services/ListService";
 import Toast from "react-native-toast-message";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useRemoveParticipant = ({ listId }: { listId: string }) => {
+export const useRemoveParticipant = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -25,5 +25,3 @@ const useRemoveParticipant = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useRemoveParticipant;

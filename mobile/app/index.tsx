@@ -8,15 +8,16 @@ import BottomModal from "@/components/Ui/BottomModal";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
 import InputPrompt from "@/components/Ui/Prompts/InputPrompt";
 import ListsContext from "@/store/list-context";
-import useGetLists from "@/hooks/api/lists/useGetLists";
+import { useGetLists } from "@/hooks/api/lists/useGetLists";
 import AuthContext from "@/store/auth-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
-import List, { SharedList } from "@/models/List";
+import { List } from "@/models/List";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 import ListConstants from "@/constants/ListConstants";
 import Toast from "react-native-toast-message";
 import PageContainer from "@/components/Ui/PageContainer";
+import isSharedList from "@/utils/isSharedList";
 
 const Home = () => {
   const { theme } = useContext(ThemeContext);
@@ -47,7 +48,7 @@ const Home = () => {
           q.queryKey.length === 2 &&
           !sharedLists.some((curList) => curList.id === q.queryKey[1]),
       );
-      staleQueries?.forEach((query) => {
+      staleQueries.forEach((query) => {
         queryClient.removeQueries(query);
       });
     }
@@ -56,7 +57,7 @@ const Home = () => {
   useFocusEffect(
     useCallback(() => {
       if (userCtx.userInfo) {
-        refetchLists();
+        void refetchLists();
       }
     }, [refetchLists, userCtx.userInfo]),
   );
@@ -78,7 +79,7 @@ const Home = () => {
         pathname: "/list",
         params: {
           listId: list.id,
-          isShared: (!!(list as SharedList).participants).toString(),
+          isShared: isSharedList(list).toString(),
         },
       });
     },

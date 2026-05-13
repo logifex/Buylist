@@ -4,7 +4,10 @@ import { ListInput, SharedList } from "@/models/List";
 import Toast from "react-native-toast-message";
 import { ListMutationKeys, ListQueryKeys } from "@/constants/QueryKeys";
 
-export type UpdateListVariables = { listId: string; list: ListInput };
+export interface UpdateListVariables {
+  listId: string;
+  list: ListInput;
+}
 export type UpdateListContext =
   | { previousList: SharedList | undefined }
   | undefined;
@@ -25,11 +28,11 @@ export const updateListDefaultOnError = (
   console.log(err.message);
   Toast.show({
     type: "base",
-    text1: `שגיאה בעריכת פרטי הרשימה '${previousList?.name}'`,
+    text1: `שגיאה בעריכת פרטי הרשימה '${previousList?.name ?? "null"}'`,
   });
 };
 
-const useUpdateList = ({ listId }: { listId: string }) => {
+export const useUpdateList = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -84,5 +87,3 @@ const useUpdateList = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useUpdateList;

@@ -1,5 +1,5 @@
-import Participant from "./Participant";
-import Product, { ProductInput } from "./Product";
+import type { Participant } from "./Participant";
+import type { Product, ProductInput } from "./Product";
 
 type ListColor =
   | "GRAY"
@@ -27,9 +27,7 @@ export interface ListInfo {
   color: ListColor;
 }
 
-interface List extends ListInfo {
+export interface List extends ListInfo {
   products: Product[];
   participants: Participant[];
 }
-
-export default List;

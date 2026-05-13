@@ -1,4 +1,4 @@
-import Product from "../../models/Product";
+import type { Product } from "../../models/Product";
 import Dialog from "../ui/Dialog";
 
 interface Props {
@@ -30,11 +30,15 @@ const ExistingProductDialog = ({
           ? `המוצר '${product.name}' כבר קיים במסומנים, האם להחזיר אותו לרשימה?`
           : `המוצר '${product.name}' כבר קיים ברשימה, האם להוסיף בכל זאת?`
       }
-      onConfirm={() => handleConfirm(product.isChecked)}
+      onConfirm={() => {
+        handleConfirm(product.isChecked);
+      }}
       onCancel={onHideModal}
       confirmText={product.isChecked ? "להחזיר" : "להוסיף"}
       secondaryText={product.isChecked ? "להוסיף" : undefined}
-      onSecondary={() => handleConfirm(false)}
+      onSecondary={() => {
+        handleConfirm(false);
+      }}
     />
   );
 };

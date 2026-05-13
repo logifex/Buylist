@@ -1,5 +1,5 @@
-import TokenInvitation from "../models/Invitation";
-import List, { ListPreview } from "../models/List";
+import type { TokenInvitation } from "../models/Invitation";
+import type { List, ListPreview } from "../models/List";
 import { fetchWithAuth } from "../utils/apiUtils";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -7,7 +7,7 @@ const serverUrl = import.meta.env.VITE_SERVER_URL;
 const InvitationService = {
   async getInvitationList(token: string): Promise<ListPreview> {
     const response = await fetchWithAuth(
-      `${serverUrl}/api/lists/join/${token}`
+      `${serverUrl}/api/lists/join/${token}`,
     );
 
     const listPreview = (await response.json()) as ListPreview;
@@ -16,7 +16,7 @@ const InvitationService = {
   async joinList(token: string): Promise<List> {
     const response = await fetchWithAuth(
       `${serverUrl}/api/lists/join/${token}`,
-      { method: "POST" }
+      { method: "POST" },
     );
 
     const list = (await response.json()) as List;
@@ -24,7 +24,7 @@ const InvitationService = {
   },
   async getTokenInvitation(listId: string): Promise<TokenInvitation> {
     const response = await fetchWithAuth(
-      `${serverUrl}/api/lists/${listId}/participants/invite/token`
+      `${serverUrl}/api/lists/${listId}/participants/invite/token`,
     );
 
     const invitation = (await response.json()) as {
@@ -39,7 +39,7 @@ const InvitationService = {
   async createTokenInvitation(listId: string): Promise<TokenInvitation> {
     const response = await fetchWithAuth(
       `${serverUrl}/api/lists/${listId}/participants/invite/token`,
-      { method: "POST" }
+      { method: "POST" },
     );
 
     const invitation = (await response.json()) as {
@@ -54,7 +54,7 @@ const InvitationService = {
   async deleteTokenInvitation(listId: string) {
     await fetchWithAuth(
       `${serverUrl}/api/lists/${listId}/participants/invite/token`,
-      { method: "DELETE" }
+      { method: "DELETE" },
     );
   },
 };

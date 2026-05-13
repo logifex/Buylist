@@ -1,7 +1,11 @@
-import Product, { ProductInput, SharedProduct } from "@/models/Product";
+import { Product, ProductInput, SharedProduct } from "@/models/Product";
 import { fetchWithAuth } from "@/utils/apiUtils";
 
 const serverUrl = process.env.EXPO_PUBLIC_SERVER_URL;
+
+if (!serverUrl) {
+  throw new Error("Server URL is not defined");
+}
 
 const ProductService = {
   async createProduct(

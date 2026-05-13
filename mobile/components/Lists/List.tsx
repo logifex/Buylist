@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import ListModel, { SharedList } from "@/models/List";
+import { List as ListModel } from "@/models/List";
 import ThemeContext from "@/store/theme-context";
 import filterProductsChecked from "@/utils/filterProductsChecked";
 import Text from "@/components/Ui/ThemedText";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import isSharedList from "@/utils/isSharedList";
 
 interface Props {
   list: ListModel;
@@ -17,17 +18,17 @@ interface Props {
 
 const List = ({ list, isStarred, accessibilityId, onPress, onStar }: Props) => {
   const { theme } = useContext(ThemeContext);
-  const isShared = !!(list as SharedList).participants;
+  const isShared = isSharedList(list);
 
   const filteredProducts = filterProductsChecked(list.products);
-  let productLengthText = `${filteredProducts.unChecked.length} מוצרים`;
+  let productLengthText = `${filteredProducts.unChecked.length.toString()} מוצרים`;
 
   if (filteredProducts.unChecked.length === 1) {
     productLengthText = "מוצר אחד";
   }
 
   if (filteredProducts.checked.length > 0) {
-    productLengthText += ` (+${filteredProducts.checked.length} ${
+    productLengthText += ` (+${filteredProducts.checked.length.toString()} ${
       filteredProducts.checked.length === 1 ? "מסומן" : "מסומנים"
     })`;
   }
@@ -35,7 +36,12 @@ const List = ({ list, isStarred, accessibilityId, onPress, onStar }: Props) => {
   return (
     <View style={[styles.container, { backgroundColor: theme.primaryDark }]}>
       <View style={styles.sideIcons}>
-        <Pressable onPress={() => onStar(list.id, !isStarred)} hitSlop={16}>
+        <Pressable
+          onPress={() => {
+            onStar(list.id, !isStarred);
+          }}
+          hitSlop={16}
+        >
           <MaterialIcons
             name={isStarred ? "star" : "star-border"}
             size={20}
@@ -49,7 +55,11 @@ const List = ({ list, isStarred, accessibilityId, onPress, onStar }: Props) => {
         </Pressable>
       </View>
       <View style={styles.listInfo}>
-        <Pressable onPress={() => onPress(list)}>
+        <Pressable
+          onPress={() => {
+            onPress(list);
+          }}
+        >
           <View>
             <Text style={styles.name}>{list.name}</Text>
             <Text style={styles.amount}>{productLengthText}</Text>

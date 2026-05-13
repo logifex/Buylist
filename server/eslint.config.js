@@ -1,32 +1,31 @@
-/// <reference types="./src/types/declarations.d.ts" />
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 import pluginChaiFriendly from "eslint-plugin-chai-friendly";
-import { PluginImport } from "typescript";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
   {
     ignores: ["dist/**", "node_modules/**"],
   },
+  js.configs.recommended,
+  tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
+  eslintConfigPrettier,
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-    plugins: { js, "chai-friendly": pluginChaiFriendly as PluginImport },
-    extends: ["js/recommended"],
     languageOptions: {
       globals: globals.node,
       parserOptions: {
         projectService: {
-          allowDefaultProject: ["eslint.config.ts", "prisma.config.ts"],
+          allowDefaultProject: ["eslint.config.js", "prisma.config.ts"],
         },
       },
     },
   },
-  ...tseslint.configs.recommendedTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
   {
-    files: ["**/*.ts"],
+    plugins: { "chai-friendly": pluginChaiFriendly },
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "error",

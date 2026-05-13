@@ -1,6 +1,6 @@
 import { getIdToken } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { ApiError, BackendError } from "../models/Error";
+import { ApiError, type BackendError } from "../models/Error";
 
 export const getAuthHeader = async () => {
   const user = auth.currentUser;
@@ -24,7 +24,7 @@ export const createTimeoutSignal = (timeout: number) => {
 };
 
 export const transformResponseError = async (
-  response: Response
+  response: Response,
 ): Promise<ApiError> => {
   const contentType = response.headers.get("content-type");
   if (contentType?.includes("application/json")) {
@@ -38,17 +38,19 @@ export const transformResponseError = async (
 export const fetchWithAuth = async (
   url: string,
   options: RequestInit = {},
-  timeout = 7.5 * 1000
+  timeout = 7.5 * 1000,
 ) => {
   const authHeader = await getAuthHeader();
-  const headers = { ...authHeader, ...options.headers };
+  const headers = new Headers(options.headers);
+  headers.set("Authorization", authHeader.Authorization);
+  if (options.body) {
+    headers.set("Content-Type", "application/json");
+  }
   const { signal, abort } = createTimeoutSignal(timeout);
 
   const response = await fetch(url, {
     ...options,
-    headers: options.body
-      ? { "Content-Type": "application/json", ...headers }
-      : headers,
+    headers: headers,
     signal: signal,
   });
 

@@ -1,6 +1,6 @@
-import { PropsWithChildren, useCallback, useState } from "react";
-import ModalContext, { ModalContextType } from "./modal-context";
-import Modal, { ModalProps } from "../components/ui/Modal";
+import { type PropsWithChildren, useCallback, useState } from "react";
+import ModalContext, { type ModalContextType } from "./modal-context";
+import Modal, { type ModalProps } from "../components/ui/Modal";
 
 const ModalProvider = ({ children }: PropsWithChildren) => {
   const [modalProps, setModalProps] = useState<ModalProps>();

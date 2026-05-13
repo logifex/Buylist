@@ -1,14 +1,18 @@
 import { ListInput, SharedList } from "@/models/List";
-import Product from "@/models/Product";
-import Participant from "@/models/Participant";
+import { Product } from "@/models/Product";
+import { Participant } from "@/models/Participant";
 import { fetchWithAuth } from "@/utils/apiUtils";
 
 const serverUrl = process.env.EXPO_PUBLIC_SERVER_URL;
 
+if (!serverUrl) {
+  throw new Error("Server URL is not defined");
+}
+
 const ListService = {
   async fetchLists(): Promise<SharedList[]> {
     const response = await fetchWithAuth(`${serverUrl}/api/lists`);
-    const json = await response.json();
+    const json = (await response.json()) as SharedList[];
     return json.map((l: SharedList) => ({
       ...l,
       products: l.products.map((p) => ({ ...p, isSynced: true })),
@@ -16,7 +20,7 @@ const ListService = {
   },
   async fetchList(listId: string): Promise<SharedList> {
     const response = await fetchWithAuth(`${serverUrl}/api/lists/${listId}`);
-    const json = await response.json();
+    const json = (await response.json()) as SharedList;
     return {
       ...json,
       products: json.products.map((p: Product) => ({ ...p, isSynced: true })),
@@ -36,7 +40,7 @@ const ListService = {
       }),
     });
 
-    const json: SharedList = await response.json();
+    const json: SharedList = (await response.json()) as SharedList;
     return {
       ...json,
       products: json.products.map((p) => ({ ...p, isSynced: true })),
@@ -58,7 +62,7 @@ const ListService = {
       `${serverUrl}/api/lists/${listId}/participants`,
     );
 
-    return await response.json();
+    return (await response.json()) as Participant[];
   },
   async removeParticipant(listId: string, participantId: string) {
     await fetchWithAuth(

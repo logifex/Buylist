@@ -7,7 +7,7 @@ import { SharedList } from "@/models/List";
 import Toast from "react-native-toast-message";
 import { ListQueryKeys } from "@/constants/QueryKeys";
 
-const useLeaveList = ({ listId }: { listId: string }) => {
+export const useLeaveList = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
   const { userInfo } = useContext(AuthContext);
 
@@ -38,5 +38,3 @@ const useLeaveList = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useLeaveList;

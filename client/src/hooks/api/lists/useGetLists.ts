@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import ListQueryKeys from "../../../constants/QueryKeys";
 import ListService from "../../../services/ListService";
 
-const useGetLists = () => {
-  return useQuery({
-    queryKey: ListQueryKeys.all,
-    queryFn: () => ListService.fetchLists(),
-  });
-};
+export const listsQueryOptions = queryOptions({
+  queryKey: ListQueryKeys.all,
+  queryFn: () => ListService.fetchLists(),
+});
 
-export default useGetLists;
+export const useGetLists = () => {
+  return useQuery(listsQueryOptions);
+};

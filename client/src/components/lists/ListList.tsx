@@ -1,4 +1,4 @@
-import ListModel from "../../models/List";
+import type { List as ListModel } from "../../models/List";
 import List from "./List";
 import { useContext } from "react";
 import ListContext from "../../store/list-context";

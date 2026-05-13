@@ -1,13 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SharedList } from "@/models/List";
 import Toast from "react-native-toast-message";
-import Product, { SharedProduct } from "@/models/Product";
+import { Product, SharedProduct } from "@/models/Product";
 import ProductService from "@/services/ProductService";
 import { ListMutationKeys, ListQueryKeys } from "@/constants/QueryKeys";
 import { ApiError } from "@/models/Error";
 import ErrorCodes from "@/constants/ErrorCodes";
 
-export type DeleteProductVariables = { listId: string; productId: string };
+export interface DeleteProductVariables {
+  listId: string;
+  productId: string;
+}
 export type DeleteProductContext =
   | { prevProduct: Product | undefined }
   | undefined;
@@ -31,11 +34,11 @@ export const deleteProductDefaultOnError = (
   console.log(err.message);
   Toast.show({
     type: "base",
-    text1: `שגיאה במחיקת המוצר '${context?.prevProduct?.name}'`,
+    text1: `שגיאה במחיקת המוצר '${context?.prevProduct?.name ?? "null"}'`,
   });
 };
 
-const useDeleteProduct = ({ listId }: { listId: string }) => {
+export const useDeleteProduct = ({ listId }: { listId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -90,5 +93,3 @@ const useDeleteProduct = ({ listId }: { listId: string }) => {
     },
   });
 };
-
-export default useDeleteProduct;

@@ -4,18 +4,20 @@ import { ColorSchemeName } from "react-native";
 
 export type ThemeStateType = "default" | "light" | "dark";
 
-export type ThemeContextType = {
+export interface ThemeContextType {
   theme: typeof Colors.light;
   preferredThemeType: ThemeStateType;
   currentColorSchemeName: ColorSchemeName;
   setPreferredTheme: (value: ThemeStateType) => void;
-};
+}
 
 const ThemeContext = React.createContext<ThemeContextType>({
   theme: Colors.light,
   preferredThemeType: "default",
   currentColorSchemeName: "light",
-  setPreferredTheme: () => {},
+  setPreferredTheme: () => {
+    return;
+  },
 });
 
 export default ThemeContext;
