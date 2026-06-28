@@ -49,9 +49,21 @@ const ListScreen = () => {
 
   const [pendingProducts, setPendingProducts] = useState<ProductInput[]>([]);
 
-  const menuModal = useBottomSheetRef();
-  const colorPickModal = useBottomSheetRef();
-  const invitationModal = useBottomSheetRef();
+  const {
+    ref: menuModalRef,
+    present: presentMenuModal,
+    dismiss: dismissMenuModal,
+  } = useBottomSheetRef();
+  const {
+    ref: colorPickModalRef,
+    present: presentColorPickModal,
+    dismiss: dismissColorPickModal,
+  } = useBottomSheetRef();
+  const {
+    ref: invitationModalRef,
+    present: presentInvitationModal,
+    dismiss: dismissInvitationModal,
+  } = useBottomSheetRef();
 
   const list = isShared
     ? getList.data
@@ -76,18 +88,18 @@ const ListScreen = () => {
       title: listName,
       headerRight: () =>
         ListHeaderRight({
-          colorPickPresent: colorPickModal.present,
-          invitationPresent: invitationModal.present,
-          menuPresent: menuModal.present,
+          colorPickPresent: presentColorPickModal,
+          invitationPresent: presentInvitationModal,
+          menuPresent: presentMenuModal,
           theme: theme,
         }),
     });
   }, [
     navigation,
     listName,
-    menuModal.present,
-    colorPickModal.present,
-    invitationModal.present,
+    presentColorPickModal,
+    presentInvitationModal,
+    presentMenuModal,
     theme,
   ]);
 
@@ -240,8 +252,8 @@ const ListScreen = () => {
         onDeleteProduct={handleDeleteProduct}
       />
       <ListOptionMenu
-        ref={menuModal.ref}
-        onRequestClose={menuModal.dismiss}
+        ref={menuModalRef}
+        onRequestClose={dismissMenuModal}
         list={list}
         onEditList={handleEditList}
         onDeleteList={handleDeleteList}
@@ -250,13 +262,13 @@ const ListScreen = () => {
         onChangeToLocalList={handleChangeToLocalList}
       />
       <ColorMenu
-        ref={colorPickModal.ref}
-        onRequestClose={colorPickModal.dismiss}
+        ref={colorPickModalRef}
+        onRequestClose={dismissColorPickModal}
         onPick={handleChangeListColor}
       />
       <InvitationModal
-        ref={invitationModal.ref}
-        onRequestClose={invitationModal.dismiss}
+        ref={invitationModalRef}
+        onRequestClose={dismissInvitationModal}
         onShareList={handleShareList}
         list={list}
       />

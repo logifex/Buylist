@@ -9,7 +9,7 @@ import AppDataService from "@/services/AppDataService";
 import {
   ThemeProvider as NavigationThemeProvider,
   DefaultTheme,
-} from "@react-navigation/native";
+} from "expo-router/react-navigation";
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
   const deviceScheme = useColorScheme();

@@ -1,7 +1,6 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import React, { useContext } from "react";
 import AuthContext from "@/store/auth-context";
-import { Pressable, ScrollView } from "react-native-gesture-handler";
 import Category from "@/components/Settings/Category";
 import Profile from "@/components/Settings/Profile";
 import Text from "@/components/Ui/ThemedText";
@@ -24,7 +23,8 @@ const Settings = () => {
   const deleteAccount = useDeleteAccount();
   const queryClient = useQueryClient();
 
-  const deleteAccountSheetModal = useBottomSheetRef();
+  const { ref: deleteAccountModalRef, ...deleteAccountModal } =
+    useBottomSheetRef();
 
   const insets = useSafeAreaInsets();
 
@@ -73,7 +73,7 @@ const Settings = () => {
                 המקוונות שבבעלותך.
               </Text>
               <Pressable
-                onPress={deleteAccountSheetModal.present}
+                onPress={deleteAccountModal.present}
                 disabled={deleteAccount.isPending}
                 style={styles.deleteAccountButton}
               >
@@ -98,12 +98,12 @@ const Settings = () => {
         </ScrollView>
       </PageContainer>
       <BottomModal
-        ref={deleteAccountSheetModal.ref}
-        onRequestClose={deleteAccountSheetModal.dismiss}
+        ref={deleteAccountModalRef}
+        onRequestClose={deleteAccountModal.dismiss}
       >
         <DialogPrompt
           onConfirm={() => void handleDeleteAccount()}
-          onClose={deleteAccountSheetModal.dismiss}
+          onClose={deleteAccountModal.dismiss}
         >
           <Text style={styles.dialogText}>
             האם למחוק את החשבון?{"\n"}

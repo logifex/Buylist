@@ -43,8 +43,7 @@ const ExistingProductDialog = ({
   return (
     <BottomModal
       ref={ref}
-      showHandle
-      backdropBehavior="none"
+      enablePanDownToClose={false}
       onRequestClose={onRequestClose}
     >
       <DialogPrompt

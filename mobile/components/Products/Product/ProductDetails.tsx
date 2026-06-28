@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Product } from "@/models/Product";
 import ProductContent from "./ProductContent";
 import ProductEditForm from "./ProductEditForm";
-import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";
+import { MaterialDesignIcons } from "@react-native-vector-icons/material-design-icons/static";
 import { Checkbox } from "expo-checkbox";
 import { useRecyclingState } from "@shopify/flash-list";
 
@@ -40,7 +40,7 @@ const ProductDetails = ({
   return (
     <>
       {isShared && !isSynced && (
-        <MaterialIcon
+        <MaterialDesignIcons
           name="clock-outline"
           style={styles.iconContainer}
           accessibilityLabel={`מוצר ${accessibilityId} בהמתנה`}

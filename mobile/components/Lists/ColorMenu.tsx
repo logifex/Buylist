@@ -39,7 +39,6 @@ const ColorMenu = ({ onRequestClose, onPick, ref }: Props) => {
       title="צבע הרשימה"
       snapPoints={["60%"]}
       enableDynamicSizing={false}
-      showHandle
       closeKeyboard
       onRequestClose={onRequestClose}
     >

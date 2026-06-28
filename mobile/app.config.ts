@@ -2,15 +2,12 @@ import "tsx/cjs";
 
 const IS_DEV = process.env.APP_VARIANT === "development";
 
-const androidPackage = process.env.ANDROID_PACKAGE;
-if (!androidPackage) {
-  throw new Error("No android package defined in app.config");
-}
+const androidPackage = process.env.ANDROID_PACKAGE ?? "com.example.buylist";
 
 export default {
   name: IS_DEV ? "Buylist (Dev)" : "Buylist",
   slug: "buylist",
-  version: "1.1.6",
+  version: "1.1.7",
   orientation: "default",
   icon: "./assets/images/icon.png",
   scheme: "buylist",
@@ -81,7 +78,11 @@ export default {
       },
     ],
     "expo-localization",
-    "expo-font",
+    "expo-status-bar",
+    "expo-navigation-bar",
+    "@react-native-vector-icons/material-icons",
+    "@react-native-vector-icons/material-design-icons",
+    "@react-native-vector-icons/ionicons",
     "@react-native-firebase/app",
     "@react-native-firebase/auth",
     "@react-native-google-signin/google-signin",

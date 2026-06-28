@@ -8,7 +8,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import Button from "../Ui/Button";
 import Text from "../Ui/ThemedText";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import * as Clipboard from "expo-clipboard";
 import isSharedList from "@/utils/isSharedList";
 
@@ -91,7 +91,7 @@ const Invitation = ({ onShareList, list }: Props) => {
             disabled={loading}
             onPress={() => void handleCreateInvitationToken()}
           >
-            <MaterialIcon name="link" size={20} color="black" />
+            <MaterialIcons name="link" size={20} color="black" />
             <Text style={styles.buttonText}>
               {loading ? "טוען..." : "יצירת קישור הזמנה"}
             </Text>
@@ -103,7 +103,7 @@ const Invitation = ({ onShareList, list }: Props) => {
           style={[styles.linkContainer, { backgroundColor: theme.background }]}
         >
           <Pressable style={styles.link} onPress={() => void handleCopyLink()}>
-            <MaterialIcon
+            <MaterialIcons
               style={[styles.linkIcon, { backgroundColor: theme.secondary }]}
               name="link"
               size={20}

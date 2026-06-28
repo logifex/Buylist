@@ -1,12 +1,13 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
 import Text from "@/components/Ui/ThemedText";
 import Button from "@/components/Ui/Button";
 import * as Updates from "expo-updates";
+import PageContainer from "../Ui/PageContainer";
 
 const ErrorFallback = () => {
   return (
-    <View style={styles.container}>
+    <PageContainer style={styles.container}>
       <Text style={styles.title}>משהו השתבש</Text>
       <Text style={styles.text}>כדאי להפעיל מחדש את האפליקציה ולנסות שוב</Text>
       <Button
@@ -18,7 +19,7 @@ const ErrorFallback = () => {
       >
         <Text>הפעלה מחדש</Text>
       </Button>
-    </View>
+    </PageContainer>
   );
 };
 

@@ -2,9 +2,9 @@ import { StyleSheet } from "react-native";
 import React, { useContext } from "react";
 import { List, ListInfo, SharedList } from "@/models/List";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
+import { MaterialDesignIcons } from "@react-native-vector-icons/material-design-icons/static";
 import useBottomSheetRef from "@/hooks/useBottomSheet";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import ThemeContext from "@/store/theme-context";
 import BottomModal from "../Ui/BottomModal";
 import MenuItem from "../Ui/MenuItem";
@@ -13,7 +13,7 @@ import AuthContext from "@/store/auth-context";
 import Text from "../Ui/ThemedText";
 import InputPrompt from "../Ui/Prompts/InputPrompt";
 import ListConstants from "@/constants/ListConstants";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@react-native-vector-icons/ionicons/static";
 import ChangeListTypeModal from "./ChangeListTypeModal";
 import ParticipantsModal from "../Participants/ParticipantsModal";
 import isSharedList from "@/utils/isSharedList";
@@ -42,10 +42,11 @@ const ListOptionMenu = ({
   ref,
 }: Props) => {
   const participantsModal = useBottomSheetRef();
-  const editModal = useBottomSheetRef();
-  const deleteModal = useBottomSheetRef();
-  const leaveModal = useBottomSheetRef();
-  const changeListTypeModal = useBottomSheetRef();
+  const { ref: editModalRef, ...editModal } = useBottomSheetRef();
+  const { ref: deleteModalRef, ...deleteModal } = useBottomSheetRef();
+  const { ref: leaveModalRef, ...leaveModal } = useBottomSheetRef();
+  const { ref: changeListTypeModalRef, ...changeListTypeModal } =
+    useBottomSheetRef();
 
   const { userInfo } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
@@ -61,7 +62,6 @@ const ListOptionMenu = ({
         title="ניהול רשימה"
         snapPoints={["40%", "75%"]}
         enableDynamicSizing={false}
-        showHandle
         closeKeyboard
       >
         <BottomSheetScrollView>
@@ -69,7 +69,7 @@ const ListOptionMenu = ({
             <MenuItem
               text="משתתפים"
               startComponent={
-                <MaterialIcon
+                <MaterialIcons
                   name="people"
                   size={iconSize}
                   color={theme.text}
@@ -100,7 +100,7 @@ const ListOptionMenu = ({
           <MenuItem
             text="עריכת רשימה"
             startComponent={
-              <MaterialCommunityIcon
+              <MaterialDesignIcons
                 name="file-edit"
                 size={iconSize}
                 color={theme.text}
@@ -115,7 +115,7 @@ const ListOptionMenu = ({
             <MenuItem
               text="מחיקת רשימה"
               startComponent={
-                <MaterialCommunityIcon
+                <MaterialDesignIcons
                   name="delete-sweep"
                   size={iconSize}
                   color={theme.text}
@@ -130,7 +130,7 @@ const ListOptionMenu = ({
             <MenuItem
               text="עזיבת רשימה"
               startComponent={
-                <MaterialCommunityIcon
+                <MaterialDesignIcons
                   name="exit-to-app"
                   size={iconSize}
                   color={theme.text}
@@ -145,7 +145,7 @@ const ListOptionMenu = ({
         </BottomSheetScrollView>
       </BottomModal>
       <BottomModal
-        ref={editModal.ref}
+        ref={editModalRef}
         onRequestClose={editModal.dismiss}
         title="עריכת רשימה"
       >
@@ -160,7 +160,7 @@ const ListOptionMenu = ({
           autoFocus
         />
       </BottomModal>
-      <BottomModal ref={deleteModal.ref} onRequestClose={deleteModal.dismiss}>
+      <BottomModal ref={deleteModalRef} onRequestClose={deleteModal.dismiss}>
         <DialogPrompt
           onConfirm={() => {
             onDeleteList(list.id);
@@ -172,7 +172,7 @@ const ListOptionMenu = ({
           </Text>
         </DialogPrompt>
       </BottomModal>
-      <BottomModal ref={leaveModal.ref} onRequestClose={leaveModal.dismiss}>
+      <BottomModal ref={leaveModalRef} onRequestClose={leaveModal.dismiss}>
         <DialogPrompt
           onConfirm={() => {
             onLeaveList(list.id);
@@ -190,7 +190,7 @@ const ListOptionMenu = ({
         onParticipantsRequestClose={participantsModal.dismiss}
       />
       <ChangeListTypeModal
-        ref={changeListTypeModal.ref}
+        ref={changeListTypeModalRef}
         list={list}
         onRequestClose={changeListTypeModal.dismiss}
         onShareList={onShareList}

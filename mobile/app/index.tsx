@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import React, { useCallback, useContext, useEffect } from "react";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import ListList from "@/components/Lists/ListList";
 import FloatingActionButton from "@/components/Ui/FloatingActionButton";
 import ThemeContext from "@/store/theme-context";
@@ -29,7 +29,7 @@ const Home = () => {
     enabled: !!userCtx.userInfo,
   });
 
-  const addListBottomSheet = useBottomSheetRef();
+  const { ref: addListModalRef, ...addListModal } = useBottomSheetRef();
 
   const router = useRouter();
 
@@ -102,10 +102,10 @@ const Home = () => {
         onStar={handleStarList}
       />
       <FloatingActionButton
-        onPress={addListBottomSheet.present}
+        onPress={addListModal.present}
         color={theme.secondary}
       >
-        <MaterialIcon
+        <MaterialIcons
           name="add"
           size={20}
           color="black"
@@ -113,14 +113,14 @@ const Home = () => {
         />
       </FloatingActionButton>
       <BottomModal
-        ref={addListBottomSheet.ref}
+        ref={addListModalRef}
         title="יצירת רשימה"
-        onRequestClose={addListBottomSheet.dismiss}
+        onRequestClose={addListModal.dismiss}
       >
         <InputPrompt
           name="שם הרשימה"
           onConfirm={handleAddList}
-          onClose={addListBottomSheet.dismiss}
+          onClose={addListModal.dismiss}
           autoFocus
           maxLength={ListConstants.maxListNameLength}
         />

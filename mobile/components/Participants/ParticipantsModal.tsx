@@ -27,7 +27,8 @@ const ParticipantsModal = ({
 
   const removeParticipant = useRemoveParticipant({ listId: list.id });
 
-  const removeConfirmSheetModal = useBottomSheetRef();
+  const { ref: removeConfirmModalRef, ...removeConfirmModal } =
+    useBottomSheetRef();
 
   const { mutate: mutateRemoveParticipant } = removeParticipant;
   const handleRemoveParticipant = useCallback(() => {
@@ -40,7 +41,7 @@ const ParticipantsModal = ({
 
   const handleOpenRemoveDialog = (participant: Participant) => {
     setParticipantToRemove(participant);
-    removeConfirmSheetModal.present();
+    removeConfirmModal.present();
   };
 
   return (
@@ -55,12 +56,12 @@ const ParticipantsModal = ({
         <Participants list={list} onRemovePress={handleOpenRemoveDialog} />
       </BottomModal>
       <BottomModal
-        ref={removeConfirmSheetModal.ref}
-        onRequestClose={removeConfirmSheetModal.dismiss}
+        ref={removeConfirmModalRef}
+        onRequestClose={removeConfirmModal.dismiss}
       >
         <DialogPrompt
           onConfirm={handleRemoveParticipant}
-          onClose={removeConfirmSheetModal.dismiss}
+          onClose={removeConfirmModal.dismiss}
         >
           {participantToRemove && (
             <Text style={styles.modalText}>

@@ -18,18 +18,20 @@ const JoinList = () => {
   const [handled, setHandled] = useState(false);
   const [invitationLinkList, setInvitationLinkList] = useState<ListPreview>();
 
-  const invitationLinkSheetModal = useBottomSheetRef();
+  const {
+    ref: invitationModalRef,
+    present: presentInvitationModal,
+    dismiss: dismissInvitationModal,
+  } = useBottomSheetRef();
 
   const { userInfo, signIn } = useContext(AuthContext);
 
   const joinList = useJoinList();
 
-  const { present } = invitationLinkSheetModal;
   const handleInvitationLink = useCallback(async () => {
     if (!url) {
       return;
     }
-    setHandled(true);
 
     const path = Linking.parse(url).path;
     if (!path?.startsWith("invite/")) {
@@ -37,24 +39,25 @@ const JoinList = () => {
     }
     const invitationToken = path.split("/")[1];
 
-    try {
-      const invitationList = await InvitationService.getInvitationList(
-        invitationToken,
-      );
-      setInvitationLinkList(invitationList);
-      present();
-    } catch (err) {
-      if ((err as ApiError).error?.code === ErrorCodes.invitationNotFound) {
-        Toast.show({ type: "base", text1: "קישור ההזמנה כבר לא קיים" });
-      } else {
-        console.log(err);
-        Toast.show({
-          type: "base",
-          text1: "יש בעיה בהתחברות לשרת להצטרפות לרשימה. כדאי לבדוק את החיבור.",
-        });
-      }
-    }
-  }, [present, url]);
+    await InvitationService.getInvitationList(invitationToken)
+      .then((invitationList) => {
+        setHandled(true);
+        setInvitationLinkList(invitationList);
+        presentInvitationModal();
+      })
+      .catch((err: unknown) => {
+        if ((err as ApiError).error?.code === ErrorCodes.invitationNotFound) {
+          Toast.show({ type: "base", text1: "קישור ההזמנה כבר לא קיים" });
+        } else {
+          console.log(err);
+          Toast.show({
+            type: "base",
+            text1:
+              "יש בעיה בהתחברות לשרת להצטרפות לרשימה. כדאי לבדוק את החיבור.",
+          });
+        }
+      });
+  }, [presentInvitationModal, url]);
 
   useEffect(() => {
     const subscription = Linking.addEventListener("url", () => {
@@ -76,7 +79,7 @@ const JoinList = () => {
     } else {
       void signIn();
     }
-  }, [url, handled, handleInvitationLink, userInfo, signIn]);
+  }, [url, handled, userInfo, handleInvitationLink, signIn]);
 
   const joinLinkListHandler = async () => {
     if (!url) {
@@ -110,14 +113,14 @@ const JoinList = () => {
 
   return (
     <BottomModal
-      ref={invitationLinkSheetModal.ref}
-      onRequestClose={invitationLinkSheetModal.dismiss}
-      backdropBehavior="none"
+      ref={invitationModalRef}
+      onRequestClose={dismissInvitationModal}
+      enablePanDownToClose={false}
       closeKeyboard
     >
       <DialogPrompt
         onConfirm={() => void joinLinkListHandler()}
-        onClose={invitationLinkSheetModal.dismiss}
+        onClose={dismissInvitationModal}
       >
         {invitationLinkList && (
           <Text style={styles.text}>

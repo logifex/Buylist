@@ -10,7 +10,7 @@ export default defineConfig([
     ignores: ["dist/**", "node_modules/**"],
   },
   js.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   eslintConfigPrettier,
   {
@@ -22,6 +22,12 @@ export default defineConfig([
           allowDefaultProject: ["eslint.config.js", "prisma.config.ts"],
         },
       },
+    },
+  },
+  {
+    files: ["src/controllers/**/*.ts", "src/middlewares/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-confusing-void-expression": "off",
     },
   },
   {

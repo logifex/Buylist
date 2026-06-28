@@ -5,7 +5,7 @@ import useBottomSheetRef from "@/hooks/useBottomSheet";
 import ThemeContext from "@/store/theme-context";
 import ExistingProductDialog from "./ExistingProductDialog";
 import ListConstants from "@/constants/ListConstants";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 
 interface Props {
   products: Product[];
@@ -17,7 +17,8 @@ const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
   const [enteredProductName, setEnteredProductName] = useState("");
   const [existingProduct, setExistingProduct] = useState<Product>();
 
-  const existingProductBottomSheet = useBottomSheetRef();
+  const { ref: existingProductModalRef, ...existingProductModal } =
+    useBottomSheetRef();
 
   const handleAddProduct = () => {
     const newProductName = enteredProductName.trim();
@@ -33,7 +34,7 @@ const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
 
     if (newExistingProduct) {
       setExistingProduct(newExistingProduct);
-      existingProductBottomSheet.present();
+      existingProductModal.present();
 
       return;
     }
@@ -84,11 +85,11 @@ const ProductAddRow = ({ products, onAddProduct, onEditProduct }: Props) => {
         />
       </Pressable>
       <ExistingProductDialog
-        ref={existingProductBottomSheet.ref}
+        ref={existingProductModalRef}
         existingProduct={existingProduct}
         onAddProduct={addProduct}
         onEditProduct={onEditProduct}
-        onRequestClose={existingProductBottomSheet.dismiss}
+        onRequestClose={existingProductModal.dismiss}
       />
     </View>
   );

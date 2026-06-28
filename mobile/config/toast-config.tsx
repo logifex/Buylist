@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { BaseToastProps } from "react-native-toast-message";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import Text from "@/components/Ui/ThemedText";
 
 const toastConfig = {
@@ -13,7 +13,7 @@ const toastConfig = {
 
   linkToast: () => (
     <View style={styles.baseToast}>
-      <MaterialIcon name="link" size={24} color="#0088d1" />
+      <MaterialIcons name="link" size={24} color="#0088d1" />
       <Text style={[styles.text, styles.iconText]}>הקישור הועתק</Text>
     </View>
   ),

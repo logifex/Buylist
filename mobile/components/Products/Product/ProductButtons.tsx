@@ -1,8 +1,8 @@
 import { StyleSheet, View, Pressable } from "react-native";
 import React from "react";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 
-type MaterialIconName = React.ComponentProps<typeof MaterialIcon>["name"];
+type MaterialIconName = React.ComponentProps<typeof MaterialIcons>["name"];
 
 interface Props {
   startIconName: MaterialIconName;
@@ -27,7 +27,7 @@ const ProductButtons = ({
         onPress={onStartPress}
         style={({ pressed }) => pressed && styles.pressedButton}
       >
-        <MaterialIcon
+        <MaterialIcons
           name={startIconName}
           size={48}
           color="black"
@@ -38,7 +38,7 @@ const ProductButtons = ({
         onPress={onEndPress}
         style={({ pressed }) => pressed && styles.pressedButton}
       >
-        <MaterialIcon
+        <MaterialIcons
           name={endIconName}
           size={48}
           color="black"

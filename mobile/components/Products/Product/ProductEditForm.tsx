@@ -1,6 +1,5 @@
-import { Keyboard, StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, TextInput, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { TextInput } from "react-native-gesture-handler";
 import { Product } from "@/models/Product";
 import ProductButtons from "./ProductButtons";
 import ListConstants from "@/constants/ListConstants";

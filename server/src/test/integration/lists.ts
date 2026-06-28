@@ -144,7 +144,7 @@ const listsDescribe = () => {
         ...basicTestList,
         ...newList,
         id: body.id,
-        products: newList.products!.map((product, i) => ({
+        products: (newList.products ?? []).map((product, i) => ({
           ...product,
           id: body.products[i].id,
           note: product.note ?? null,
@@ -311,7 +311,7 @@ const listsDescribe = () => {
               .auth(jwts[0], { type: "bearer" })
               .send({
                 ...newList,
-                products: [...newList.products!, { ...testCase.input }],
+                products: [...(newList.products ?? []), { ...testCase.input }],
               })
               .expect(400);
 

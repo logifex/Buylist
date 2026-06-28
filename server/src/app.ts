@@ -35,7 +35,7 @@ app.use(ErrorController.errorHandlers);
 
 httpServer.listen(PORT, env.host, () => {
   logger.info(
-    `App is running at ${env.host ?? env.serverUrl}:${PORT.toString()}`,
+    `App is running at ${env.host ?? "localhost"}:${PORT.toString()}`,
   );
 });
 

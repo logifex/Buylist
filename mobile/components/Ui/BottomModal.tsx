@@ -29,7 +29,7 @@ export type BottomModalProps = PropsWithChildren<{
   title?: string;
   enableDynamicSizing?: boolean;
   snapPoints?: (string | number)[];
-  backdropBehavior?: BackdropPressBehavior;
+  enablePanDownToClose?: boolean;
   showHandle?: boolean;
   closeKeyboard?: boolean;
   onRequestClose: () => void;
@@ -51,8 +51,7 @@ const BottomModal = ({
   title,
   enableDynamicSizing = true,
   snapPoints,
-  backdropBehavior = "close",
-  showHandle = true,
+  enablePanDownToClose = true,
   closeKeyboard = false,
   onRequestClose,
   children,
@@ -95,44 +94,45 @@ const BottomModal = ({
   const Container = enableDynamicSizing ? BottomSheetView : View;
 
   return (
-    <View>
-      <BottomSheetModal
-        ref={ref}
-        snapPoints={snapPoints}
-        enableDynamicSizing={enableDynamicSizing}
-        onChange={handleSheetChanges}
-        keyboardBlurBehavior="restore"
-        keyboardBehavior="interactive"
-        android_keyboardInputMode="adjustPan"
-        style={{ marginLeft: insets.left, marginRight: insets.right }}
-        handleIndicatorStyle={[
-          styles.handleIndicator,
-          {
-            display: showHandle ? "flex" : "none",
-            backgroundColor: theme.text,
-          },
-        ]}
-        backgroundStyle={[
-          styles.background,
-          {
-            backgroundColor: theme.modalBackground,
-          },
-        ]}
-        enablePanDownToClose
-        backdropComponent={(props) =>
-          BackdropComponent({ ...props, backdropBehavior: backdropBehavior })
-        }
-      >
-        <Container style={[styles.fullSpace, { paddingBottom: insets.bottom }]}>
-          {title && (
-            <View style={[styles.header, { borderBottomColor: theme.hr }]}>
-              <Text style={styles.text}>{title}</Text>
-            </View>
-          )}
-          <View style={styles.fullSpace}>{children}</View>
-        </Container>
-      </BottomSheetModal>
-    </View>
+    <BottomSheetModal
+      ref={ref}
+      snapPoints={snapPoints}
+      enableDynamicSizing={enableDynamicSizing}
+      onChange={handleSheetChanges}
+      keyboardBlurBehavior="restore"
+      keyboardBehavior="interactive"
+      android_keyboardInputMode="adjustPan"
+      style={{ marginLeft: insets.left, marginRight: insets.right }}
+      handleIndicatorStyle={[
+        styles.handleIndicator,
+        {
+          display: enablePanDownToClose ? "flex" : "none",
+          backgroundColor: theme.text,
+        },
+      ]}
+      backgroundStyle={[
+        styles.background,
+        {
+          backgroundColor: theme.modalBackground,
+        },
+      ]}
+      enablePanDownToClose={enablePanDownToClose}
+      backdropComponent={(props) =>
+        BackdropComponent({
+          ...props,
+          backdropBehavior: enablePanDownToClose ? "close" : "none",
+        })
+      }
+    >
+      <Container style={[styles.fullSpace, { paddingBottom: insets.bottom }]}>
+        {title && (
+          <View style={[styles.header, { borderBottomColor: theme.hr }]}>
+            <Text style={styles.text}>{title}</Text>
+          </View>
+        )}
+        <View style={styles.fullSpace}>{children}</View>
+      </Container>
+    </BottomSheetModal>
   );
 };
 

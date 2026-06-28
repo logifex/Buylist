@@ -97,7 +97,6 @@ DATABASE_URL=<postgres_database_url>
 REDIS_URL=<redis_url> (optional, default value provided. A Redis database is required)
 GOOGLE_APPLICATION_CREDENTIALS=service-account-file.json (file required)
 CLIENT_URL=<client_url> (optional, defaults to localhost:5173, used for cors and redirects)
-SERVER_URL=<server_url> (optional, used for logging)
 GOOGLE_API_KEY=<google_api_key> (optional, required for testing)
 ```
 > **Note:** To properly run tests in development, a Firebase Auth Emulator is required along with `GOOGLE_API_KEY`.

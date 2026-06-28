@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import HeaderButton from "../Ui/HeaderButton";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import { Colors } from "@/constants/Colors";
 
 interface Props {
@@ -18,7 +18,7 @@ const ListHeaderRight = ({
 }: Props) => (
   <View style={styles.container}>
     <HeaderButton onPress={invitationPresent}>
-      <MaterialIcon
+      <MaterialIcons
         name="person-add-alt-1"
         size={24}
         color={theme.text}
@@ -26,7 +26,7 @@ const ListHeaderRight = ({
       />
     </HeaderButton>
     <HeaderButton onPress={colorPickPresent}>
-      <MaterialIcon
+      <MaterialIcons
         name="color-lens"
         size={24}
         color={theme.text}
@@ -34,7 +34,7 @@ const ListHeaderRight = ({
       />
     </HeaderButton>
     <HeaderButton onPress={menuPresent}>
-      <MaterialIcon
+      <MaterialIcons
         name="menu"
         size={24}
         color={theme.text}

@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@react-native-vector-icons/ionicons/static";
 import { List as ListModel } from "@/models/List";
 import ThemeContext from "@/store/theme-context";
 import filterProductsChecked from "@/utils/filterProductsChecked";
 import Text from "@/components/Ui/ThemedText";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import isSharedList from "@/utils/isSharedList";
 
 interface Props {
