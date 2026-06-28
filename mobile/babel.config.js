@@ -5,9 +5,6 @@ module.exports = function (api) {
 
   return {
     presets: ["babel-preset-expo"],
-    plugins: [
-      ...(isProd ? ["transform-remove-console"] : []),
-      "react-native-worklets/plugin",
-    ],
+    plugins: [...(isProd ? ["transform-remove-console"] : [])],
   };
 };
