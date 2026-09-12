@@ -18,9 +18,6 @@ module.exports = defineConfig([
         projectService: true,
       },
     },
-    rules: {
-      "@typescript-eslint/no-deprecated": "off",
-    },
   },
   eslintPluginPrettierRecommended,
   {

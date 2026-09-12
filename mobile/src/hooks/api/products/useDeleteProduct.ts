@@ -12,8 +12,7 @@ export interface DeleteProductVariables {
   productId: string;
 }
 export type DeleteProductContext =
-  | { prevProduct: Product | undefined }
-  | undefined;
+  { prevProduct: Product | undefined } | undefined;
 
 export const deleteProductDefaultMutationFn = async ({
   listId,

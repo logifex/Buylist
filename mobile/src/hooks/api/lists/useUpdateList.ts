@@ -9,8 +9,7 @@ export interface UpdateListVariables {
   list: ListInput;
 }
 export type UpdateListContext =
-  | { previousList: SharedList | undefined }
-  | undefined;
+  { previousList: SharedList | undefined } | undefined;
 
 export const updateListDefaultMutationFn = ({
   listId,

@@ -2,13 +2,7 @@ import { Participant } from "./Participant";
 import { Product } from "./Product";
 
 type ListColor =
-  | "GRAY"
-  | "BROWN"
-  | "RED"
-  | "BLUE"
-  | "GREEN"
-  | "YELLOW"
-  | "PINK";
+  "GRAY" | "BROWN" | "RED" | "BLUE" | "GREEN" | "YELLOW" | "PINK";
 
 export interface ListInput {
   name: string;

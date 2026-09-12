@@ -18,7 +18,6 @@ import {
   signInWithCredential,
   signOut as authSignOut,
   connectAuthEmulator,
-  FirebaseAuthTypes,
 } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { auth } from "@/config/firebase";
@@ -37,10 +36,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const queryClient = useQueryClient();
 
   const signInWithIdToken = useCallback(async (idToken: string) => {
-    const GoogleAuth = GoogleAuthProvider as {
-      credential(idToken: string): FirebaseAuthTypes.AuthCredential;
-    };
-    const googleCredential = GoogleAuth.credential(idToken);
+    const googleCredential = GoogleAuthProvider.credential(idToken);
     await signInWithCredential(auth, googleCredential);
   }, []);
 

@@ -10,8 +10,7 @@ export interface UpdateProductVariables {
   product: Product;
 }
 export type UpdateProductContext =
-  | { prevProduct: Product | undefined }
-  | undefined;
+  { prevProduct: Product | undefined } | undefined;
 
 export const updateProductDefaultMutationFn = async ({
   listId,
