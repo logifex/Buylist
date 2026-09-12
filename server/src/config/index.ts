@@ -1,6 +1,6 @@
 import corsOptions from "./cors.js";
 import env from "./env.js";
-import firebase from "./firebase.js";
+import { firebase, auth } from "./firebase.js";
 import helmetConfig from "./helmet.js";
 import logger from "./logger.js";
 import prisma from "./prisma.js";
@@ -13,6 +13,7 @@ export {
   logger,
   prisma,
   firebase,
+  auth,
   pubClient,
   subClient,
   helmetConfig,

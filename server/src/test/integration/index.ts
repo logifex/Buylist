@@ -1,4 +1,4 @@
-import { firebase, pubClient } from "../../config/index.js";
+import { auth, pubClient } from "../../config/index.js";
 import { createTestUser, deleteTestUser } from "../utils/commonRequests.js";
 import { dummyUserInputs } from "../utils/dummyInputs.js";
 import listsDescribe from "./lists.js";
@@ -9,7 +9,7 @@ describe("Integration", () => {
   before(async () => {
     for (const user of dummyUserInputs) {
       try {
-        await firebase.auth().createUser({
+        await auth.createUser({
           uid: user.id,
           email: user.email,
           displayName: user.name,

@@ -19,7 +19,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "firebase-admin": "^13.9.0",
+    "firebase-admin": "^14.4.0",
     "helmet": "^8.1.0",
     "ioredis": "^5.10.1",
     "isbot": "^5.1.40",
@@ -39,7 +39,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.6.2",
     "@types/pg": "^8.20.0",
-    "@types/sinon": "^21.0.1",
+    "@types/sinon": "^22.0.0",
     "@types/supertest": "^7.2.0",
     "chai": "^6.2.2",
     "eslint": "^10.3.0",
@@ -48,13 +48,20 @@
     "globals": "^17.6.0",
     "i": "^0.3.7",
     "mocha": "^11.7.5",
-    "npm": "^11.14.1",
-    "prettier": "3.8.3",
+    "npm": "^12.0.2",
+    "prettier": "^3.8.3",
     "prisma": "^7.8.0",
-    "sinon": "^21.1.2",
+    "sinon": "^22.1.0",
     "supertest": "^7.2.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.2"
+  },
+  "allowScripts": {
+    "prisma@7.10.0": true,
+    "@firebase/util@1.15.3": true,
+    "protobufjs@7.6.6": true,
+    "@prisma/engines@7.10.0": true,
+    "esbuild@0.28.2": true
   }
 }

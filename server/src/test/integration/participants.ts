@@ -16,7 +16,7 @@ import {
 } from "../utils/commonRequests.js";
 import app from "../../app.js";
 import { dummyParticipants, dummyUserInputs } from "../utils/dummyInputs.js";
-import { firebase } from "../../config/index.js";
+import { auth } from "../../config/index.js";
 import { ListService } from "../../services/index.js";
 
 const USER_AMOUNT = 3;
@@ -341,8 +341,8 @@ const participantsDescribe = () => {
       ).token;
 
       // to prevent the firebase auth token from being expired because of the fake timer
-      const decodedToken = await firebase.auth().verifyIdToken(jwts[0]);
-      sandbox.stub(firebase.auth(), "verifyIdToken").resolves(decodedToken);
+      const decodedToken = await auth.verifyIdToken(jwts[0]);
+      sandbox.stub(auth, "verifyIdToken").resolves(decodedToken);
 
       const clock = sandbox.useFakeTimers({
         now: Date.now(),
@@ -438,8 +438,8 @@ const participantsDescribe = () => {
       ).token;
 
       // to prevent the firebase auth token from being expired because of the fake timer
-      const decodedToken = await firebase.auth().verifyIdToken(jwts[0]);
-      sandbox.stub(firebase.auth(), "verifyIdToken").resolves(decodedToken);
+      const decodedToken = await auth.verifyIdToken(jwts[0]);
+      sandbox.stub(auth, "verifyIdToken").resolves(decodedToken);
 
       const clock = sandbox.useFakeTimers({
         now: Date.now(),

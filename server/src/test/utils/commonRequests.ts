@@ -3,7 +3,7 @@ import type { CreateListInput } from "../../types/list.js";
 import request from "supertest";
 import { UserService } from "../../services/index.js";
 import app from "../../app.js";
-import { firebase } from "../../config/index.js";
+import { auth } from "../../config/index.js";
 
 export const createTestUser = async (user: UserInput) => {
   await UserService.upsertUser(user);
@@ -20,7 +20,7 @@ export const getTestJwt = async (userId: string) => {
     throw new Error("FIREBASE_AUTH_EMULATOR_HOST or GOOGLE_API_KEY is not set");
   }
 
-  const customToken = await firebase.auth().createCustomToken(userId);
+  const customToken = await auth.createCustomToken(userId);
   const response = await fetch(
     `http://${host}/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${googleApiKey}`,
     {

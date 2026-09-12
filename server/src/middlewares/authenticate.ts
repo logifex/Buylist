@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import type { DecodedIdToken } from "firebase-admin/auth";
 import { UserService } from "../services/index.js";
 import { AuthenticationError } from "../errors/index.js";
-import { firebase, pubClient } from "../config/index.js";
+import { auth, pubClient } from "../config/index.js";
 
 const authenticate = async (
   req: Request,
@@ -16,7 +16,7 @@ const authenticate = async (
   const idToken = req.headers.authorization.split("Bearer ")[1];
 
   try {
-    const decodedToken = await firebase.auth().verifyIdToken(idToken);
+    const decodedToken = await auth.verifyIdToken(idToken);
     const {
       uid: id,
       email,

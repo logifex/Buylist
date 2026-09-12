@@ -5,9 +5,9 @@ import env from "./env.js";
 const adapter = new PrismaPg({
   connectionString: env.databaseUrl,
   max: 10,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 300000,
-  statement_timeout: 60000,
+  statement_timeout: 30000,
 });
 const prisma = new PrismaClient({ adapter });
 

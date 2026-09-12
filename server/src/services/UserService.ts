@@ -1,6 +1,6 @@
 import type { UserDetails, UserInput } from "../types/user.js";
 import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace.js";
-import { firebase, prisma, pubClient } from "../config/index.js";
+import { auth, prisma, pubClient } from "../config/index.js";
 import { userDetailsSelect } from "../utils/selects.js";
 import { NotFoundError } from "../errors/index.js";
 import { Prisma } from "../generated/prisma/client.js";
@@ -44,7 +44,7 @@ const deleteUser = async (userId: string): Promise<void> => {
       ],
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
     );
-    await firebase.auth().deleteUser(userId);
+    await auth.deleteUser(userId);
 
     for (const list of lists) {
       SocketService.emitListDelete(list.id);
